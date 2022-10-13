@@ -5,7 +5,7 @@ import * as socketio from 'socket.io';
 import bodyParser from 'body-parser';
 import passport from 'passport';
 import { getGoogleStrategy } from './auth/GoogleAuth';
-import { handleSocketIOConnections } from './game/gameLogic';
+import { handleSocketIOConnections } from './game/connectionHandler';
 import { authSocketPolicy } from './auth/socketPolicy';
 import { connectToMongo } from './db/dataBase';
 

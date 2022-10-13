@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import { SendMessagePayload } from "types/SocketActions";
+import { SendChatMessagePayload } from "types/SocketActions";
 import { WeedPlayer } from "types/WeedPlayer";
 
 export type AppContext = {
@@ -12,7 +12,7 @@ export type AppContext = {
 };
 
 export type SocketActions = {
-    sendChatMessage: (payload: SendMessagePayload) => void; 
+    sendChatMessage: (payload: SendChatMessagePayload) => void; 
 }
 
 export const AppContext = createContext<AppContext>({ 

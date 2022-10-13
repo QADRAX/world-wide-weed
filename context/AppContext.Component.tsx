@@ -4,7 +4,7 @@ import { AppContext, SocketActions } from "./AppContext";
 import { useRouter } from "next/router";
 import { deleteCookie } from "cookies-next";
 import { SocketContext } from "./SocketContext";
-import { ResponseChatMessagePayload, SendMessagePayload, SOCKET_ACTIONS } from "types/SocketActions";
+import { ResponseChatMessagePayload, SendChatMessagePayload, SOCKET_ACTIONS } from "types/SocketActions";
 import { useAppDispatch } from "hooks/redux";
 import { addMessage, setPlayers } from "redux/chatRoom/chatRoomSlice";
 
@@ -32,7 +32,7 @@ export const AppContextComponent: FunctionComponent<AppContextProps> = (props) =
 
     // socket actions
 
-    const sendChatMessage = (payload: SendMessagePayload) => {
+    const sendChatMessage = (payload: SendChatMessagePayload) => {
         if(socket){
             console.log(`Sending message: ${payload.message}`)
             socket.emit(SOCKET_ACTIONS.SEND_CHAT_MESSAGE, payload);

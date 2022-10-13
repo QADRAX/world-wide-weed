@@ -1,17 +1,17 @@
 import { getUserByToken } from '../auth/jwt';
 import * as socketio from 'socket.io';
-import { connections, SocketConnections } from './state';
-import { ResponseChatMessagePayload, SendMessagePayload, SOCKET_ACTIONS } from '../../types/SocketActions';
+import { currentUsers, deletePlayer, setPlayer } from './state';
+import { ResponseChatMessagePayload, SendChatMessagePayload, SOCKET_ACTIONS } from '../../types/SocketActions';
 import { toWeedPlayer } from '../db/model/User';
-import { WeedPlayer } from 'types/WeedPlayer';
-
-const currentUsers = (socketConnections: SocketConnections): WeedPlayer[] => {
-    const values = Object.values(socketConnections);
-    const players = values.map((value) => toWeedPlayer(value.player));
-    return players;
-}
 
 export const handleSocketIOConnections = (io: socketio.Server) => {
+
+    // Send actions
+
+    const updateUsers = () => io.emit(SOCKET_ACTIONS.UPDATE_USERS, currentUsers());
+
+    // On  new Connection
+
     io.on('connection', (socket: socketio.Socket) => {
         (async () => {
             const socketId = socket.id;
@@ -19,13 +19,12 @@ export const handleSocketIOConnections = (io: socketio.Server) => {
             const user = await getUserByToken(token);
         
             if(user) {
-                connections[socketId] = {
-                    player: user,
-                };
-                io.emit(SOCKET_ACTIONS.UPDATE_USERS, currentUsers(connections))
+                setPlayer(user, socketId);
+                updateUsers();
+
                 console.log(`Player ${user.name} connected`);
                 
-                socket.on(SOCKET_ACTIONS.SEND_CHAT_MESSAGE, (payload: SendMessagePayload) => {
+                socket.on(SOCKET_ACTIONS.SEND_CHAT_MESSAGE, (payload: SendChatMessagePayload) => {
                     const response: ResponseChatMessagePayload = {
                         chatMessage: {
                             text: payload.message,
@@ -39,8 +38,8 @@ export const handleSocketIOConnections = (io: socketio.Server) => {
                 });
         
                 socket.on('disconnect', () => {
-                    delete connections[socket.id];
-                    io.emit(SOCKET_ACTIONS.UPDATE_USERS, currentUsers(connections))
+                    deletePlayer(socketId);
+                    updateUsers();
                     console.log(`Player ${user.name} disconnected`);
                 });
             }

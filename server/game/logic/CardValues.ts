@@ -1,4 +1,4 @@
-import { HarvestableCardType } from "./WeedTypes";
+import { HarvestableCardType } from "types/weed/WeedTypes";
 
 export const getHarvestableWeedCardValue = (type: HarvestableCardType) => {
     switch (type) {
@@ -16,4 +16,4 @@ export const getHarvestableWeedCardValue = (type: HarvestableCardType) => {
         case 'weed6':
             return 6;
     }
-} 
+}
