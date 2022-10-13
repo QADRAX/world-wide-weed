@@ -28,6 +28,7 @@ nextApp.prepare().then(async () => {
 
     io.attach(server);
     io.use(authSocketPolicy);
+
     handleSocketIOConnections(io);
 
     app.all('*', (req: any, res: any) => nextHandler(req, res));

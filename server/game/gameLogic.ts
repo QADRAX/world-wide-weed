@@ -21,7 +21,6 @@ export const handleSocketIOConnections = (io: socketio.Server) => {
             if(user) {
                 connections[socketId] = {
                     player: user,
-                    socket,
                 };
                 io.emit(SOCKET_ACTIONS.UPDATE_USERS, currentUsers(connections))
                 console.log(`Player ${user.name} connected`);
