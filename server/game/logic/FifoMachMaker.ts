@@ -1,11 +1,10 @@
-import { IMatchMakerOptions, Matchmaker } from "./MatchMaker";
+import { MatchMakerOptions, Matchmaker, Player } from "./MatchMaker";
 
-interface IFifoMatchMakerOptions extends IMatchMakerOptions {}
+interface IFifoMatchMakerOptions extends MatchMakerOptions { }
 
-export class FifoMatchmaker<P> extends Matchmaker<P> {
-	constructor(resolver: (players: P[]) => void, getKey: (player: P) => string, options?: IFifoMatchMakerOptions) {
-		super(resolver, getKey, options);
-
+export class FifoMatchmaker<P extends Player> extends Matchmaker<P> {
+	constructor(options?: IFifoMatchMakerOptions) {
+		super(options);
 		setInterval(this.FifoMatch, this.checkInterval);
 	}
 
@@ -16,7 +15,9 @@ export class FifoMatchmaker<P> extends Matchmaker<P> {
 			while (this.queue.length > 0 && players.length < this.maxMatchSize) {
 				players.push(this.queue.pop() as P);
 			}
-			this.resolver(players);
+			if(this.resolver){
+				this.resolver(players);
+			}
 		}
 	}
 

@@ -1,36 +1,23 @@
-const errorMessages = {
-    playerInQueue: "Player is already in queue",
-    playerNotInQueue: "Player is not in queue",
-    playerNotInGame: "Player is not in game",
-    gameDoesNotExists: "Game does not exists"
-};
+export type MatchMakerPlayerState  = 'none' | 'inqueue';
 
-export enum IPlayerState {
-    NONE,
-    INQUEUE,
-    PLAYING
-}
-
-export interface IMatchMakerOptions {
+export interface MatchMakerOptions {
     checkInterval?: number;
     maxMatchSize?: number;
     minMatchSize?: number;
 }
 
-interface Game<P> {
-    players: P[];
-    id: number;
+export type Player = {
+    id: string;
 }
 
-export class Matchmaker<P> {
-    protected resolver: (players: P[]) => void;
-    protected getKey: (player: P) => string;
+export type ResolverCallback<P> = (players: P[]) => void;
+
+export class Matchmaker<P extends Player> {
+    protected resolver?: ResolverCallback<P>;
+    protected getKey = (player: P) => player.id;
     protected queue: P[];
-    protected inGame: Game<P>[];
 
-    private nextGameId: number;
-
-    protected checkInterval: number; // Time to check for players, value in milliseconds defaults to 5000
+    protected checkInterval: number;
     protected maxMatchSize: number;
     protected minMatchSize: number;
 
@@ -38,60 +25,37 @@ export class Matchmaker<P> {
         return this.queue.length;
     }
 
-    constructor(resolver: (players: P[]) => void, getKey: (player: P) => string, options?: IMatchMakerOptions) {
-        this.resolver = (players: P[]) => {
-            this.inGame.push({ players, id: this.nextGameId++ });
-            resolver(players);
-        };
-        this.getKey = getKey
-        this.queue = [];
-        this.inGame = [];
+    set setResolver(resolver: ResolverCallback<P>) {
+        this.resolver = resolver;
+    }
 
-        this.nextGameId = Number.MIN_SAFE_INTEGER;
+    constructor(options?: MatchMakerOptions) {
+        this.queue = [];
 
         this.checkInterval = (options && options.checkInterval && options.checkInterval > 0 && options.checkInterval) || 5000;
         this.maxMatchSize = (options && options.maxMatchSize && options.maxMatchSize > 0 && options.maxMatchSize) || 2;
         this.minMatchSize = (options && options.minMatchSize && options.minMatchSize > 0 && options.minMatchSize) || this.maxMatchSize;
-
     }
 
     public push = (player: P): void => {
         if (this.indexOnQueue(player) != -1)
-            throw Error(errorMessages.playerInQueue);
+            throw Error('Player is already in queue');
         this.queue.push(player);
     }
 
-    public getPlayerState(player: P): IPlayerState {
+    public getPlayerState(player: P): MatchMakerPlayerState {
         let playerKey = this.getKey(player);
         if (this.queue.find((queuePlayer: P) => playerKey == this.getKey(queuePlayer))) {
-            return IPlayerState.INQUEUE;
+            return 'inqueue';
         }
-        else if (this.inGame.find((game: Game<P>) => { return game.players.find((gamePlayer: P) => playerKey == this.getKey(gamePlayer)) })) {
-            return IPlayerState.PLAYING;
-        }
-        return IPlayerState.NONE;
+        return 'none';
     }
 
     public leaveQueue(player: P): void {
         let index = this.indexOnQueue(player);
-        if (index == -1)
-            throw Error(errorMessages.playerNotInQueue);
-        this.queue.splice(index, 1);
-    }
-
-    public endGame(players: P | P[]): void {
-        players = (players instanceof Array) ? players : [players];
-        let gameIndex: number = -1;
-        for (let player of players) {
-            let playerKey = this.getKey(player);
-            gameIndex = this.inGame.findIndex((game: Game<P>) => { return game.players.find((gamePlayer: P) => playerKey == this.getKey(gamePlayer)) })
-            if (gameIndex != -1) {
-                break;
-            }
+        if (index > -1) {
+            this.queue.splice(index, 1);
         }
-        if (gameIndex == -1)
-            throw Error(errorMessages.gameDoesNotExists);
-        this.inGame.splice(gameIndex, 1);
     }
 
     public indexOnQueue = (player: P): number => {
