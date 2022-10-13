@@ -50,7 +50,7 @@ export const getGoogleStrategy = () => {
     const strategyOptions: StrategyOptionsWithRequest = {
         clientID: GOOGLE_CLIENT_ID,
         clientSecret: GOOGLE_CLIENT_SECRET,
-        callbackURL: "http://localhost:3000/api/google/callback",
+        callbackURL: "/api/google/callback",
         passReqToCallback: true,
     };
 
