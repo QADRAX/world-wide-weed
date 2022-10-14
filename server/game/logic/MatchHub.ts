@@ -1,11 +1,10 @@
-import { Match, MatchPlayer, MatchSnapshot } from "types/weed/WeedTypes";
+import { MatchPlayer, MatchSnapshot } from "types/weed/WeedTypes";
 import { WeedPlayer } from "types/WeedPlayer";
 import { shuffle } from "utils/shuffle";
 import { getDeck } from "./decks";
 import { getInitialFields } from "./Fields";
 
-export class ImlMatch implements Match {
-    currentSnapshot: MatchSnapshot;
+export class ImlMatch {
     history: MatchSnapshot[];
 
     get numberOfPlayers() {
@@ -13,7 +12,11 @@ export class ImlMatch implements Match {
     }
 
     get currentTurn() {
-        return this.history.length;
+        return this.history.length - 1;
+    }
+
+    get currentSnapshot() {
+        return this.history[this.currentTurn];
     }
 
     get currentPlayerIndex() {
@@ -25,6 +28,7 @@ export class ImlMatch implements Match {
     }
 
     get isCurrentPlayerBrick() {
+        // todoo
         return false;
     }
 
@@ -36,13 +40,11 @@ export class ImlMatch implements Match {
         const emptyHandsPlayers = this.currentSnapshot.players.filter((p) => p.hand.length == 0);
         const isEmptyHandsForAllPlayers = emptyHandsPlayers.length == this.numberOfPlayers;
         const isDeckEmpty = this.deckSike == 0;
-        const isGameOver = isEmptyHandsForAllPlayers && isDeckEmpty;
+        const isGameOver = (isEmptyHandsForAllPlayers && isDeckEmpty) || this.numberOfPlayers == 0;
         return isGameOver;
     }
 
     constructor(players: WeedPlayer[]) {
-        this.history = [];
-
         const deck = shuffle(getDeck());
         const matchPlayers: MatchPlayer[] = shuffle(players.map((player) => {
             const initialFields = getInitialFields(players.length);
@@ -53,7 +55,6 @@ export class ImlMatch implements Match {
             };
             return matchPlayer;
         }));
-
         const initialSnapshot: MatchSnapshot = {
             players: matchPlayers,
             deck,
@@ -71,7 +72,7 @@ export class ImlMatch implements Match {
             });
         });
 
-        this.currentSnapshot = initialSnapshot;
+        this.history = [initialSnapshot];
     }
 
 
