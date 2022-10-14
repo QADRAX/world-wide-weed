@@ -12,7 +12,7 @@ export const getCards = (type: CardType, count: number): WeedCard[] =>
     Array(count).map(() => getCard(type));
 
 
-export const getCompetitveDeck = (): WeedCard[] => {
+export const getDeck = (): WeedCard[] => {
     return [
         ...getCards('weed1', 8),
         ...getCards('weed2', 6),

@@ -1,4 +1,4 @@
-import { DBUser, toWeedPlayer } from "server/db/model/User";
+import { DBUser, toWeedPlayer } from "../db/model/User";
 import { WeedPlayer } from "types/WeedPlayer";
 
 export class ConnectionHub {
@@ -33,9 +33,11 @@ export class ConnectionHub {
     }
 
     public currentUsers = (): WeedPlayer[] => {
-        const values = Object.values(this._connectedPlayers);
-        const players = values.map((value) => toWeedPlayer(value));
-        return players;
+        const result: WeedPlayer[] = [];
+        for (let value of this._connectedPlayers.values()) {
+            result.push(toWeedPlayer(value));
+        }
+        return result;
     }
 }
 

@@ -1,5 +1,3 @@
-import { WeedPlayer } from "types/WeedPlayer";
-
 export type ActionableCardType = 'weedkiller'
     | 'monzon'
     | 'stealer'
@@ -32,30 +30,27 @@ export type WeedCard = {
     type: CardType;
 }
 
-export type WeedField = {
+export type Field = {
     id: string;
     value: FieldValue;
-    valueOwnerId: string;
+    valueOwnerId?: string;
     protectedValue: ProtectedFieldValue;
-    protectedValueOwnerId: string;
+    protectedValueOwnerId?: string;
 }
 
-export type GameType = 'standar';
-
-export type WeedMatchPlayer = {
+export type MatchPlayer = {
     hand: WeedCard[];
-    filds: WeedField[];
-    player: WeedPlayer;
+    fields: Field[];
+    playerId: string;
 }
 
-export type WeedMatch = {
-    gameType: GameType;
-    player: WeedPlayer[];
+export type MatchSnapshot = {
+    players: MatchPlayer[];
     deck: WeedCard[];
     discards: WeedCard[];
-    maxFields: number;
-    currentTurn: number;
-    currentPlayerBrick: boolean;
-    gameOver: boolean;
-    totalCards: number;
+}
+
+export type Match = {
+    currentSnapshot: MatchSnapshot;
+    history: MatchSnapshot[];
 }

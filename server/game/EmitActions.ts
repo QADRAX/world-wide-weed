@@ -1,6 +1,6 @@
 import { ResponseChatMessagePayload, SendChatMessagePayload, SOCKET_ACTIONS } from "../../types/SocketActions";
 import * as socketio from 'socket.io';
-import { DBUser, toWeedPlayer } from "server/db/model/User";
+import { DBUser, toWeedPlayer } from "../db/model/User";
 import { AppConnectionHub } from "./GameState";
 
 const updateUsers = (io: socketio.Server) =>

@@ -65,6 +65,7 @@ export const AppContextComponent: FunctionComponent<AppContextProps> = (props) =
             });
 
             socket.on(SOCKET_ACTIONS.UPDATE_USERS, (response: WeedPlayer[]) => {
+                console.log(response);
                 dispatch(setPlayers(response))
             });
         }

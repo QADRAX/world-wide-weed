@@ -1,7 +1,7 @@
 import { DBUser } from "server/db/model/User";
 import { MAX_PLAYERS_IN_MATCH, MIN_PLAYERS_IN_MATCH } from "./GameConstants";
-import { ConnectionHub } from "./logic/ConnectionHub";
-import { FifoMatchmaker } from "./logic/FifoMachMaker";
+import { ConnectionHub } from "./ConnectionHub";
+import { FifoMatchmaker } from "./FifoMachMaker";
 
 export const AppConnectionHub = new ConnectionHub();
 export const AppMatchMaker = new FifoMatchmaker<DBUser>({
