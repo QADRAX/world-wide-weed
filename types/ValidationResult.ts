@@ -1,4 +1,4 @@
-export type ValidationResult<T> = {
-    invalidReasons: string[],
+export type ValidationResult<E, T> = {
+    invalidReasons: E[],
     result: T | undefined,
 };

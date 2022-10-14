@@ -42,6 +42,7 @@ export type MatchPlayer = {
     hand: WeedCard[];
     fields: Field[];
     playerId: string;
+    smokedScore: number;
 }
 
 export type MatchSnapshot = {
@@ -50,7 +51,15 @@ export type MatchSnapshot = {
     discards: WeedCard[];
 }
 
-export type Match = {
-    currentSnapshot: MatchSnapshot;
-    history: MatchSnapshot[];
+export type PlayCardRequest = {
+    playerId: string;
+    targetPlayerId: string;
+    cardType: CardType;
+    tagetPlayerFieldId?: string;
+    destinationPlayerFieldId?: string;
+}
+
+export type DiscardCardRequest = {
+    playerId: string;
+    cardType: CardType;
 }
