@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { Log } from "../../utils/console";
 import { getAppConfig } from "../AppConfig";
 
 export const connectToMongo = () => {
@@ -8,9 +9,9 @@ export const connectToMongo = () => {
     {},
     (err) => {
       if (err)  {
-        console.log("Error connecting to MongoDB");
+        Log("Error connecting to MongoDB", 'critical');
       } else {
-        console.log("App connected to MongoDB!")
+        Log("App connected to MongoDB!", 'info');
       }
     }
   );

@@ -1,6 +1,7 @@
 import { setCookie } from 'cookies-next';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import passport from "passport";
+import { Log } from '../../../utils/console';
 
 export default (req: NextApiRequest, res: NextApiResponse) => {
     passport.authenticate('google', (err, user, info) => {
@@ -8,7 +9,7 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
           return res.redirect('/?a=auth_fail');
         }
 
-        console.log(`Google auth callback message ${info.message}`)
+        Log(`Google auth callback message ${info.message}`, 'info');
     
         // set cookie and send redirect
         setCookie("token", user.token, {

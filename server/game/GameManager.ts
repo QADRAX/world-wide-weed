@@ -11,6 +11,8 @@ import { MatchHub } from './MatchHub/MatchHub';
 import { FifoMatchmaker } from './matchMaker/FifoMachMaker';
 import { Matchmaker, ResolverCallback } from './matchMaker/MatchMaker';
 import { WeedMatch } from './weedMatch/WeedMatch';
+import { Log } from '../../utils/console';
+import clc from 'cli-color';
 
 export class GameManager {
     private io: socketio.Server;
@@ -45,17 +47,17 @@ export class GameManager {
                     this.connectionHub.setPlayer(player, socketId);
                     this.emitUpdatedUsers();
 
-                    console.log(`Player ${player.email} connected`);
+                    Log(`Player ${clc.underline(player.email)} connected`, 'app');
 
                     socket.on(SOCKET_ACTIONS.SEND_CHAT_MESSAGE, (payload: SendChatMessagePayload) => {
-                        console.log(`New message from ${player.email}: '${payload.message}' in room: ${payload.roomId}`);
+                        Log(`New message from ${clc.underline(player.email)}: '${payload.message}' in room: ${payload.roomId}`, 'app');
                         this.emitChatResponse(player, payload);
                     });
 
                     socket.on(SOCKET_ACTIONS.NEW_MATCH_MAKING, () => {
                         const currentMatch = this.matchHub.findPlayerMatch(player);
                         if (!currentMatch) {
-                            console.log(`Player ${player.email} added to match maker queue`);
+                            Log(`Player ${clc.underline(player.email)} added to match maker queue`, 'app');
                             this.matchMaker.push(player);
                             this.emitUpdatedUsers();
                         }
@@ -64,7 +66,7 @@ export class GameManager {
                     socket.on('disconnect', () => {
                         this.connectionHub.deletePlayer(socketId);
                         this.emitUpdatedUsers();
-                        console.log(`Player ${player.email} disconnected`);
+                        Log(`Player ${clc.underline(player.email)} disconnected`, 'app');
                     });
                 }
             })();
@@ -74,7 +76,7 @@ export class GameManager {
     private onMatchMakerResolve: ResolverCallback<WeedPlayer> = (players: WeedPlayer[]) => {
         const match = this.matchHub.createStandarMatch(players);
         if(match) {
-            console.log(`New match was created with players: ${players.map(p => p.email).join(' ')}`);
+            Log(`New match was created with players: ${players.map(p => clc.underline(p.email)).join(' ')}`, 'app');
             this.emitUpdatedMatch(match);
             this.emitUpdatedUsers();
         }

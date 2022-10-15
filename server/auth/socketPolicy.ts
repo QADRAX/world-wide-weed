@@ -1,5 +1,6 @@
 import { Socket } from "socket.io";
 import { ExtendedError } from "socket.io/dist/namespace";
+import { Log } from "../../utils/console";
 import { getUserByToken } from "./jwt";
 
 /**
@@ -16,13 +17,13 @@ export const authSocketPolicy = async (
         const user = await getUserByToken(token);
         if (user) {
             next();
-            console.log('Authorized conexion');
+            Log('Authorized conexion', 'info');
         } else {
             next(new Error('unauthorized'));
-            console.log('unauthorized conexion')
+            Log('unauthorized conexion', 'critical')
         }
     } catch {
         next(new Error('unauthorized conexion Invalid JWT'));
-        console.log('unauthorized conexion Invalid JWT');
+        Log('unauthorized conexion Invalid JWT', 'critical');
     }
 }
