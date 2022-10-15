@@ -1,7 +1,7 @@
-import { ChatMessage } from "../../types/ChatMessage";
+import { ChatMessage } from "../../server/types/ChatMessage";
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { ResponseChatMessagePayload } from "../../types/SocketMessages";
-import { WeedPlayer } from "types/Player";
+import { ResponseChatMessagePayload } from "../../server/types/SocketMessages";
+import { WeedPlayer } from "server/types/Player";
 
 export interface ChatRoom {
     messages: ChatMessage[];

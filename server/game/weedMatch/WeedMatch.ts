@@ -1,7 +1,7 @@
-import { ValidationResult } from "types/ValidationResult";
-import { MatchErrors } from "../../../types/weed/MatchErrors";
-import { CardRequest, DiscardCardRequest, isPlayCardRequest, MatchSnapshot, PlayCardRequest } from "../../../types/weed/WeedTypes";
-import { Player } from "types/Player";
+import { ValidationResult } from "server/types/ValidationResult";
+import { MatchErrors } from "../../types/weed/MatchErrors";
+import { CardRequest, DiscardCardRequest, isPlayCardRequest, MatchSnapshot, PlayCardRequest } from "../../types/weed/WeedTypes";
+import { Player } from "server/types/Player";
 import { getFieldValue } from "./WeedMatch.Fields";
 
 /**

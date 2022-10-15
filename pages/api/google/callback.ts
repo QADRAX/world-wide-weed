@@ -1,7 +1,7 @@
 import { setCookie } from 'cookies-next';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import passport from "passport";
-import { Log } from '../../../utils/console';
+import { Log } from '../../../server/utils/console';
 
 export default (req: NextApiRequest, res: NextApiResponse) => {
     passport.authenticate('google', (err, user, info) => {

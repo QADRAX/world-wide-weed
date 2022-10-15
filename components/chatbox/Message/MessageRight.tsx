@@ -1,4 +1,4 @@
-import { formatDate } from "utils/dates";
+import { formatDate } from "server/utils/dates";
 import { MessageProps } from "./Message.types";
 import { DisplayName, MessageBlue, MessageContent, MessageRow, MessageTimeStampRight, OrangeAvatar } from "./MessageStyles";
 

@@ -1,4 +1,4 @@
-import { Player } from "types/Player";
+import { Player } from "server/types/Player";
 
 export type ActionableCardType = 'weedkiller'
     | 'monzon'

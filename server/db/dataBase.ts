@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { Log } from "../../utils/console";
+import { Log } from "../utils/console";
 import { getAppConfig } from "../AppConfig";
 
 export const connectToMongo = () => {

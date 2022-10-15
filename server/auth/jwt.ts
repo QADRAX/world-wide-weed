@@ -1,7 +1,7 @@
 import { getAppConfig } from "../AppConfig";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import User, { DBUser } from "../db/model/User";
-import { WeedPlayer } from "../../types/Player";
+import { WeedPlayer } from "../types/Player";
 
 export const getToken = (user: DBUser): string => {
     const { JWT_SECRET } = getAppConfig();

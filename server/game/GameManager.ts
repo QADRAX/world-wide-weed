@@ -2,8 +2,8 @@
 import { getUserByToken } from '../auth/jwt';
 import { toWeedPlayer } from '../db/model/User';
 import * as socketio from 'socket.io';
-import { ClientSidePlayer, ResponseChatMessagePayload, ResponseUpdateMatch, SendChatMessagePayload, SOCKET_ACTIONS } from '../../types/SocketMessages';
-import { WeedPlayer } from '../../types/Player';
+import { ClientSidePlayer, ResponseChatMessagePayload, ResponseUpdateMatch, SendChatMessagePayload, SOCKET_ACTIONS } from '../types/SocketMessages';
+import { WeedPlayer } from '../types/Player';
 import { ConnectionHub } from './connectionHub/ConnectionHub';
 import { MATCH_MAKING_INTERVAL, MAX_PLAYERS_IN_MATCH, MIN_PLAYERS_IN_MATCH } from './GameConstants';
 import { toClientSideMatch } from './GameManager.Mappers';
@@ -11,7 +11,7 @@ import { MatchHub } from './MatchHub/MatchHub';
 import { FifoMatchmaker } from './matchMaker/FifoMachMaker';
 import { Matchmaker, ResolverCallback } from './matchMaker/MatchMaker';
 import { WeedMatch } from './weedMatch/WeedMatch';
-import { Log } from '../../utils/console';
+import { Log } from '../utils/console';
 import clc from 'cli-color';
 
 export class GameManager {

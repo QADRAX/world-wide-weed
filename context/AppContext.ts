@@ -1,6 +1,6 @@
 import { createContext } from "react";
-import { SendChatMessagePayload } from "types/SocketMessages";
-import { WeedPlayer } from "types/Player";
+import { SendChatMessagePayload } from "server/types/SocketMessages";
+import { WeedPlayer } from "server/types/Player";
 
 export type AppContext = {
     token?: string;

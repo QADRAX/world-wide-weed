@@ -1,7 +1,7 @@
-import { Player } from "types/Player";
+import { Player } from "server/types/Player";
 import { StandarWeedMatch } from "../weedMatch/StandarWeedMatch";
 import { WeedMatch } from "../weedMatch/WeedMatch";
-import { setHasSomeKey } from "../../../utils/equalSet";
+import { setHasSomeKey } from "../../utils/equalSet";
 
 export class MatchHub<P extends Player>{
     private standarMatches: Map<Set<string>, StandarWeedMatch<P>>;

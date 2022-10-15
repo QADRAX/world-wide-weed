@@ -1,6 +1,6 @@
-import { ClientSideMatch } from "types/SocketMessages";
-import { ClientSideMatchPlayerSnapShot, ClientSideMatchSnapShot } from "types/weed/WeedTypes";
-import { Player } from "types/Player";
+import { ClientSideMatch } from "server/types/SocketMessages";
+import { ClientSideMatchPlayerSnapShot, ClientSideMatchSnapShot } from "server/types/weed/WeedTypes";
+import { Player } from "server/types/Player";
 import { WeedMatch } from "./weedMatch/WeedMatch";
 
 export function toClientSideMatch<P extends Player>(weedMatch: WeedMatch<P>) {

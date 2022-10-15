@@ -1,7 +1,7 @@
 import { GetServerSideProps } from 'next';
 import { getCookie, deleteCookie } from "cookies-next";
 import { getUserByToken } from "../server/auth/jwt";
-import { WeedPlayer } from "../types/Player";
+import { WeedPlayer } from "../server/types/Player";
 import { GlobalContextComponent } from "context/GlobalContext.component";
 import { WeedMainScreen } from 'components/WeedMainScreen';
 

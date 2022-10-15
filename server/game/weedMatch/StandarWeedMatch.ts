@@ -1,6 +1,6 @@
-import { MatchPlayer, MatchSnapshot } from "types/weed/WeedTypes";
-import { Player } from "types/Player";
-import { shuffle } from "../../../utils/shuffle";
+import { MatchPlayer, MatchSnapshot } from "server/types/weed/WeedTypes";
+import { Player } from "server/types/Player";
+import { shuffle } from "../../utils/shuffle";
 import { getDeck } from "./WeedMatch.Decks";
 import { getInitialFields } from "./WeedMatch.Fields";
 import { WeedMatch } from "./WeedMatch";

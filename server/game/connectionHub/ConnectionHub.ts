@@ -1,4 +1,4 @@
-import { Player } from "types/Player";
+import { Player } from "server/types/Player";
 
 export class ConnectionHub<P extends Player> {
     private _connectedPlayers: Map<string, P>;

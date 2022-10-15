@@ -8,7 +8,7 @@ import { getGoogleStrategy } from './auth/GoogleAuth';
 import { authSocketPolicy } from './auth/socketPolicy';
 import { connectToMongo } from './db/dataBase';
 import { GameManager } from './game/GameManager';
-import { Log } from '../utils/console';
+import { Log } from './utils/console';
 
 const port: number = parseInt(process.env.PORT || '3000', 10);
 const dev: boolean = process.env.NODE_ENV !== 'production';

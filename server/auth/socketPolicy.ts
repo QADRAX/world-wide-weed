@@ -1,6 +1,6 @@
 import { Socket } from "socket.io";
 import { ExtendedError } from "socket.io/dist/namespace";
-import { Log } from "../../utils/console";
+import { Log } from "../utils/console";
 import { getUserByToken } from "./jwt";
 
 /**
