@@ -9,6 +9,7 @@ import { authSocketPolicy } from './auth/socketPolicy';
 import { connectToMongo } from './db/dataBase';
 import { GameManager } from './game/GameManager';
 import { Log } from '../utils/console';
+import { setCookie } from 'cookies-next';
 
 const port: number = parseInt(process.env.PORT || '3000', 10);
 const dev: boolean = process.env.NODE_ENV !== 'production';
@@ -23,6 +24,8 @@ nextApp.prepare().then(async () => {
 
     connectToMongo();
 
+
+
     app.use(bodyParser.urlencoded({ extended: false }));
     app.use(passport.initialize());
 
@@ -30,6 +33,29 @@ nextApp.prepare().then(async () => {
 
     io.attach(server);
     io.use(authSocketPolicy);
+
+    app.get('/api/google/', (req, res, next) => {
+        passport.authenticate('google', {
+            scope: ['profile', 'email'],
+        })(req, res, next);
+    });
+
+    app.get('/api/google/callback', (req, res, next) => {
+        passport.authenticate('google', (err, user, info) => {
+            if (err || !user) {
+              return res.redirect('/?a=auth_fail');
+            }
+    
+            Log(`Google auth callback message ${info.message}`, 'info');
+        
+            // set cookie and send redirect
+            setCookie("token", user.token, {
+              req,
+              res,
+            });
+            res.redirect('/game');
+        })(req, res, next);
+    });
 
     gameManager.handleConnections();
 
