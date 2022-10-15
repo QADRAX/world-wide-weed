@@ -1,6 +1,6 @@
 import React from 'react';
 import { Socket } from 'socket.io';
-import io from 'Socket.IO-client';
+import io from 'socket.io-client';
 
 export const getSocket = (token: string): any => {
     const socket = io({
