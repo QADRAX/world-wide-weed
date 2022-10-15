@@ -1,6 +1,6 @@
 import { getUserByToken } from '../auth/jwt';
 import * as socketio from 'socket.io';
-import { SendChatMessagePayload, SOCKET_ACTIONS } from '../../types/SocketActions';
+import { SendChatMessagePayload, SOCKET_ACTIONS } from '../../types/SocketMessages';
 import { EmitAction } from './EmitActions';
 import { AppConnectionHub } from './GameState';
 

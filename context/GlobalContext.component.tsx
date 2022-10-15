@@ -1,5 +1,5 @@
 import { FunctionComponent } from "react";
-import { WeedPlayer } from "types/WeedPlayer";
+import { WeedPlayer } from "types/Player";
 import { AppContextComponent } from "./AppContext.Component";
 import { ReduxContextComponent } from "./ReduxContext.Component";
 import { SocketContextComponent } from "./SocketContext.Component";

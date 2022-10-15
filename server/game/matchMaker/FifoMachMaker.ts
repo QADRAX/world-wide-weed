@@ -1,4 +1,5 @@
-import { MatchMakerOptions, Matchmaker, Player } from "./MatchMaker";
+import { Player } from "types/Player";
+import { MatchMakerOptions, Matchmaker } from "./MatchMaker";
 
 interface IFifoMatchMakerOptions extends MatchMakerOptions { }
 

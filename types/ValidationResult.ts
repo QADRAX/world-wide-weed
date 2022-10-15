@@ -1,4 +1,4 @@
 export type ValidationResult<E, T> = {
-    invalidReasons: E[],
+    errors: E[],
     result: T | undefined,
 };

@@ -1,4 +1,4 @@
-import { WeedPlayer } from "./WeedPlayer";
+import { WeedPlayer } from "./Player";
 
 export type ChatMessage = {
     text: string;

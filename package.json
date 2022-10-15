@@ -18,7 +18,6 @@
     "express-session": "^1.17.3",
     "framer-motion": "^7.5.3",
     "jsonwebtoken": "^8.5.1",
-    "matchmaking": "^0.4.32",
     "mongoose": "^6.6.5",
     "next": "latest",
     "next-redux-wrapper": "^8.0.0",

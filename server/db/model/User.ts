@@ -1,5 +1,5 @@
 import { Schema, model, Model }  from "mongoose";
-import { WeedPlayer } from "types/WeedPlayer";
+import { WeedPlayer } from "types/Player";
 
 export interface DBUser {
   id: string;

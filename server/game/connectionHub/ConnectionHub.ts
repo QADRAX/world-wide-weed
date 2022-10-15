@@ -1,11 +1,10 @@
-import { DBUser, toWeedPlayer } from "../db/model/User";
-import { WeedPlayer } from "types/WeedPlayer";
+import { Player } from "types/Player";
 
-export class ConnectionHub {
-    private _connectedPlayers: Map<string, DBUser>;
+export class ConnectionHub<P extends Player> {
+    private _connectedPlayers: Map<string, P>;
 
     constructor() {
-        this._connectedPlayers = new Map<string, DBUser>();
+        this._connectedPlayers = new Map<string, P>();
     }
 
     get connectedPlayers() {
@@ -13,7 +12,7 @@ export class ConnectionHub {
     }
 
     public setPlayer = (
-        player: DBUser,
+        player: P,
         socketId: string
     ): void => { this._connectedPlayers.set(socketId, player) };
 
@@ -32,10 +31,10 @@ export class ConnectionHub {
         return undefined;
     }
 
-    public currentUsers = (): WeedPlayer[] => {
-        const result: WeedPlayer[] = [];
+    public currentUsers = (): P[] => {
+        const result: P[] = [];
         for (let value of this._connectedPlayers.values()) {
-            result.push(toWeedPlayer(value));
+            result.push(value);
         }
         return result;
     }

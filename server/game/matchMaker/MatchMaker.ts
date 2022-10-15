@@ -1,3 +1,5 @@
+import { Player } from "types/Player";
+
 export type MatchMakerPlayerState  = 'none' | 'inqueue';
 
 export interface MatchMakerOptions {
@@ -6,13 +8,9 @@ export interface MatchMakerOptions {
     minMatchSize?: number;
 }
 
-export type Player = {
-    id: string;
-}
-
 export type ResolverCallback<P> = (players: P[]) => void;
 
-export class Matchmaker<P extends Player> {
+export abstract class Matchmaker<P extends Player> {
     protected resolver?: ResolverCallback<P>;
     protected getKey = (player: P) => player.id;
     protected queue: P[];
@@ -25,7 +23,7 @@ export class Matchmaker<P extends Player> {
         return this.queue.length;
     }
 
-    set setResolver(resolver: ResolverCallback<P>) {
+    setResolver(resolver: ResolverCallback<P>) {
         this.resolver = resolver;
     }
 

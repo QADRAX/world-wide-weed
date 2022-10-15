@@ -1,25 +1,26 @@
 import { MatchPlayer, MatchSnapshot } from "types/weed/WeedTypes";
-import { WeedPlayer } from "types/WeedPlayer";
-import { shuffle } from "utils/shuffle";
+import { Player } from "types/Player";
+import { shuffle } from "../../../utils/shuffle";
 import { getDeck } from "./WeedMatch.Decks";
 import { getInitialFields } from "./WeedMatch.Fields";
 import { WeedMatch } from "./WeedMatch";
 
-export class StandarWeedMatch extends WeedMatch {
+export class StandarWeedMatch<P extends Player> extends WeedMatch<P> {
+    isStandar: boolean = true;
 
-    constructor(players: WeedPlayer[]) {
+    constructor(players: P[]) {
         const deck = shuffle(getDeck());
-        const matchPlayers: MatchPlayer[] = shuffle(players.map((player) => {
+        const matchPlayers: MatchPlayer<P>[] = shuffle(players.map((player) => {
             const initialFields = getInitialFields(players.length);
-            const matchPlayer: MatchPlayer = {
+            const matchPlayer: MatchPlayer<P> = {
                 hand: [],
                 fields: initialFields,
-                playerId: player.id,
+                player,
                 smokedScore: 0,
             };
             return matchPlayer;
         }));
-        const initialSnapshot: MatchSnapshot = {
+        const initialSnapshot: MatchSnapshot<P> = {
             players: matchPlayers,
             deck,
             discards: [],

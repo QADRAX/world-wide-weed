@@ -1,12 +1,16 @@
 import { ValidationResult } from "types/ValidationResult";
-import { MatchErrors } from "types/weed/MatchErrors";
-import { DiscardCardRequest, MatchSnapshot, PlayCardRequest } from "types/weed/WeedTypes";
+import { MatchErrors } from "../../../types/weed/MatchErrors";
+import { CardRequest, DiscardCardRequest, isPlayCardRequest, MatchSnapshot, PlayCardRequest } from "../../../types/weed/WeedTypes";
+import { Player } from "types/Player";
 import { getFieldValue } from "./WeedMatch.Fields";
+
 /**
  * Weed Match instance
  */
-export abstract class WeedMatch {
-    history: MatchSnapshot[];
+export abstract class WeedMatch<P extends Player> {
+    history: MatchSnapshot<P>[];
+    requestHistory: CardRequest[];
+    isStandar: boolean = false;
 
     get currentTurn() {
         return this.history.length - 1;
@@ -28,24 +32,30 @@ export abstract class WeedMatch {
         return this.isGameOver(this.currentSnapshot);
     }
 
-    constructor(initialSnapshot: MatchSnapshot) {
+    get players() {
+        return this.currentSnapshot.players;
+    }
+
+    constructor(initialSnapshot: MatchSnapshot<P>, requestHistory: CardRequest[] = []) {
         this.history = [initialSnapshot];
+        this.requestHistory = requestHistory;
     }
 
-    public playCard(request: PlayCardRequest): ValidationResult<MatchErrors, MatchSnapshot> {
-        const validationResult = this.executePlayCard(this.currentSnapshot, request);
-        if(validationResult.result){
+    public playCard(request: CardRequest): ValidationResult<MatchErrors, MatchSnapshot<P>> {
+        const validationResult = isPlayCardRequest(request)
+            ? this.executePlayCard(this.currentSnapshot, request)
+            : this.executeDiscardCard(this.currentSnapshot, request);
+
+        if (validationResult.result) {
             this.history.push(validationResult.result);
+            this.requestHistory.push(request);
         }
         return validationResult;
     }
 
-    public discardCard(request: DiscardCardRequest): ValidationResult<MatchErrors, MatchSnapshot> {
-        const validationResult = this.executeDiscardCard(this.currentSnapshot, request);
-        if(validationResult.result){
-            this.history.push(validationResult.result);
-        }
-        return validationResult;
+    public isPlayerInMatch(player: P): boolean {
+        const existingPlayer = this.currentSnapshot.players.find((p) => p.player.id == player.id);
+        return existingPlayer != null;
     }
 
     /**
@@ -53,15 +63,15 @@ export abstract class WeedMatch {
      * @param request 
      * @returns validation result of the play
      */
-    private executePlayCard(snapshot: MatchSnapshot, request: PlayCardRequest): ValidationResult<MatchErrors, MatchSnapshot> {
-        const result: ValidationResult<MatchErrors, MatchSnapshot> = {
+    private executePlayCard(snapshot: MatchSnapshot<P>, request: PlayCardRequest): ValidationResult<MatchErrors, MatchSnapshot<P>> {
+        const result: ValidationResult<MatchErrors, MatchSnapshot<P>> = {
             result: undefined,
-            invalidReasons: [],
+            errors: [],
         };
         const snap = Object.assign({}, snapshot);
         const isGameOver = this.isGameOver(snap);
         if (isGameOver) {
-            result.invalidReasons.push(MatchErrors.GameOver);
+            result.errors.push(MatchErrors.GameOver);
         } else {
             const numberOfPlayers = snap.players.length;
 
@@ -71,17 +81,17 @@ export abstract class WeedMatch {
             const nextPlayerIndex = (this.currentTurn + 1) % numberOfPlayers;
             const nextPlayer = snap.players[nextPlayerIndex];
 
-            const player = snap.players.find((p) => p.playerId == request.playerId);
+            const player = snap.players.find((p) => p.player.id == request.playerId);
             if (player) {
-                const isPlayersTurn = currentPlayer.playerId == request.playerId;
+                const isPlayersTurn = currentPlayer.player.id == request.playerId;
                 if (isPlayersTurn) {
-                    const targetPlayer = snap.players.find((p) => p.playerId == request.targetPlayerId);
+                    const targetPlayer = snap.players.find((p) => p.player.id == request.targetPlayerId);
                     if (targetPlayer) {
                         const currentPlayerHand = player.hand;
                         const currentCard = currentPlayerHand.find((c) => c.type == request.cardType);
                         if (currentCard) {
 
-                            const isOwnTarget = targetPlayer.playerId == player.playerId;
+                            const isOwnTarget = targetPlayer.player.id == player.player.id;
                             const targetField = targetPlayer.fields.find((f) => f.id == request.tagetPlayerFieldId);
 
                             /**
@@ -125,7 +135,7 @@ export abstract class WeedMatch {
                                     if (targetField) {
                                         if (targetField.protectedValue != 'busted') {
                                             if (targetField.protectedValue == 'dog' && !isOwnTarget) {
-                                                result.invalidReasons.push(MatchErrors.ProtectedByDog);
+                                                result.errors.push(MatchErrors.ProtectedByDog);
                                             } else {
                                                 if (targetField.value != 'dandileon') {
                                                     let availableEmptyTargetFields = targetPlayer.fields.filter((f) => f.value == 'empty');
@@ -133,29 +143,29 @@ export abstract class WeedMatch {
                                                         availableEmptyTargetFields = availableEmptyTargetFields.filter((f) => f.protectedValue != 'dog');
                                                     }
                                                     if (targetField.value != 'empty' && availableEmptyTargetFields.length > 0) {
-                                                        result.invalidReasons.push(MatchErrors.CannotUpgradePlantIfEmptyFieldAvailable);
+                                                        result.errors.push(MatchErrors.CannotUpgradePlantIfEmptyFieldAvailable);
                                                     } else {
                                                         const targetFieldValue = getFieldValue(targetField.value);
                                                         if (harvestValue < targetFieldValue) {
-                                                            result.invalidReasons.push(MatchErrors.CannotPlantLessValueWeed);
+                                                            result.errors.push(MatchErrors.CannotPlantLessValueWeed);
                                                         } else {
                                                             // APPLY
                                                             const nextValue = request.cardType;
                                                             applyNextMove(() => {
                                                                 targetField.value = nextValue;
-                                                                targetField.valueOwnerId = player.playerId;
+                                                                targetField.valueOwnerId = player.player.id;
                                                             });
                                                         }
                                                     }
                                                 } else {
-                                                    result.invalidReasons.push(MatchErrors.CannotPlantOverDandis);
+                                                    result.errors.push(MatchErrors.CannotPlantOverDandis);
                                                 }
                                             }
                                         } else {
-                                            result.invalidReasons.push(MatchErrors.BustedField);
+                                            result.errors.push(MatchErrors.BustedField);
                                         }
                                     } else {
-                                        result.invalidReasons.push(MatchErrors.TargetFieldDoesNotExist);
+                                        result.errors.push(MatchErrors.TargetFieldDoesNotExist);
                                     }
                                     break;
 
@@ -165,7 +175,7 @@ export abstract class WeedMatch {
                                     if (targetField) {
                                         if (targetField.protectedValue != 'busted') {
                                             if (targetField.protectedValue == 'dog' && !isOwnTarget) {
-                                                result.invalidReasons.push(MatchErrors.ProtectedByDog);
+                                                result.errors.push(MatchErrors.ProtectedByDog);
                                             } else {
                                                 if (targetField.value != 'empty') {
                                                     applyNextMove(() => {
@@ -173,14 +183,14 @@ export abstract class WeedMatch {
                                                         targetField.valueOwnerId = undefined;
                                                     });
                                                 } else {
-                                                    result.invalidReasons.push(MatchErrors.CannotKillEmptyFields);
+                                                    result.errors.push(MatchErrors.CannotKillEmptyFields);
                                                 }
                                             }
                                         } else {
-                                            result.invalidReasons.push(MatchErrors.BustedField);
+                                            result.errors.push(MatchErrors.BustedField);
                                         }
                                     } else {
-                                        result.invalidReasons.push(MatchErrors.TargetFieldDoesNotExist);
+                                        result.errors.push(MatchErrors.TargetFieldDoesNotExist);
                                     }
                                     break;
                                 case 'monzon':
@@ -196,10 +206,10 @@ export abstract class WeedMatch {
                                                 }
                                             });
                                         } else {
-                                            result.invalidReasons.push(MatchErrors.CannotKillEmptyFields);
+                                            result.errors.push(MatchErrors.CannotKillEmptyFields);
                                         }
                                     } else {
-                                        result.invalidReasons.push(MatchErrors.TargetFieldDoesNotExist);
+                                        result.errors.push(MatchErrors.TargetFieldDoesNotExist);
                                     }
                                     break;
                                 case 'stealer':
@@ -212,7 +222,7 @@ export abstract class WeedMatch {
                                         const destinationField = destinationPlayer.fields.find((f) => f.id == destinationFieldId);
                                         if (destinationField) {
                                             if (isOwnTarget) {
-                                                result.invalidReasons.push(MatchErrors.CannotStealYourOwnFields);
+                                                result.errors.push(MatchErrors.CannotStealYourOwnFields);
                                             } else {
                                                 if (targetField) {
                                                     if (targetField.protectedValue != 'busted') {
@@ -228,16 +238,16 @@ export abstract class WeedMatch {
                                                                     destinationField.protectedValueOwnerId = dogOwner;
                                                                 });
                                                             } else {
-                                                                result.invalidReasons.push(MatchErrors.ProtectedField);
+                                                                result.errors.push(MatchErrors.ProtectedField);
                                                             }
 
                                                         } else {
                                                             // Stealing a plant
                                                             if (targetField.value != 'empty') {
                                                                 if (destinationField.protectedValue != 'busted') {
-                                                                    const isOwnDestination = destinationPlayer.playerId == player.playerId;
+                                                                    const isOwnDestination = destinationPlayer.player.id == player.player.id;
                                                                     if (destinationField.protectedValue == 'dog' && !isOwnDestination) {
-                                                                        result.invalidReasons.push(MatchErrors.ProtectedByDog);
+                                                                        result.errors.push(MatchErrors.ProtectedByDog);
                                                                     } else {
                                                                         // replant logic
                                                                         if (destinationField.value != 'dandileon') {
@@ -246,12 +256,12 @@ export abstract class WeedMatch {
                                                                                 availableEmptyTargetFields = availableEmptyTargetFields.filter((f) => f.protectedValue != 'dog');
                                                                             }
                                                                             if (destinationField.value != 'empty' && availableEmptyTargetFields.length > 0) {
-                                                                                result.invalidReasons.push(MatchErrors.CannotUpgradePlantIfEmptyFieldAvailable);
+                                                                                result.errors.push(MatchErrors.CannotUpgradePlantIfEmptyFieldAvailable);
                                                                             } else {
                                                                                 const destinationFieldValue = getFieldValue(destinationField.value);
                                                                                 const targetFieldValue = getFieldValue(targetField.value);
                                                                                 if (targetFieldValue < destinationFieldValue) {
-                                                                                    result.invalidReasons.push(MatchErrors.CannotPlantLessValueWeed);
+                                                                                    result.errors.push(MatchErrors.CannotPlantLessValueWeed);
                                                                                 } else {
                                                                                     // APPLY weed stealer
                                                                                     applyNextMove(() => {
@@ -267,28 +277,28 @@ export abstract class WeedMatch {
                                                                                 }
                                                                             }
                                                                         } else {
-                                                                            result.invalidReasons.push(MatchErrors.CannotPlantOverDandis);
+                                                                            result.errors.push(MatchErrors.CannotPlantOverDandis);
                                                                         }
                                                                     }
                                                                 } else {
-                                                                    result.invalidReasons.push(MatchErrors.BustedField);
+                                                                    result.errors.push(MatchErrors.BustedField);
                                                                 }
                                                             } else {
-                                                                result.invalidReasons.push(MatchErrors.CannotStealEmptyFields);
+                                                                result.errors.push(MatchErrors.CannotStealEmptyFields);
                                                             }
                                                         }
                                                     } else {
-                                                        result.invalidReasons.push(MatchErrors.BustedField);
+                                                        result.errors.push(MatchErrors.BustedField);
                                                     }
                                                 } else {
-                                                    result.invalidReasons.push(MatchErrors.TargetFieldDoesNotExist);
+                                                    result.errors.push(MatchErrors.TargetFieldDoesNotExist);
                                                 }
                                             }
                                         } else {
-                                            result.invalidReasons.push(MatchErrors.NoDestinationField);
+                                            result.errors.push(MatchErrors.NoDestinationField);
                                         }
                                     } else {
-                                        result.invalidReasons.push(MatchErrors.NoDestinationField);
+                                        result.errors.push(MatchErrors.NoDestinationField);
                                     }
 
                                     break;
@@ -296,7 +306,7 @@ export abstract class WeedMatch {
                                     if (targetField) {
                                         if (targetField.protectedValue != 'busted') {
                                             if (targetField.protectedValue == 'dog' && !isOwnTarget) {
-                                                result.invalidReasons.push(MatchErrors.ProtectedByDog);
+                                                result.errors.push(MatchErrors.ProtectedByDog);
                                             } else {
                                                 if (targetField.value != 'empty' && targetField.value != 'dandileon') {
                                                     applyNextMove(() => {
@@ -306,14 +316,14 @@ export abstract class WeedMatch {
                                                         player.smokedScore += harvestValue;
                                                     });
                                                 } else {
-                                                    result.invalidReasons.push(MatchErrors.HippieNeedsToSmokeSomething);
+                                                    result.errors.push(MatchErrors.HippieNeedsToSmokeSomething);
                                                 }
                                             }
                                         } else {
-                                            result.invalidReasons.push(MatchErrors.BustedField);
+                                            result.errors.push(MatchErrors.BustedField);
                                         }
                                     } else {
-                                        result.invalidReasons.push(MatchErrors.TargetFieldDoesNotExist);
+                                        result.errors.push(MatchErrors.TargetFieldDoesNotExist);
                                     }
                                     break;
                                 case 'potzilla':
@@ -337,19 +347,19 @@ export abstract class WeedMatch {
                                     if (targetField) {
                                         if (targetField.protectedValue != 'busted') {
                                             if (targetField.protectedValue == 'dog') {
-                                                result.invalidReasons.push(MatchErrors.ProtectedByDog);
+                                                result.errors.push(MatchErrors.ProtectedByDog);
                                             } else {
                                                 // Apply
                                                 applyNextMove(() => {
                                                     targetField.protectedValue = 'busted';
-                                                    targetField.protectedValueOwnerId = player.playerId;
+                                                    targetField.protectedValueOwnerId = player.player.id;
                                                 });
                                             }
                                         } else {
-                                            result.invalidReasons.push(MatchErrors.BustedField);
+                                            result.errors.push(MatchErrors.BustedField);
                                         }
                                     } else {
-                                        result.invalidReasons.push(MatchErrors.TargetFieldDoesNotExist);
+                                        result.errors.push(MatchErrors.TargetFieldDoesNotExist);
                                     }
 
                                     break;
@@ -358,57 +368,57 @@ export abstract class WeedMatch {
                                     if (targetField) {
                                         if (targetField.protectedValue != 'busted') {
                                             if (targetField.protectedValue == 'dog') {
-                                                result.invalidReasons.push(MatchErrors.ProtectedByDog);
+                                                result.errors.push(MatchErrors.ProtectedByDog);
                                             } else {
                                                 if (targetField.value == 'empty' || targetField.value == 'dandileon') {
-                                                    result.invalidReasons.push(MatchErrors.NotIlegalField);
+                                                    result.errors.push(MatchErrors.NotIlegalField);
                                                 } else {
                                                     // Apply
                                                     applyNextMove(() => {
                                                         targetField.protectedValue = 'dog';
-                                                        targetField.protectedValueOwnerId = player.playerId;
+                                                        targetField.protectedValueOwnerId = player.player.id;
                                                     });
                                                 }
                                             }
                                         } else {
-                                            result.invalidReasons.push(MatchErrors.BustedField);
+                                            result.errors.push(MatchErrors.BustedField);
                                         }
                                     } else {
-                                        result.invalidReasons.push(MatchErrors.TargetFieldDoesNotExist);
+                                        result.errors.push(MatchErrors.TargetFieldDoesNotExist);
                                     }
                                     break;
 
                                 default:
-                                    result.invalidReasons.push(MatchErrors.InvalidCardType);
+                                    result.errors.push(MatchErrors.InvalidCardType);
                                     break;
                             }
                         } else {
-                            result.invalidReasons.push(MatchErrors.CardNotExistInPlayersHand);
+                            result.errors.push(MatchErrors.CardNotExistInPlayersHand);
                         }
                     } else {
-                        result.invalidReasons.push(MatchErrors.TargetPlayerNotInMatch);
+                        result.errors.push(MatchErrors.TargetPlayerNotInMatch);
                     }
                 } else {
-                    result.invalidReasons.push(MatchErrors.NotPlayersTurn);
+                    result.errors.push(MatchErrors.NotPlayersTurn);
                 }
             } else {
-                result.invalidReasons.push(MatchErrors.NotInMatch);
+                result.errors.push(MatchErrors.NotInMatch);
             }
         }
 
         return result;
     }
 
-    private executeDiscardCard(snapshot: MatchSnapshot, request: DiscardCardRequest): ValidationResult<MatchErrors, MatchSnapshot> {
-        const result: ValidationResult<MatchErrors, MatchSnapshot> = {
+    private executeDiscardCard(snapshot: MatchSnapshot<P>, request: DiscardCardRequest): ValidationResult<MatchErrors, MatchSnapshot<P>> {
+        const result: ValidationResult<MatchErrors, MatchSnapshot<P>> = {
             result: undefined,
-            invalidReasons: [],
+            errors: [],
         };
         const snap = Object.assign({}, snapshot);
         const isGameOver = this.isGameOver(snap);
 
         if (isGameOver) {
-            result.invalidReasons.push(MatchErrors.GameOver);
+            result.errors.push(MatchErrors.GameOver);
         } else {
             const numberOfPlayers = snap.players.length;
 
@@ -418,11 +428,11 @@ export abstract class WeedMatch {
             const nextPlayerIndex = (this.currentTurn + 1) % numberOfPlayers;
             const nextPlayer = snap.players[nextPlayerIndex];
 
-            const player = snap.players.find((p) => p.playerId == request.playerId);
+            const player = snap.players.find((p) => p.player.id == request.playerId);
 
             if (player) {
 
-                const isPlayersTurn = currentPlayer.playerId == request.playerId;
+                const isPlayersTurn = currentPlayer.player.id == request.playerId;
                 if (isPlayersTurn) {
                     const currentPlayerHand = player.hand;
                     const currentCard = currentPlayerHand.find((c) => c.type == request.cardType);
@@ -450,23 +460,23 @@ export abstract class WeedMatch {
                             result.result = snap;
 
                         } else {
-                            result.invalidReasons.push(MatchErrors.IsNotBrick)
+                            result.errors.push(MatchErrors.IsNotBrick)
                         }
                     } else {
-                        result.invalidReasons.push(MatchErrors.CardNotExistInPlayersHand);
+                        result.errors.push(MatchErrors.CardNotExistInPlayersHand);
                     }
                 } else {
-                    result.invalidReasons.push(MatchErrors.NotPlayersTurn);
+                    result.errors.push(MatchErrors.NotPlayersTurn);
                 }
 
             } else {
-                result.invalidReasons.push(MatchErrors.NotInMatch);
+                result.errors.push(MatchErrors.NotInMatch);
             }
         }
         return result;
     }
 
-    private isGameOver(snap: MatchSnapshot) {
+    private isGameOver(snap: MatchSnapshot<P>) {
         const emptyHandsPlayers = snap.players.filter((p) => p.hand.length == 0);
         const isEmptyHandsForAllPlayers = emptyHandsPlayers.length == snap.players.length;
         const isDeckEmpty = snap.deck.length == 0;
@@ -474,7 +484,7 @@ export abstract class WeedMatch {
         return isGameOver;
     }
 
-    private isCurrentPlayerBrick(snap: MatchSnapshot) {
+    private isCurrentPlayerBrick(snap: MatchSnapshot<P>) {
         const numberOfPlayers = snap.players.length;
 
         const currentPlayerIndex = this.currentTurn % numberOfPlayers;
@@ -488,8 +498,8 @@ export abstract class WeedMatch {
                     for (const destinationPlayers of snap.players) {
                         for (const destinationField of destinationPlayers.fields) {
                             const validationResult = this.executePlayCard(snap, {
-                                playerId: currentPlayer.playerId,
-                                targetPlayerId: targetPlayer.playerId,
+                                playerId: currentPlayer.player.id,
+                                targetPlayerId: targetPlayer.player.id,
                                 tagetPlayerFieldId: targetPlayerField.id,
                                 cardType: card.type,
                                 destinationPlayerFieldId: destinationField.id,

@@ -7,7 +7,7 @@ import passport from 'passport';
 import { getGoogleStrategy } from './auth/GoogleAuth';
 import { authSocketPolicy } from './auth/socketPolicy';
 import { connectToMongo } from './db/dataBase';
-import { handleSocketIOConnections } from './game/connectionHandler';
+import { GameManager } from './game/GameManager';
 
 const port: number = parseInt(process.env.PORT || '3000', 10);
 const dev: boolean = process.env.NODE_ENV !== 'production';
@@ -18,6 +18,7 @@ nextApp.prepare().then(async () => {
     const app: Express = express();
     const server: http.Server = http.createServer(app);
     const io: socketio.Server = new socketio.Server();
+    const gameManager: GameManager = new GameManager(io);
 
     connectToMongo();
 
@@ -29,7 +30,7 @@ nextApp.prepare().then(async () => {
     io.attach(server);
     io.use(authSocketPolicy);
 
-    handleSocketIOConnections(io);
+    gameManager.handleConnections();
 
     app.all('*', (req: any, res: any) => nextHandler(req, res));
 

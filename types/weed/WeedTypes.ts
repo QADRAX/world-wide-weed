@@ -1,3 +1,5 @@
+import { Player } from "types/Player";
+
 export type ActionableCardType = 'weedkiller'
     | 'monzon'
     | 'stealer'
@@ -22,7 +24,7 @@ export type CardType = HarvestableCardType
 export type FieldValue = EmptyCardType
     | HarvestableCardType;
 
-export type ProtectedFieldValue = EmptyCardType 
+export type ProtectedFieldValue = EmptyCardType
     | ProtectableCardType;
 
 export type WeedCard = {
@@ -38,17 +40,42 @@ export type Field = {
     protectedValueOwnerId?: string;
 }
 
-export type MatchPlayer = {
+export type MatchPlayer<P> = {
     hand: WeedCard[];
     fields: Field[];
-    playerId: string;
+    player: P;
     smokedScore: number;
 }
 
-export type MatchSnapshot = {
-    players: MatchPlayer[];
+export type MatchSnapshot<P extends Player> = {
+    players: MatchPlayer<P>[];
     deck: WeedCard[];
     discards: WeedCard[];
+}
+
+export type ClientSideMatchPlayerSnapShot<P> = {
+    fields: Field[];
+    player: P;
+    smokedScore: number;
+}
+
+export type ClientSideMatchSnapShot<P> = {
+    players: ClientSideMatchPlayerSnapShot<P>[];
+    discards: WeedCard[];
+    deckSize: number;
+}
+
+export type CardRequest = PlayCardRequest | DiscardCardRequest;
+
+export function isPlayCardRequest(
+    request: CardRequest
+): request is PlayCardRequest {
+    const r = request as any
+    if (r.targetPlayerId) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 export type PlayCardRequest = {

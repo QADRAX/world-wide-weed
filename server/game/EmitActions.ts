@@ -1,4 +1,4 @@
-import { ResponseChatMessagePayload, SendChatMessagePayload, SOCKET_ACTIONS } from "../../types/SocketActions";
+import { ResponseChatMessagePayload, SendChatMessagePayload, SOCKET_ACTIONS } from "../../types/SocketMessages";
 import * as socketio from 'socket.io';
 import { DBUser, toWeedPlayer } from "../db/model/User";
 import { AppConnectionHub } from "./GameState";

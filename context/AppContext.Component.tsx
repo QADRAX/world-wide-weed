@@ -1,10 +1,10 @@
 import React, { FunctionComponent, useContext, useEffect, useState } from "react";
-import { WeedPlayer } from "types/WeedPlayer";
+import { WeedPlayer } from "types/Player";
 import { AppContext, SocketActions } from "./AppContext";
 import { useRouter } from "next/router";
 import { deleteCookie } from "cookies-next";
 import { SocketContext } from "./SocketContext";
-import { ResponseChatMessagePayload, SendChatMessagePayload, SOCKET_ACTIONS } from "types/SocketActions";
+import { ResponseChatMessagePayload, SendChatMessagePayload, SOCKET_ACTIONS } from "types/SocketMessages";
 import { useAppDispatch } from "hooks/redux";
 import { addMessage, setPlayers } from "redux/chatRoom/chatRoomSlice";
 
