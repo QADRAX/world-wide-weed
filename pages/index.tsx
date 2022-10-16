@@ -1,105 +1,35 @@
-import { Box, Container, Divider, IconButton, Link, Stack, Typography } from "@mui/material";
-import styled from "@emotion/styled";
-import { motion } from "framer-motion";
-import { Logo } from "components/shared/Logo";
-import GoogleIcon from '@mui/icons-material/Google';
+import { LoadingContainer } from "components/LoadingContainer";
+import { Login } from "components/Login";
+import { WeedMainScreen } from "components/WeedMainScreen";
+import { GlobalContextComponent } from "context/GlobalContext.component";
 import { GetServerSideProps } from "next";
-import { getCookie } from "cookies-next";
-
-const RootStyle = styled("div")({
-  background: "rgb(228 249 239)",
-  height: "100vh",
-  display: "grid",
-  placeItems: "center",
-});
-
-const HeadingStyle = styled(Box)({
-  textAlign: "center",
-});
-
-const ContentStyle = styled("div")({
-  maxWidth: 480,
-  padding: 25,
-  margin: "auto",
-  display: "flex",
-  justifyContent: "center",
-  flexDirection: "column",
-  background: "#fff",
-});
-
-let easing = [0.6, -0.05, 0.01, 0.99];
-const fadeInUp = {
-  initial: {
-    y: 60,
-    opacity: 0,
-    transition: { duration: 0.6, ease: easing },
-  },
-  animate: {
-    y: 0,
-    opacity: 1,
-    transition: {
-      duration: 0.6,
-      ease: easing,
-    },
-  },
-};
+import { Session } from "next-auth";
+import { getSession, useSession } from "next-auth/react";
 
 export default function Home() {
-  return (
-    <RootStyle>
-      <Container maxWidth="sm">
-        <ContentStyle>
-          <HeadingStyle component={motion.div} {...fadeInUp}>
-            <Logo />
-            <Typography variant="h5" sx={{ color: "text.secondary", mb: 5 }}>
-              Welcome to World Wide Weed!
-            </Typography>
+  const { data: session, status } = useSession()
+  const loading = status === 'loading';
 
-          </HeadingStyle>
+  if (loading) {
+    return <LoadingContainer />;
 
-          <Divider sx={{ mb: 3 }} component={motion.div} {...fadeInUp}>
-            <Typography variant="body2" sx={{ color: "text.secondary" }}>
-              LOGIN
-            </Typography>
-          </Divider>
-
-          <Box component={motion.div} {...fadeInUp}>
-            <Stack direction="row" spacing={2}>
-              <IconButton
-                component={Link}
-                sx={{
-                  border: "2px solid #ccc",
-                  borderRadius: "5px",
-                  padding: "0.5675rem",
-                  flex: 1,
-                }}
-                color="primary"
-                href="/api/google"
-              >
-                <GoogleIcon />
-              </IconButton>
-            </Stack >
-          </Box>
-        </ContentStyle>
-      </Container>
-    </RootStyle>
-  );
+  } else if (session != null) {
+    return (
+      <GlobalContextComponent>
+        <WeedMainScreen />
+      </GlobalContextComponent>
+    );
+  } else {
+    return <Login />
+  }
 }
 
-
-export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-  // check cookie
-  const token = getCookie("token", { req, res })?.toString();
-  if (token) {
-    return {
-      redirect: {
-        statusCode: 302,
-        destination: "/game",
-      },
-    };
-  } else {
-    return {
-      props: {}
-    };
+export const getServerSideProps: GetServerSideProps<{
+  session: Session | null
+}> = async (context) => {
+  return {
+    props: {
+      session: await getSession(context),
+    },
   }
 }

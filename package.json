@@ -1,7 +1,7 @@
 {
   "private": true,
   "scripts": {
-    "dev": "nodemon",
+    "dev": "next dev",
     "build": "next build && tsc --project tsconfig.server.json",
     "start": "cross-env NODE_ENV=production node dist/index.js"
   },
@@ -21,6 +21,7 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.6.5",
     "next": "latest",
+    "next-auth": "^4.14.0",
     "next-redux-wrapper": "^8.0.0",
     "passport": "^0.6.0",
     "passport-google-oauth2": "^0.2.0",

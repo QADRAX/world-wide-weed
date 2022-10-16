@@ -9,12 +9,13 @@ import Container from '@mui/material/Container';
 import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import { useAppContext } from 'hooks/globalContext';
+import { signOut, useSession } from 'next-auth/react';
 
 const settings = ['Logout'];
 
 export const Header = () => {
-    const appContext = useAppContext();
+    const { data: session } = useSession();
+
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
     const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -24,7 +25,7 @@ export const Header = () => {
     const handleCloseUserMenu = (setting?: string) => {
         switch(setting) {
             case 'Logout':
-                appContext.logOut();
+                signOut();
                 break;
             default:
                 break;
@@ -57,7 +58,7 @@ export const Header = () => {
                     <Box sx={{ flexGrow: 0 }}>
                         <Tooltip title="User settings">
                             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                <Avatar alt={appContext.player?.email} src={appContext.player?.avatarUrl} />
+                                <Avatar alt={session?.user.name ?? ''} src={session?.user.image ?? ''} />
                             </IconButton>
                         </Tooltip>
                         <Menu
