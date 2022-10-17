@@ -1,64 +1,34 @@
 import NextAuth, { NextAuthOptions } from "next-auth"
 import GoogleProvider from 'next-auth/providers/google';
-import { getAppConfig } from "server/AppConfig";
-import { connectToMongo } from "server/db/dataBase";
-import User from "server/db/model/User";
-import { Log } from "server/utils/console";
-import { v4 as uuidv4 } from 'uuid';
+import { FirestoreAdapter } from "@next-auth/firebase-adapter";
 
-export const getAuthOptions = () => {
-    const config = getAppConfig();
-    const options: NextAuthOptions = {
-        providers: [
-            GoogleProvider({
-                clientId: config.GOOGLE_CLIENT_ID,
-                clientSecret: config.GOOGLE_CLIENT_SECRET,
-            }),
-        ],
-        session: {
-            strategy: 'jwt',
+export const authOptions: NextAuthOptions = {
+    providers: [
+        GoogleProvider({
+            clientId: process.env.GOOGLE_CLIENT_ID,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        }),
+    ],
+    session: {
+        strategy: 'jwt',
+    },
+    pages: {
+        signIn: '/',
+        error: '/',
+    },
+    adapter: FirestoreAdapter({
+        apiKey: process.env.FIREBASE_API_KEY,
+        appId: process.env.FIREBASE_APP_ID,
+        authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+        databaseURL: process.env.FIREBASE_DATABASE_URL,
+        projectId: process.env.FIREBASE_PROJECT_ID,
+        storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+        messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+    }),
+    callbacks: {
+        session({ session }) {
+            return session;
         },
-        callbacks: {
-            session({ session }) {
-                return session;
-            },
-            signIn: async ({ profile }) => {
-                try {
-                    await connectToMongo();
-                    const userEmail = profile?.email;
-                    const userName = profile?.name;
-                    if (userEmail && userName) {
-                        const existingUser = await User.findOne({ email: profile.email });
-                        if (!existingUser) {
-                            // create new user
-                            const newUser = new User({
-                                id: uuidv4(),
-                                email: userEmail,
-                                name: userName,
-                                isAdmin: false,
-                                avatarUrl: profile.image,
-                            });
-                            await newUser.save();
-                            Log(`Auth successful for NEW User ${profile.email}`);
-                            return true;
-                        } else {
-                            existingUser.avatarUrl = profile.image;
-                            await existingUser.save();
-                            Log(`Auth successful for existing user ${profile.email}`);
-                            return true;
-                        }
-                    } else {
-                        return false;
-                    }
-
-                } catch (err) {
-                    console.error(err);
-                    return false;
-                }
-            },
-        }
     }
-    return options;
-}
-
-export default NextAuth(getAuthOptions())
+};
+export default NextAuth(authOptions)

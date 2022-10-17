@@ -1,23 +1,39 @@
-import { useAppContext } from 'hooks/globalContext';
+import { IconButton } from '@mui/material';
+import { useSession } from 'next-auth/react';
 import React from 'react';
-import { ChatBox } from './chatbox/ChatBox';
-
-
+import SendIcon from '@mui/icons-material/Send';
 
 export const WelcomePage = () => {
-    const appContext = useAppContext()
+    const { data: session } = useSession();
+
+    const onClick = async () => {
+        await fetch('/api/game/createGame', { method: 'POST'});
+    }
+
+    const onClick2 = async () => {
+        
+    }
 
     return (
         <>
             <header>
                 <title>World wide weed!!</title>
             </header>
-            <div>Welcome {appContext.player?.name}!</div>
-            <div>{appContext.player?.email}</div>
-            <div style={{ height: '400px' }}>
-                <ChatBox />
-            </div>
+            <div>Welcome {session?.user.name}!</div>
+            <div>{session?.user.email}</div>
+            <IconButton color="primary"
+                sx={{ p: '10px' }}
+                aria-label="Send Message"
+                onClick={onClick}>
+                API CALL <SendIcon />
+            </IconButton>
 
+            <IconButton color="primary"
+                sx={{ p: '10px' }}
+                aria-label="Send Message"
+                onClick={onClick2}>
+                FIRABASE ? <SendIcon />
+            </IconButton>
         </>
     )
 }

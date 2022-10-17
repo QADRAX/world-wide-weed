@@ -1,7 +1,4 @@
-import { useAppContext } from 'hooks/globalContext';
 import React from 'react';
-import { LoadingContainer } from './LoadingContainer';
-import { ConnectionErrorContainer } from './ConnectionErrorContainer';
 import { WelcomePage } from './WelcomePage';
 import { Header } from './Header/Header';
 import { Paper } from '@mui/material';
@@ -25,19 +22,11 @@ const MainContainer = styled(Paper)({
 
 
 export const WeedMainScreen = () => {
-    const appContext = useAppContext()
-
     return (
         <RootContainer>
             <Header />
             <MainContainer>
-                {
-                    appContext.isLoadingConnection
-                        ? <LoadingContainer />
-                        : appContext.isConnectionError
-                            ? <ConnectionErrorContainer />
-                            : <WelcomePage />
-                }
+                <WelcomePage />
             </MainContainer>
         </RootContainer>
     )
