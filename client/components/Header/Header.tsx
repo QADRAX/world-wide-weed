@@ -11,7 +11,6 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import { firebaseClient } from '../../firebaseClient';
 import { useAuth } from '../../hooks/useAuth';
-import { DEFAULT_USER_AVATAR } from '../../../shared/constants';
 
 const settings = ['Logout'];
 
@@ -60,7 +59,7 @@ export const Header = () => {
                     <Box sx={{ flexGrow: 0 }}>
                         <Tooltip title="User settings">
                             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                <Avatar alt={user?.displayName ?? ''} src={user?.photoURL ?? DEFAULT_USER_AVATAR} />
+                                <Avatar alt={user?.displayName ?? ''} src={user?.photoURL ?? ''} />
                             </IconButton>
                         </Tooltip>
                         <Menu

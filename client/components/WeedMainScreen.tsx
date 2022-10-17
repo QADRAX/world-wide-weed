@@ -2,6 +2,8 @@ import React, { FunctionComponent } from 'react';
 import { Header } from './Header/Header';
 import { Paper } from '@mui/material';
 import styled from "@emotion/styled";
+import { useAuth } from '../hooks/useAuth';
+import { LoaderContainer } from './LoaderContainer';
 
 const RootContainer = styled("div")({
     display: 'flex',
@@ -19,12 +21,18 @@ const MainContainer = styled(Paper)({
     overflow: 'auto',
 });
 
-export const WeedMainScreen: FunctionComponent = (props) => {
+type WeedMainScreenProps = {
+    children: React.ReactNode;
+}
+
+export const WeedMainScreen: FunctionComponent<WeedMainScreenProps> = (props) => {
+    const { user } = useAuth();
+    
     return (
         <RootContainer>
             <Header />
             <MainContainer>
-                {props.children}
+                {user != null ? props.children : <LoaderContainer />}
             </MainContainer>
         </RootContainer>
     )
