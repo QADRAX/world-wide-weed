@@ -2,8 +2,8 @@ import { Button, Container } from "@mui/material";
 import React, { FunctionComponent } from "react";
 import { OngoingMatchCard } from "../components/OngoingMatchCard";
 import { firebaseClient } from "../firebaseClient";
-import { useOngoingMatches } from "../hooks/getters/getOngoingMatches";
 import { useInitApp } from "../hooks/useInitApp";
+import { useOngoingMatches } from "../redux/currentMatches/getters";
 
 export const MainView: FunctionComponent = () => {
     useInitApp();
