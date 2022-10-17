@@ -1,5 +1,6 @@
 import { NextApiRequest } from "next";
 import nookies from "nookies";
+import { DEFAULT_USER_AVATAR } from "../shared/constants";
 import { WeedPlayer } from "../types/Player";
 import { firebaseAdmin } from "./firebaseAdmin";
 
@@ -16,11 +17,13 @@ export async function getPlayerFromRequest(
 
         const isAdmin = (user.customClaims && user.customClaims['admin'] == true) ?? false;
 
+        const userEmail = user.email!;
+
         result = {
             id: user.uid,
-            name: user.displayName!,
-            email: user.email!,
-            avatarUrl: user.photoURL,
+            name: user.displayName ?? userEmail,
+            email: userEmail,
+            avatarUrl: user.photoURL ?? DEFAULT_USER_AVATAR,
             isAdmin: isAdmin,
         };
     } catch(error) {

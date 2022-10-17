@@ -4,6 +4,7 @@ import { Box, Container, Divider, IconButton, Stack, Typography } from "@mui/mat
 import styled from "@emotion/styled";
 import { motion } from "framer-motion";
 import GoogleIcon from '@mui/icons-material/Google';
+import { LoginForm } from '../client/components/LoginForm';
 
 const RootStyle = styled("div")({
   background: "rgb(228 249 239)",
@@ -55,12 +56,18 @@ const Login = () => {
         <ContentStyle>
           <HeadingStyle component={motion.div} {...fadeInUp}>
             <Typography variant="h5" sx={{ color: "text.secondary", mb: 5 }}>
-              Login at World Wide Weed!
+              Welcome at World Wide Weed!
             </Typography>
-
           </HeadingStyle>
 
+          <Typography variant="h6" sx={{ color: "text.secondary", mb: 5 }}>
+            Login to your account
+          </Typography>
+
+          <LoginForm />
+
           <Divider sx={{ mb: 3 }} component={motion.div} {...fadeInUp}>
+            OR
           </Divider>
 
           <Box component={motion.div} {...fadeInUp}>
