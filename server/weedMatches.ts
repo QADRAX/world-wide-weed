@@ -1,13 +1,16 @@
 import { WeedPlayer } from "../types/Player";
-import { OngoingWeedMatch, WeedMatch } from "../types/weed/WeedTypes";
+import { MatchesDict, OngoingWeedMatch, WeedMatch } from "../types/weed/WeedTypes";
 import { firebaseAdmin } from "./firebaseAdmin";
 import { v4 } from 'uuid';
 
-export async function createWeedMatch(
-    player: WeedPlayer
-): Promise<string> {
+export async function createMatch(
+    player: WeedPlayer,
+    matchName: string,
+): Promise<OngoingWeedMatch> {
     const matchId = v4();
     const newMatch: WeedMatch = {
+        id: matchId,
+        name: matchName,
         players: [player],
         publicMatchSnapshots: [],
         privateMatchSnapshots: [],
@@ -19,13 +22,30 @@ export async function createWeedMatch(
     const database = firebaseAdmin.database();
     await database.ref(`matches/${matchId}`).set(newMatch);
 
-    const currentMatch: OngoingWeedMatch = {
+    const ongoingMatch: OngoingWeedMatch = {
         id: matchId,
+        name: matchName,
         creator: player,
-        players: [player],
+        onGoingPlayer: [{
+            player: player,
+            isReady: false,
+        }],
         isStarted: false,
     };
-    await database.ref(`ongoingMatches/${matchId}`).set(currentMatch);
+    await database.ref(`ongoingMatches/${matchId}`).set(ongoingMatch);
 
-    return matchId;
+    return ongoingMatch;
+}
+
+export async function getPlayerMatch(
+    player: WeedPlayer
+): Promise<OngoingWeedMatch | undefined> {
+    const database = firebaseAdmin.database();
+    const matchesRef = database.ref('/ongoingMatches');
+    const snap = await matchesRef.once('value');
+    const ongoingMatchesDict = snap.val() as MatchesDict | undefined;
+    const ongoingMatches = Object.values(ongoingMatchesDict ?? {});
+    const playerMatch = ongoingMatches
+        .find((m) => m.onGoingPlayer.find(((p) => p.player.id == player.id)) != null);
+    return playerMatch;
 }

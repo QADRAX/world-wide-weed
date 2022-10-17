@@ -81,6 +81,8 @@ export type ProtectedMatchSnapshot = {
 // MATCH
 
 export type WeedMatch = {
+    id: string;
+    name: string;
     /** Current players in the match (anybody could read this) */
     players: WeedPlayer[];
     /** Server side info. (only server side could read) */
@@ -95,10 +97,19 @@ export type WeedMatch = {
 
 export type OngoingWeedMatch = {
     id: string;
-    players: WeedPlayer[];
+    name: string;
+    onGoingPlayer: {
+        player: WeedPlayer;
+        isReady: boolean;
+    }[],
     creator: WeedPlayer;
     isStarted: boolean;
 }
+
+export interface MatchesDict {
+    [matchId: string]: OngoingWeedMatch,
+};
+
 
 // PLAY CARD REQUEST
 

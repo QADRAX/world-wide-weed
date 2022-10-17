@@ -11,8 +11,8 @@ export const OngoingMatchCard: FunctionComponent<OngoingMatchCardProps> = (props
     const { user } = useAuth();
 
     const isCreator = user?.uid == props.match.creator.id;
-    const isInGame = props.match.players.find((p) => p.id == user?.uid) != null;
-    const isDisabled = isCreator || props.match.players.length >= 8;
+    const isInGame = props.match.onGoingPlayer.find((p) => p.player.id == user?.uid) != null;
+    const isDisabled = isCreator || props.match.onGoingPlayer.length >= 8;
 
     return (
         <Paper>
@@ -21,7 +21,7 @@ export const OngoingMatchCard: FunctionComponent<OngoingMatchCardProps> = (props
                     ? <Button> Play </Button>
                     : <Button disabled={isDisabled}> JOIN </Button>
             }
-            {props.match.id}
+            {props.match.name}
         </Paper>
     );
-}
+} 

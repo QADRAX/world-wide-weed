@@ -38,7 +38,7 @@ export const MainView: FunctionComponent = () => {
             </Button>
 
             <Button onClick={getMatches}>
-                Get matches
+                test button
             </Button>
         </Container>
     );

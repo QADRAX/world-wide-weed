@@ -1,12 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { OngoingWeedMatch } from "../../../types/weed/WeedTypes";
+import { MatchesDict, OngoingWeedMatch } from "../../../types/weed/WeedTypes";
 
 export interface OngoingMatchesState {
     matches: MatchesDict,
-};
-
-export interface MatchesDict {
-    [matchId: string]: OngoingWeedMatch,
 };
 
 export const initialState: OngoingMatchesState = {
