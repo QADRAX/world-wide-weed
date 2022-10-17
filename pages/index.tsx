@@ -1,35 +1,33 @@
-import { LoadingContainer } from "components/LoadingContainer";
-import { Login } from "components/Login";
-import { WeedMainScreen } from "components/WeedMainScreen";
-import { GlobalContextComponent } from "context/GlobalContext.component";
-import { GetServerSideProps } from "next";
-import { Session } from "next-auth";
-import { getSession, useSession } from "next-auth/react";
+import React from 'react';
+import { GetServerSidePropsContext } from 'next';
+import nookies from "nookies";
+import { firebaseAdmin } from '../server/firebaseAdmin';
+import { WeedMainScreen } from '../client/components/WeedMainScreen';
+import { MainView } from '../client/views/MainView';
 
-export default function Home() {
-  const { data: session, status } = useSession()
-  const loading = status === 'loading';
+export default () => {
+  return (
+    <WeedMainScreen>
+      <MainView />
+    </WeedMainScreen>
+  );
+};
 
-  if (loading) {
-    return <LoadingContainer />;
-
-  } else if (session != null) {
-    return (
-      <GlobalContextComponent>
-        <WeedMainScreen />
-      </GlobalContextComponent>
-    );
-  } else {
-    return <Login />
+export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  try {
+    const cookies = nookies.get(ctx);
+    await firebaseAdmin.auth().verifyIdToken(cookies.token);
+    // the user is authenticated!
+    return {
+      props: {},
+    };
+  } catch (err) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/login",
+      },
+      props: {} as never,
+    };
   }
-}
-
-export const getServerSideProps: GetServerSideProps<{
-  session: Session | null
-}> = async (context) => {
-  return {
-    props: {
-      session: await getSession(context),
-    },
-  }
-}
+};
