@@ -1,0 +1,5 @@
+{
+    "watch": ["matchMaker"],
+    "exec": "ts-node --project tsconfig.matchMaker.json matchMaker/index.ts",
+    "ext": "js ts"
+  }
