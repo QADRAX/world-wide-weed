@@ -1,33 +1,34 @@
 import React from 'react';
 import { GetServerSidePropsContext } from 'next';
-import nookies from "nookies";
-import { firebaseAdmin } from '../server/firebaseAdmin';
 import { WeedMainScreen } from '../client/components/WeedMainScreen';
 import { MainView } from '../client/views/MainView';
+import { UserInfo } from '../types/UserInfo';
+import { getUserFromPropsContext } from '../server/authentication';
 
-export default () => {
+type IndexProps = {
+  userInfo: UserInfo;
+}
+
+export default (props: IndexProps) => {
   return (
-    <WeedMainScreen>
-      <MainView />
-    </WeedMainScreen>
+      <WeedMainScreen userInfo={props.userInfo}>
+        <MainView />
+      </WeedMainScreen>
   );
 };
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  try {
-    const cookies = nookies.get(ctx);
-    await firebaseAdmin.auth().verifyIdToken(cookies.token);
-    // the user is authenticated!
+  const userInfo = await getUserFromPropsContext(ctx);
+  if (userInfo) {
     return {
-      props: {},
-    };
-  } catch (err) {
-    return {
-      redirect: {
-        permanent: false,
-        destination: "/login",
-      },
-      props: {} as never,
+      props: { userInfo },
     };
   }
-};
+  return {
+    redirect: {
+      permanent: false,
+      destination: "/login",
+    },
+    props: {} as never,
+  };
+}

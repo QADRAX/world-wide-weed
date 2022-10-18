@@ -38,7 +38,7 @@ export async function createMatch(
 }
 
 export async function getPlayerMatch(
-    player: WeedPlayer
+    playerId: string
 ): Promise<OngoingWeedMatch | undefined> {
     const database = firebaseAdmin.database();
     const matchesRef = database.ref('/ongoingMatches');
@@ -46,6 +46,6 @@ export async function getPlayerMatch(
     const ongoingMatchesDict = snap.val() as MatchesDict | undefined;
     const ongoingMatches = Object.values(ongoingMatchesDict ?? {});
     const playerMatch = ongoingMatches
-        .find((m) => m.onGoingPlayer.find(((p) => p.player.id == player.id)) != null);
+        .find((m) => m.onGoingPlayer.find(((p) => p.player.id == playerId)) != null);
     return playerMatch;
 }

@@ -10,12 +10,12 @@ import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import { firebaseClient } from '../../firebaseClient';
-import { useAuth } from '../../hooks/useAuth';
+import { useAuthenticatedUser } from '../../hooks/useAuth';
 
 const settings = ['Logout'];
 
 export const Header = () => {
-    const { user } = useAuth();
+    const { user } = useAuthenticatedUser();
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
     const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -59,7 +59,7 @@ export const Header = () => {
                     <Box sx={{ flexGrow: 0 }}>
                         <Tooltip title="User settings">
                             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                <Avatar alt={user?.displayName ?? ''} src={user?.photoURL ?? ''} />
+                                <Avatar alt={user.displayName} src={user.avatarUrl} />
                             </IconButton>
                         </Tooltip>
                         <Menu

@@ -1,9 +1,10 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useEffect } from 'react';
 import { Header } from './Header/Header';
 import { Paper } from '@mui/material';
 import styled from "@emotion/styled";
 import { useAuth } from '../hooks/useAuth';
 import { LoaderContainer } from './LoaderContainer';
+import { UserInfo } from '../../types/UserInfo';
 
 const RootContainer = styled("div")({
     display: 'flex',
@@ -23,16 +24,20 @@ const MainContainer = styled(Paper)({
 
 type WeedMainScreenProps = {
     children: React.ReactNode;
+    userInfo: UserInfo;
 }
 
 export const WeedMainScreen: FunctionComponent<WeedMainScreenProps> = (props) => {
-    const { user } = useAuth();
-    
+    const { setUser, user } = useAuth();
+    useEffect(() => setUser(props.userInfo), []);
+    if(user == null) {
+        return <LoaderContainer />;
+    }
     return (
         <RootContainer>
             <Header />
             <MainContainer>
-                {user != null ? props.children : <LoaderContainer />}
+                {props.children}
             </MainContainer>
         </RootContainer>
     )
