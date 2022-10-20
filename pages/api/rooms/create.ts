@@ -1,5 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getUserInfoFromRequest } from '../../../server/authentication';
+import { GameController } from '../../../server/GameController';
+import { Log } from '../../../utils/Log';
 
 export type CreateRoomRequest = {
     roomName: string;
@@ -20,17 +22,20 @@ export default async (req: ExtendedNextApiRequest, res: NextApiResponse) => {
             }
 
             if (!player) {
-                res.status(401).json({ message: "You must be logged in." });
-                return;
+                return res.status(401).json({ message: "You must be logged in." });
             }
 
             if (player.userRoles.includes('roomAdmin')) {
-                //const matchId = await createRoom(createMatchRequest.roomName);
-                console.log('New match was created');
+                const controller = new GameController(player);
+                const roomResult = await controller.createRoom(createMatchRequest);
 
-                return res.status(200).json({
-                    matchId,
-                });
+                if(roomResult.errors.length > 0) {
+                    Log(`Controlled error(s) happened during room creation: ${roomResult.errors.join()}`, 'warning');
+                    return res.status(400).json(roomResult.errors);
+                } else {
+                    Log('Room was created', 'app');
+                    return res.status(200);
+                }
             } else {
                 return res.status(403).json({ message: "You are not a room admin" });
             }

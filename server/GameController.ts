@@ -1,5 +1,5 @@
 import { CreateRoomRequest } from "../pages/api/rooms/create";
-import { JoinMatchRequest as JoinRoomRequest } from "../pages/api/rooms/join";
+import { JoinRoomRequest as JoinRoomRequest } from "../pages/api/rooms/join";
 import { MIN_PLAYERS_IN_MATCH } from "../shared/constants";
 import { UserInfo } from "../types/UserInfo";
 import { ValidationResult } from "../types/ValidationResult";
@@ -45,11 +45,11 @@ export class GameController implements IGameController {
         if (currentRoom) {
             result.errors.push('PlayerAlreadyInRoom');
         } else {
-            const targetRoom = await RoomRepository.getWeedRoom(request.matchId);
+            const targetRoom = await RoomRepository.getWeedRoom(request.roomId);
             if (!targetRoom) {
                 result.errors.push('RoomNotExists');
             } else {
-                await RoomRepository.joinToRoom(this.userInfo, request.matchId);
+                await RoomRepository.joinToRoom(this.userInfo, request.roomId);
                 result.result = targetRoom;
             }
         }
