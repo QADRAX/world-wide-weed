@@ -1,10 +1,10 @@
 import { Button, Paper } from "@mui/material";
 import React, { FunctionComponent } from "react";
-import { OngoingWeedMatch } from "../../types/weed/WeedTypes";
+import { WeedRoom } from "../../types/weed/WeedTypes";
 import { useAuthenticatedUser } from "../hooks/useAuth";
 
 type OngoingMatchCardProps = {
-    match: OngoingWeedMatch;
+    match: WeedRoom;
 }
 
 export const OngoingMatchCard: FunctionComponent<OngoingMatchCardProps> = (props) => {

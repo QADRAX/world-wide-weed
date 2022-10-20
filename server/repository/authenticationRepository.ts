@@ -1,8 +1,8 @@
 import { GetServerSidePropsContext, NextApiRequest } from "next";
 import nookies from "nookies";
-import { DEFAULT_USER_AVATAR } from "../shared/constants";
-import { UserInfo } from "../types/UserInfo";
-import { firebaseAdmin } from "./firebaseAdmin";
+import { DEFAULT_USER_AVATAR } from "../../shared/constants";
+import { UserInfo } from "../../types/UserInfo";
+import { firebaseAdmin } from "../firebaseAdmin";
 
 export async function getUserFromPropsContext(
     ctx: GetServerSidePropsContext
@@ -50,7 +50,10 @@ async function getOrCreateUserInfo(user: firebaseAdmin.auth.UserRecord): Promise
             name: user.displayName ?? userEmail,
             email: userEmail,
             avatarUrl: user.photoURL ?? DEFAULT_USER_AVATAR,
-            userRoles: [],
+            userRoles: [
+                'playWeed',
+                'chat',
+            ],
             stats: {
                 totalMatches: 0,
                 totalSmokedPoints: 0,

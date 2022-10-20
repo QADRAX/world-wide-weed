@@ -1,9 +1,36 @@
-export type UserRole = 'admin' | 'matchAdmin';
+import { WeedMatch } from "./weed/WeedTypes";
+
+export type UserRole = 
+    /**
+     * Role to administrate users and roles
+     */
+    |'admin'
+    /**
+     * Role to create and destroy rooms
+     */
+    | 'roomAdmin'
+    /**
+     * Role to write in chats
+     */
+    | 'chat'
+    /**
+     * Role to play games
+     */
+    | 'playWeed'
 
 export type WeedStats = {
     totalMatches: number;
     totalWins: number;
     totalSmokedPoints: number;
+}
+
+export type UserMatchInfo = {
+    date: number;
+    match: WeedMatch;
+}
+
+export type UserMatchesInfo = {
+    matches: UserMatchInfo[];
 }
 
 export type UserInfo = {

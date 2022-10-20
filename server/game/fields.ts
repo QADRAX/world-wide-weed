@@ -1,7 +1,6 @@
-import { DEFAULT_FIELDS, INCREASED_FIELDS_PLAYER_LIMIT, REDUCED_FIELDS_PLAYER_LIMIT } from "../GameConstants";
 import { v4 as uuidv4 } from 'uuid';
-import { Field } from "server/types/weed/WeedTypes";
-import { FieldValue } from "server/types/weed/WeedTypes";
+import { DEFAULT_FIELDS, INCREASED_FIELDS_PLAYER_LIMIT, REDUCED_FIELDS_PLAYER_LIMIT } from '../../shared/constants';
+import { Field, FieldValue } from "../../types/weed/WeedTypes";
 
 export const getMaxFields = (playerCount: number) => {
     let result = DEFAULT_FIELDS;

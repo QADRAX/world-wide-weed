@@ -1,9 +1,9 @@
-import { MatchesDict } from "../../../types/weed/WeedTypes";
+import { WeedRoomsDict } from "../../../types/weed/WeedTypes";
 import { useAppSelector } from "../../hooks/redux";
 import { useAuthenticatedUser } from "../../hooks/useAuth";
 
 export const useOngoingMatches = () => {
-    const ongoingMatchesDict: MatchesDict = useAppSelector((state) => state.ongoingMatches.matches);
+    const ongoingMatchesDict: WeedRoomsDict = useAppSelector((state) => state.ongoingMatches.matches);
     const matches = Object.values(ongoingMatchesDict ?? {});
 
     return matches;

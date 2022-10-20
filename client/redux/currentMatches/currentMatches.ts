@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { MatchesDict, OngoingWeedMatch } from "../../../types/weed/WeedTypes";
+import { WeedRoomsDict, WeedRoom } from "../../../types/weed/WeedTypes";
 
 export interface OngoingMatchesState {
-    matches: MatchesDict,
+    matches: WeedRoomsDict,
 };
 
 export const initialState: OngoingMatchesState = {
@@ -10,7 +10,7 @@ export const initialState: OngoingMatchesState = {
 };
 
 export type OngoingMatchActionPayload = {
-    match: OngoingWeedMatch,
+    match: WeedRoom,
     matchId: string,
 };
 
@@ -18,7 +18,7 @@ export const ongoingMatchesSlice = createSlice({
     name: 'ongoingMatches',
     initialState,
     reducers: {
-        setOngoingMatches: (state, action: PayloadAction<MatchesDict>) => {
+        setOngoingMatches: (state, action: PayloadAction<WeedRoomsDict>) => {
             state.matches = action.payload;
         },
         addUpdateOngoingMatch: (state, action: PayloadAction<OngoingMatchActionPayload>) => {

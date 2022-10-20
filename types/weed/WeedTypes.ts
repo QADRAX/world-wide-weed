@@ -78,11 +78,14 @@ export type ProtectedMatchSnapshot = {
     hand: WeedCard[];
 }
 
+export type ProtectedMatchSnapshotDict = {
+    [playerId: string]: ProtectedMatchSnapshot[];
+}
+
 // MATCH
 
 export type WeedMatch = {
     id: string;
-    name: string;
     /** Current players in the match (anybody could read this) */
     players: WeedPlayer[];
     /** Server side info. (only server side could read) */
@@ -90,24 +93,24 @@ export type WeedMatch = {
     /** Public match info. (anybody could read) */
     publicMatchSnapshots: PublicMatchSnapshot[];
     /** Protected match info. (only match users could read) */
-    protectedMatchSnapshots: {
-        [playerId: string]: ProtectedMatchSnapshot[];
-    };
+    protectedMatchSnapshots: ProtectedMatchSnapshotDict;
 }
 
-export type OngoingWeedMatch = {
+export type ReadyPlayersIdsDict = {
+    [key: string]: string,
+}
+
+export type WeedRoom = {
     id: string;
     name: string;
-    onGoingPlayer: {
-        player: WeedPlayer;
-        isReady: boolean;
-    }[],
-    creator: WeedPlayer;
+    players: WeedPlayer[],
+    readyPlayersIds: ReadyPlayersIdsDict,
     isStarted: boolean;
+    matchId: string | null;
 }
 
-export interface MatchesDict {
-    [matchId: string]: OngoingWeedMatch,
+export interface WeedRoomsDict {
+    [roomId: string]: WeedRoom,
 };
 
 

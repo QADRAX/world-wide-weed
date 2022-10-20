@@ -1,5 +1,5 @@
-import { WeedCard, CardType } from "server/types/weed/WeedTypes";
 import { v4 as uuidv4 } from 'uuid';
+import { CardType, WeedCard } from '../../types/weed/WeedTypes';
 
 export const getCard = (type: CardType): WeedCard => {
     return {
