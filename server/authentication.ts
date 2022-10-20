@@ -1,8 +1,8 @@
 import { GetServerSidePropsContext, NextApiRequest } from "next";
 import nookies from "nookies";
-import { DEFAULT_USER_AVATAR } from "../../shared/constants";
-import { UserInfo } from "../../types/UserInfo";
-import { firebaseAdmin } from "../firebaseAdmin";
+import { DEFAULT_USER_AVATAR } from "../shared/constants";
+import { UserInfo } from "../types/UserInfo";
+import { firebaseAdmin } from "./firebaseAdmin";
 
 export async function getUserFromPropsContext(
     ctx: GetServerSidePropsContext

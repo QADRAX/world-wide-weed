@@ -3,7 +3,7 @@ import { GetServerSidePropsContext } from 'next';
 import { WeedMainScreen } from '../client/components/WeedMainScreen';
 import { MainView } from '../client/views/MainView';
 import { UserInfo } from '../types/UserInfo';
-import { getUserFromPropsContext } from '../server/repository/authenticationRepository';
+import { getUserFromPropsContext } from '../server/authentication';
 
 type IndexProps = {
   userInfo: UserInfo;

@@ -1,6 +1,6 @@
 
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getUserInfoFromRequest } from '../../../server/repository/authenticationRepository';
+import { getUserInfoFromRequest } from '../../../server/authentication';
 
 export type JoinMatchRequest = {
     matchId: string;
