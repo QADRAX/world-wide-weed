@@ -2,6 +2,7 @@ import { GetServerSidePropsContext, NextApiRequest } from "next";
 import nookies from "nookies";
 import { DEFAULT_USER_AVATAR } from "../shared/constants";
 import { UserInfo } from "../types/UserInfo";
+import { Log } from "../utils/Log";
 import { firebaseAdmin } from "./firebaseAdmin";
 
 export async function getUserFromPropsContext(
@@ -28,7 +29,7 @@ export async function getUserInfoFromToken(
         const user = await auth.getUser(verifiedToken.uid);
         result = await getOrCreateUserInfo(user);
     } catch(error) {
-        console.log(error);
+        Log('Error verifying token', 'warning');
     };
 
     return result;

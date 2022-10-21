@@ -31,7 +31,7 @@ export default async (req: ExtendedNextApiRequest, res: NextApiResponse) => {
                     return res.status(400).json(roomResult.errors);
                 } else {
                     Log(`Player ${player.email} discarded a card`, 'app');
-                    return res.status(200);
+                    return res.status(200).json(true);
                 }
             } else {
                 return res.status(403).json({ message: "You are banned to play weed" });

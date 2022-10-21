@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { Box, Container, Grid, Typography } from '@mui/material';
+import { Box, Container, Grid, Skeleton, Typography } from '@mui/material';
 import React from 'react';
 import { useIsRoomAdmin } from '../../hooks/useAuth';
 import { useCurrentRooms } from '../../redux/getters';
@@ -23,11 +23,17 @@ export const WeedRoomSelector = () => {
     const isRoomAdmin = useIsRoomAdmin()
 
     return (
-        <MainContainer>
-            <Typography variant="h4" component="div" sx={{ padding: '16px'}}>
+        <MainContainer maxWidth={false}>
+            <Typography variant="h5" component="div" sx={{ padding: '16px', marginBottom: '16px' }}>
                 WEED ROOMS
             </Typography>
             <GridContainer container spacing={{ xs: 2, md: 2 }} columns={{ xs: 2, sm: 8, md: 12 }}>
+                {rooms.length == 0 && (
+                    <Grid item xs={12} sm={12} md={12}>
+                        <Skeleton animation='wave' />
+                    </Grid>
+                )}
+
                 {rooms.map((r) => (
                     <Grid item xs={12} sm={12} md={12} sx={{ paddingRight: '16px' }} key={r.id}>
                         <RoomCard key={r.id} room={r} />

@@ -1,3 +1,4 @@
+import { toArray } from "../../utils/Dict";
 import { useAppSelector } from "../hooks/redux";
 import { useAuthenticatedUser } from "../hooks/useAuth";
 
@@ -11,11 +12,20 @@ export const useCurrentRooms = () => {
     return sortedRooms;
 }
 
-export const useCurrentPlayerRoom = () => {
+export const usePlayerRoom = () => {
     const { user } = useAuthenticatedUser();
     const rooms = useCurrentRooms();
 
-    const playerRoom = rooms.find((r) => r.players?.find(((p) => p.id == user.id)) != null);
+    const playerRoom = rooms.find((r) => toArray(r.players).find(((p) => p.id == user.id)) != null);
 
     return playerRoom;
+}
+
+export const useCurrentPlayerRoom = () => {
+    const playerRoom = usePlayerRoom();
+    if (playerRoom) {
+        return playerRoom;
+    } else {
+        throw new Error('You need to have a player in room to use this hook');
+    }
 }

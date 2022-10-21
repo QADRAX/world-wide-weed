@@ -2,6 +2,7 @@ import { Button, Card, CardActions, CardContent, Typography } from "@mui/materia
 import React, { FunctionComponent } from "react";
 import { MAX_PLAYERS_IN_MATCH, MIN_PLAYERS_IN_MATCH } from "../../../../shared/constants";
 import { WeedRoom } from "../../../../types/weed/WeedTypes";
+import { toArray } from "../../../../utils/Dict";
 import { useAppDispatch } from "../../../hooks/redux";
 import { useIsRoomAdmin } from "../../../hooks/useAuth";
 import { setIsLoading } from "../../../redux/rooms/rooms";
@@ -16,7 +17,8 @@ export const RoomCard: FunctionComponent<RoomCardProps> = (props) => {
     const isRoomAdmin = useIsRoomAdmin();
     const dispatch = useAppDispatch();
 
-    const numberOfPlayers = props.room.players?.length ?? 0;
+    const players = toArray(props.room.players);
+    const numberOfPlayers = players.length;
 
     const roomState = numberOfPlayers < MIN_PLAYERS_IN_MATCH
         ? numberOfPlayers === 0

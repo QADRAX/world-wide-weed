@@ -1,6 +1,7 @@
 import { Avatar, Badge, Stack, styled } from '@mui/material';
 import React, { FunctionComponent } from 'react';
 import { WeedRoom } from '../../../../../types/weed/WeedTypes';
+import { toArray } from '../../../../../utils/Dict';
 
 export type PlayerAvatarsProps = {
     room: WeedRoom;
@@ -36,10 +37,11 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 }));
 
 export const PlayerAvatars: FunctionComponent<PlayerAvatarsProps> = (props) => {
+    const players = toArray(props.room.players);
     return (
         <Stack direction="row" spacing={1}>
             {
-                props.room.players?.map((player) => {
+                players.map((player) => {
                     const idsDict = props.room.readyPlayersIds ?? {};
                     const readyPlayerIds = Object.keys(idsDict);
                     if (readyPlayerIds.includes(player.id)) {

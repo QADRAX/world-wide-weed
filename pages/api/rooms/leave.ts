@@ -20,7 +20,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             return res.status(400).json(result.errors);
         } else {
             Log(`Player ${player.email} is leaving is room`, 'app');
-            return res.status(200);
+            return res.status(200).json(true);
         }
     } else {
         return res.status(403).json({ message: "You are banned to play weed" });
