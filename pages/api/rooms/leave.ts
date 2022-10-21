@@ -13,13 +13,13 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
     if (player.userRoles.includes('playWeed')) {
         const controller = new GameController(player);
-        const roomResult = await controller.readyToMatch();
+        const result = await controller.leaveRoom();
 
-        if (roomResult.errors.length > 0) {
-            Log(`Controlled error(s) happened setting ready for the match the player ${player.email}: ${roomResult.errors.join()}`, 'warning');
-            return res.status(400).json(roomResult.errors);
+        if (result.errors.length > 0) {
+            Log(`Controlled error(s) happened setting leaving player current room: ${result.errors.join()}`, 'warning');
+            return res.status(400).json(result.errors);
         } else {
-            Log(`Player ${player.email} is ready for the a new match`, 'app');
+            Log(`Player ${player.email} is leaving is room`, 'app');
             return res.status(200);
         }
     } else {

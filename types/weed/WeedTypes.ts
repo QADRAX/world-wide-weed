@@ -1,3 +1,4 @@
+import { Dict } from "../../utils/Dict";
 import { WeedPlayer } from "../Player";
 
 // CARD TYPES
@@ -78,10 +79,6 @@ export type ProtectedMatchSnapshot = {
     hand: WeedCard[];
 }
 
-export type ProtectedMatchSnapshotDict = {
-    [playerId: string]: ProtectedMatchSnapshot[];
-}
-
 // MATCH
 
 export type WeedMatch = {
@@ -93,26 +90,17 @@ export type WeedMatch = {
     /** Public match info. (anybody could read) */
     publicMatchSnapshots: PublicMatchSnapshot[];
     /** Protected match info. (only match users could read) */
-    protectedMatchSnapshots: ProtectedMatchSnapshotDict;
-}
-
-export type ReadyPlayersIdsDict = {
-    [key: string]: string,
+    protectedMatchSnapshots: Dict<ProtectedMatchSnapshot[]>;
 }
 
 export type WeedRoom = {
     id: string;
     name: string;
-    players: WeedPlayer[],
-    readyPlayersIds: ReadyPlayersIdsDict,
+    players?: Dict<WeedPlayer>,
+    readyPlayersIds?: Dict<string>,
     isStarted: boolean;
-    matchId: string | null;
+    matchId?: string | null;
 }
-
-export interface WeedRoomsDict {
-    [roomId: string]: WeedRoom,
-};
-
 
 // PLAY CARD REQUEST
 

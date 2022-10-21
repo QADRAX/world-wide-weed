@@ -1,10 +1,12 @@
 import { CreateRoomRequest } from "../pages/api/rooms/create";
+import { DeleteRoomRequest } from "../pages/api/rooms/delete";
 import { JoinRoomRequest as JoinRoomRequest } from "../pages/api/rooms/join";
 import { MIN_PLAYERS_IN_MATCH } from "../shared/constants";
 import { UserInfo } from "../types/UserInfo";
 import { ValidationResult } from "../types/ValidationResult";
 import { WeedError } from "../types/weed/MatchErrors";
 import { CardRequest, WeedMatch, WeedRoom } from "../types/weed/WeedTypes";
+import { toArray } from "../utils/Dict";
 import { WeedMatchValidator } from "./game/WeedMatchValidator";
 import { IGameController } from "./GameController.interface";
 import { MatchRepository } from "./repository/matchRepository";
@@ -35,6 +37,25 @@ export class GameController implements IGameController {
         return result;
     }
 
+    async deleteRoom(request: DeleteRoomRequest): Promise<ValidationResult<WeedError, boolean>> {
+        const result: ValidationResult<WeedError, boolean> = {
+            result: undefined,
+            errors: [],
+        };
+        const room = await RoomRepository.getWeedRoom(request.roomId);
+        if (room) {
+            if(room.matchId){
+                await MatchRepository.deleteMatch(room.matchId);
+            }
+            await RoomRepository.deleteRoom(request.roomId);
+            result.result = true;
+        } else {
+            result.errors.push('RoomNotExists');
+        }
+
+        return result;
+    }
+
     async joinRoom(request: JoinRoomRequest): Promise<ValidationResult<WeedError, WeedRoom>> {
         const result: ValidationResult<WeedError, WeedRoom> = {
             result: undefined,
@@ -57,6 +78,23 @@ export class GameController implements IGameController {
         return result;
     }
 
+    async leaveRoom(): Promise<ValidationResult<WeedError, WeedRoom>> {
+        const result: ValidationResult<WeedError, WeedRoom> = {
+            result: undefined,
+            errors: [],
+        };
+
+        const currentRoom = await RoomRepository.getPlayerRoom(this.userInfo.id);
+        if (currentRoom) {
+            await RoomRepository.leaveRoom(this.userInfo, currentRoom.id);
+            result.result = currentRoom;
+        } else {
+            result.errors.push('PlayerNotInAnyRoom');
+        }
+
+        return result;
+    }
+
     async readyToMatch(): Promise<ValidationResult<WeedError, WeedRoom>> {
         const result: ValidationResult<WeedError, WeedRoom> = {
             result: undefined,
@@ -65,7 +103,8 @@ export class GameController implements IGameController {
 
         const currentRoom = await RoomRepository.getPlayerRoom(this.userInfo.id);
         if (currentRoom) {
-            const isReady = currentRoom.readyPlayersIds[this.userInfo.id] != null;
+            const readyPlayersIds = currentRoom.readyPlayersIds ?? {};
+            const isReady = readyPlayersIds[this.userInfo.id] != null;
             if (!isReady) {
                 await RoomRepository.setReadyToMatch(this.userInfo, currentRoom.id);
                 result.result = currentRoom;
@@ -73,9 +112,10 @@ export class GameController implements IGameController {
                 // Auto start match
                 const room = await RoomRepository.getPlayerRoom(this.userInfo.id);
                 if (room) {
-                    const playersReady = Object.keys(room.readyPlayersIds);
-                    const allPlayersReady = room.players.length == playersReady.length;
-                    if (allPlayersReady && playersReady.length > MIN_PLAYERS_IN_MATCH) {
+                    const playersReady = toArray(readyPlayersIds);
+                    const roomPlayers = toArray(room.players);
+                    const isAllPlayersReady = roomPlayers.length == playersReady.length;
+                    if (isAllPlayersReady && playersReady.length > MIN_PLAYERS_IN_MATCH) {
                         this.startMatch(room);
                     }
                 } else {

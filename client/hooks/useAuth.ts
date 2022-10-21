@@ -13,3 +13,8 @@ export const useAuthenticatedUser = () => {
 export const useAuth = () => {
   return useContext(AuthContext);
 };
+
+export const useIsRoomAdmin = () => {
+  const { user } = useAuthenticatedUser();
+  return user.userRoles.includes('roomAdmin');
+}

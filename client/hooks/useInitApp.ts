@@ -1,7 +1,6 @@
 import { useEffect } from "react";
-import { WeedRoomsDict } from "../../types/weed/WeedTypes";
-import { firebaseClient } from "../firebaseClient";
-import { setOngoingMatches } from "../redux/currentMatches/currentMatches";
+import { setRooms } from "../redux/rooms/rooms";
+import { GameService } from "../services/GameService";
 import { useAppDispatch } from "./redux";
 
 export const useInitApp = () => {
@@ -9,17 +8,10 @@ export const useInitApp = () => {
 
     useEffect(() => {
         (async () => {
-            const database = firebaseClient.database();
-            const matchesRef = database.ref('/ongoingMatches');
-            const snap = await matchesRef.once('value');
-            const ongoingMatches = snap.val() as WeedRoomsDict | undefined;
-
-            dispatch(setOngoingMatches(ongoingMatches ?? {}));
-
-            matchesRef.on('value', (snap) => {
-                const match = snap.val() as WeedRoomsDict;
-                dispatch(setOngoingMatches(match));
-                console.log('Matches update');
+            const roomsDict = await GameService.getCurrentRooms();
+            dispatch(setRooms(roomsDict));
+            GameService.attachToCurrentRooms((roomsDict) => {
+                dispatch(setRooms(roomsDict));
             });
         })()
     }, []);

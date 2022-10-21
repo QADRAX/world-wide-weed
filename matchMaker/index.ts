@@ -1,7 +1,8 @@
 import { firebaseAdmin } from "../server/firebaseAdmin";
-import { WeedRoomsDict } from "../types/weed/WeedTypes";
+import { WeedRoom } from "../types/weed/WeedTypes";
 import { Log } from "../utils/Log";
 import dotenv from "dotenv";
+import { Dict, toArray } from "../utils/Dict";
 
 dotenv.config();
 
@@ -10,11 +11,10 @@ const database = firebaseAdmin.database();
 Log('Runnin Weed Match Maker', 'app');
 
 (async () => {
-    const matchesRef = database.ref('/ongoingMatches');
-    const snap = await matchesRef.once('value');
-    const ongoingMatches = snap.val() as WeedRoomsDict | undefined;
-    const matches = Object.values(ongoingMatches ?? {});
+    const roomsRef = database.ref('/rooms');
+    const snap = await roomsRef.once('value');
+    const roomsDict = snap.val() as Dict<WeedRoom> | undefined;
+    const rooms = toArray(roomsDict);
 
-    console.log(matches);
-
+    console.log(rooms);
 })();

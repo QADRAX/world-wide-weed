@@ -1,9 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit';
-import ongoingMatchesReducer from './currentMatches/currentMatches';
+import roomsReducer from './rooms/rooms';
 
 export const store = configureStore({
     reducer: {
-        ongoingMatches: ongoingMatchesReducer,
+        rooms: roomsReducer,
     },
 });
 

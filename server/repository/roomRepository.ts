@@ -1,8 +1,9 @@
-import { WeedRoomsDict, WeedRoom, ReadyPlayersIdsDict } from "../../types/weed/WeedTypes";
+import { WeedRoom } from "../../types/weed/WeedTypes";
 import { firebaseAdmin } from "../firebaseAdmin";
 import { v4 } from 'uuid';
 import { toWeedPlayer } from "../../shared/mappers";
 import { UserInfo } from "../../types/UserInfo";
+import { Dict, toArray } from "../../utils/Dict";
 
 export namespace RoomRepository {
     export async function createRoom(
@@ -14,7 +15,7 @@ export namespace RoomRepository {
         const room: WeedRoom = {
             id: roomId,
             name: roomName,
-            players: [],
+            players: {},
             readyPlayersIds: {},
             isStarted: false,
             matchId: null,
@@ -30,10 +31,10 @@ export namespace RoomRepository {
         const database = firebaseAdmin.database();
         const matchesRef = database.ref('/rooms');
         const snap = await matchesRef.once('value');
-        const roomsDict = snap.val() as WeedRoomsDict | undefined;
-        const rooms = Object.values(roomsDict ?? {});
+        const roomsDict = snap.val() as Dict<WeedRoom> | undefined;
+        const rooms = toArray(roomsDict);
         const room = rooms
-            .find((m) => m.players.find(((p) => p.id == playerId)) != null);
+            .find((m) => toArray(m.players).find(((p) => p.id == playerId)) != null);
         return room;
     }
     
@@ -41,8 +42,8 @@ export namespace RoomRepository {
     ): Promise<WeedRoom[]> {
         const database = firebaseAdmin.database();
         const snap = await database.ref(`/rooms`).once('value');
-        const roomsDict = snap.val() as WeedRoomsDict | undefined;
-        const rooms = Object.values(roomsDict ?? {});
+        const roomsDict = snap.val() as Dict<WeedRoom> | undefined;
+        const rooms = toArray(roomsDict);
         return rooms;
     }
     
@@ -60,8 +61,17 @@ export namespace RoomRepository {
         roomId: string,
     ): Promise<void> {
         const database = firebaseAdmin.database();
-        const nextPlayerRef = database.ref(`/rooms/${roomId}/players`).push();
+        const nextPlayerRef = database.ref(`/rooms/${roomId}/players/${user.id}`);
         await nextPlayerRef.set(toWeedPlayer(user));
+    }
+
+    export async function leaveRoom(
+        user: UserInfo,
+        roomId: string,
+    ): Promise<void> {
+        const database = firebaseAdmin.database();
+        const nextPlayerRef = database.ref(`/rooms/${roomId}/players/${user.id}`);
+        await nextPlayerRef.remove();
     }
     
     export async function isPlayerReady(
@@ -70,8 +80,8 @@ export namespace RoomRepository {
     ): Promise<boolean> {
         const database = firebaseAdmin.database();
         const readyPlayersIdsDictSnap = await database.ref(`/rooms/${roomId}/readyPlayersIds`).once('value');
-        const readyPlayersIdsDict = await readyPlayersIdsDictSnap.val() as ReadyPlayersIdsDict;
-        const readyPlayersIds = Object.values(readyPlayersIdsDict ?? {});
+        const readyPlayersIdsDict = await readyPlayersIdsDictSnap.val() as Dict<string>;
+        const readyPlayersIds = toArray(readyPlayersIdsDict);
         const isPlayerReady = readyPlayersIds.includes(user.id);
         return isPlayerReady;
     }

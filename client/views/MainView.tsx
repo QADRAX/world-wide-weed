@@ -1,45 +1,16 @@
-import { Button, Container } from "@mui/material";
 import React, { FunctionComponent } from "react";
-import { OngoingMatchCard } from "../components/OngoingMatchCard";
-import { firebaseClient } from "../firebaseClient";
+import { WeedRoom } from "../components/WeedRoom/WeedRoom";
+import { WeedRoomSelector } from "../components/WeedRoomSelector/WeedRoomSelector";
 import { useInitApp } from "../hooks/useInitApp";
-import { useOngoingMatches } from "../redux/currentMatches/getters";
+import { useCurrentPlayerRoom } from "../redux/getters";
 
 export const MainView: FunctionComponent = () => {
     useInitApp();
-    const matches = useOngoingMatches();
+    const currentRoom = useCurrentPlayerRoom();
 
-    const createMatch = async () => {
-        const response = await fetch('/api/createMatch');
-        const data = await response.json();
-        console.log(data);
+    if (currentRoom) {
+        return <WeedRoom />;
+    } else {
+        return <WeedRoomSelector />;
     }
-
-    const getMatches = async () => {
-        const database = firebaseClient.database();
-
-        const matchesRef = database.ref().child('ongoingMatches');
-        const snap = await matchesRef.once('value');
-
-        const value = snap.val();
-        console.log(value);
-    }
-
-    return (
-        <Container>
-            {
-                matches.map((match) => {
-                    return <OngoingMatchCard key={match.id} match={match} />
-                })
-            }
-
-            <Button onClick={createMatch}>
-                Create match
-            </Button>
-
-            <Button onClick={getMatches}>
-                test button
-            </Button>
-        </Container>
-    );
 }

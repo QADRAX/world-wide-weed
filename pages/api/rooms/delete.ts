@@ -3,19 +3,19 @@ import { getUserInfoFromRequest } from '../../../server/authentication';
 import { GameController } from '../../../server/GameController';
 import { Log } from '../../../utils/Log';
 
-export type CreateRoomRequest = {
-    roomName: string;
+export type DeleteRoomRequest = {
+    roomId: string;
 }
 
 interface ExtendedNextApiRequest extends NextApiRequest {
-    body: CreateRoomRequest;
+    body: DeleteRoomRequest;
 }
 
 export default async (req: ExtendedNextApiRequest, res: NextApiResponse) => {
     const player = await getUserInfoFromRequest(req);
-    const createMatchRequest = req.body;
+    const deleteRoomRequest = req.body;
 
-    if (!createMatchRequest) {
+    if (!deleteRoomRequest) {
         return res.status(400).json({ message: "Empty request" });
     }
 
@@ -25,14 +25,14 @@ export default async (req: ExtendedNextApiRequest, res: NextApiResponse) => {
 
     if (player.userRoles.includes('roomAdmin')) {
         const controller = new GameController(player);
-        const roomResult = await controller.createRoom(createMatchRequest);
+        const deleteRoomResult = await controller.deleteRoom(deleteRoomRequest);
 
-        if (roomResult.errors.length > 0) {
-            Log(`Controlled error(s) happened during room creation: ${roomResult.errors.join()}`, 'warning');
-            return res.status(400).json(roomResult.errors);
+        if (deleteRoomResult.errors.length > 0) {
+            Log(`Controlled error(s) happened deleting '${deleteRoomRequest.roomId}': ${deleteRoomResult.errors.join()}`, 'warning');
+            return res.status(400).json(deleteRoomResult.errors);
         } else {
-            Log('Room was created', 'app');
-            return res.status(200).json(roomResult.result);
+            Log('Room was deleted', 'app');
+            return res.status(200).json(deleteRoomResult.result);
         }
     } else {
         return res.status(403).json({ message: "You are not a room admin" });

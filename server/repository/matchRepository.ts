@@ -1,7 +1,8 @@
-import { PrivateMatchSnapshot, ProtectedMatchSnapshot, ProtectedMatchSnapshotDict, PublicMatchPlayer, PublicMatchSnapshot, WeedMatch, WeedRoom } from "../../types/weed/WeedTypes";
+import { PrivateMatchSnapshot, ProtectedMatchSnapshot, PublicMatchPlayer, PublicMatchSnapshot, WeedMatch, WeedRoom } from "../../types/weed/WeedTypes";
 import { firebaseAdmin } from "../firebaseAdmin";
 import { v4 } from 'uuid';
 import { getInitialMatchSnapshot } from "../game/initialGame";
+import { Dict, toArray } from "../../utils/Dict";
 
 export namespace MatchRepository {
 
@@ -10,21 +11,24 @@ export namespace MatchRepository {
     ): Promise<WeedMatch> {
         const database = firebaseAdmin.database();
 
-        let protectedMatchSnapshots: ProtectedMatchSnapshotDict = {};
-        room.players.forEach((p) => {
+        let protectedMatchSnapshots: Dict<ProtectedMatchSnapshot[]> = {};
+
+        const players = toArray(room.players);
+
+        players.forEach((p) => {
             protectedMatchSnapshots[p.id] = [];
         });
 
         const matchId = v4();
         let newMatch: WeedMatch = {
             id: matchId,
-            players: room.players,
+            players: players,
             publicMatchSnapshots: [],
             privateMatchSnapshots: [],
             protectedMatchSnapshots: {},
         };
 
-        const initialPrivateSnapshot = getInitialMatchSnapshot(room.players);
+        const initialPrivateSnapshot = getInitialMatchSnapshot(players);
 
         newMatch = addPrivateSnapshot(newMatch, initialPrivateSnapshot);
 
