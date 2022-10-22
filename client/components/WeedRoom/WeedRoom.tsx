@@ -1,5 +1,6 @@
-import { Button, Container, Divider, styled, Typography } from '@mui/material';
+import { Button, Container, Divider, Stack, styled, Typography } from '@mui/material';
 import React from 'react';
+import { getRoomStatusText } from '../../../shared/weedUtils';
 import { useCurrentPlayerRoom } from '../../redux/getters';
 import { GameService } from '../../services/GameService';
 import { Lobby } from './Lobby/Lobby';
@@ -13,7 +14,8 @@ const MainContainer = styled(Container)({
 
 const GameContainer = styled(Container)({
     flex: 1,
-    overflow: 'auto',
+    overflowY: 'auto',
+    overflowX: 'hidden',
 });
 
 export const WeedRoom = () => {
@@ -21,17 +23,25 @@ export const WeedRoom = () => {
 
     const isMatchStarted = currentRoom.matchId != null;
 
+    const roomStatusText = getRoomStatusText(currentRoom);
+
     const leaveRoom = async () => {
         await GameService.leaveRoom();
     };
 
     return (
         <MainContainer maxWidth={false}>
-            <Typography variant="h5" component="div" sx={{ p: 2 }}>
-                {currentRoom.name}
-            </Typography>
+            <Stack direction="row" alignItems="baseline" spacing={2} sx={{ p: 1 }}>
+                <Typography variant="h5" component="div" sx={{ p: 1 }}>
+                    {currentRoom.name}
+                </Typography>
+                <Typography color="text.secondary">
+                    {roomStatusText}
+                </Typography>
+            </Stack>
 
-            <Divider sx={{ mb: 2 }}></Divider>
+
+            <Divider sx={{ mb: 1 }}></Divider>
 
             <GameContainer maxWidth={false}>
                 {
@@ -41,8 +51,8 @@ export const WeedRoom = () => {
                 }
 
             </GameContainer>
-            <Divider sx={{ mb: 2 }}></Divider>
-            <Button size="small" color="primary" sx={{ mb: 2 }} onClick={leaveRoom}>Leave</Button>
+            <Divider sx={{ mb: 1, mt: 1 }}></Divider>
+            <Button size="small" color="primary" sx={{ mb: 1 }} onClick={leaveRoom}>Leave</Button>
         </MainContainer>
     )
 }

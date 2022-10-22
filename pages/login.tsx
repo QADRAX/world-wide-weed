@@ -5,6 +5,7 @@ import styled from "@emotion/styled";
 import { motion } from "framer-motion";
 import GoogleIcon from '@mui/icons-material/Google';
 import { LoginForm } from '../client/components/LoginForm';
+import { ANIMATION_VERTICAL_FADE } from '../client/config/animations';
 
 const RootStyle = styled("div")({
   background: "rgb(228 249 239)",
@@ -27,23 +28,6 @@ const ContentStyle = styled("div")({
   background: "#fff",
 });
 
-let easing = [0.6, -0.05, 0.01, 0.99];
-const fadeInUp = {
-  initial: {
-    y: 60,
-    opacity: 0,
-    transition: { duration: 0.6, ease: easing },
-  },
-  animate: {
-    y: 0,
-    opacity: 1,
-    transition: {
-      duration: 0.6,
-      ease: easing,
-    },
-  },
-};
-
 const Login = () => {
   const googleSignIn = async () => {
     await firebaseClient.auth().signInWithPopup(googleAuthProvider);
@@ -54,7 +38,7 @@ const Login = () => {
     <RootStyle>
       <Container maxWidth="sm">
         <ContentStyle>
-          <HeadingStyle component={motion.div} {...fadeInUp}>
+          <HeadingStyle component={motion.div} {...ANIMATION_VERTICAL_FADE}>
             <Typography variant="h5" sx={{ color: "text.secondary", mb: 5 }}>
               Welcome at World Wide Weed!
             </Typography>
@@ -66,11 +50,11 @@ const Login = () => {
 
           <LoginForm />
 
-          <Divider sx={{ mb: 3 }} component={motion.div} {...fadeInUp}>
+          <Divider sx={{ mb: 3 }} component={motion.div} {...ANIMATION_VERTICAL_FADE}>
             OR
           </Divider>
 
-          <Box component={motion.div} {...fadeInUp}>
+          <Box component={motion.div} {...ANIMATION_VERTICAL_FADE}>
             <Stack direction="row" spacing={2}>
               <IconButton
                 sx={{
