@@ -1,7 +1,9 @@
-import { Button, Container, styled, Typography } from '@mui/material';
+import { Button, Container, Divider, styled, Typography } from '@mui/material';
 import React from 'react';
 import { useCurrentPlayerRoom } from '../../redux/getters';
 import { GameService } from '../../services/GameService';
+import { Lobby } from './Lobby/Lobby';
+import { Match } from './Match/Match';
 
 const MainContainer = styled(Container)({
     display: 'flex',
@@ -17,20 +19,30 @@ const GameContainer = styled(Container)({
 export const WeedRoom = () => {
     const currentRoom = useCurrentPlayerRoom();
 
+    const isMatchStarted = currentRoom.matchId != null;
+
     const leaveRoom = async () => {
         await GameService.leaveRoom();
     };
 
     return (
         <MainContainer maxWidth={false}>
-            <Typography variant="h5" component="div" sx={{ padding: '16px', marginBottom: '16px' }}>
+            <Typography variant="h5" component="div" sx={{ p: 2 }}>
                 {currentRoom.name}
             </Typography>
 
-            <GameContainer maxWidth={false}>
-            </GameContainer>
+            <Divider sx={{ mb: 2 }}></Divider>
 
-            <Button size="small" color="primary" onClick={leaveRoom}>Leave</Button>
+            <GameContainer maxWidth={false}>
+                {
+                    isMatchStarted
+                        ? <Match />
+                        : <Lobby />
+                }
+
+            </GameContainer>
+            <Divider sx={{ mb: 2 }}></Divider>
+            <Button size="small" color="primary" sx={{ mb: 2 }} onClick={leaveRoom}>Leave</Button>
         </MainContainer>
     )
 }

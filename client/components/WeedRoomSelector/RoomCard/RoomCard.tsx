@@ -1,8 +1,7 @@
-import { Button, Card, CardActions, CardContent, Typography } from "@mui/material";
+import { Button, Card, CardActions, CardContent, styled, Typography } from "@mui/material";
 import React, { FunctionComponent } from "react";
-import { MAX_PLAYERS_IN_MATCH, MIN_PLAYERS_IN_MATCH } from "../../../../shared/constants";
+import { getRoomStatusText } from "../../../../shared/weedUtils";
 import { WeedRoom } from "../../../../types/weed/WeedTypes";
-import { toArray } from "../../../../utils/Dict";
 import { useAppDispatch } from "../../../hooks/redux";
 import { useIsRoomAdmin } from "../../../hooks/useAuth";
 import { setIsLoading } from "../../../redux/rooms/rooms";
@@ -13,22 +12,16 @@ type RoomCardProps = {
     room: WeedRoom;
 }
 
+const RoomCardRoot = styled(Card)(({
+    backgroundColor: '#e9fff4',
+}));
+
+
 export const RoomCard: FunctionComponent<RoomCardProps> = (props) => {
     const isRoomAdmin = useIsRoomAdmin();
     const dispatch = useAppDispatch();
 
-    const players = toArray(props.room.players);
-    const numberOfPlayers = players.length;
-
-    const roomState = numberOfPlayers < MIN_PLAYERS_IN_MATCH
-        ? numberOfPlayers === 0
-            ? "Empty room"
-            : "Waiting for players"
-        : props.room.isStarted
-            ? "Game in progress"
-            : numberOfPlayers == MAX_PLAYERS_IN_MATCH
-                ? "Full room"
-                : "Ready to start";
+    const roomStatusText = getRoomStatusText(props.room);
 
     const joinRoom = async () => {
         dispatch(setIsLoading(true));
@@ -47,13 +40,13 @@ export const RoomCard: FunctionComponent<RoomCardProps> = (props) => {
     };
 
     return (
-        <Card>
+        <RoomCardRoot elevation={2}>
             <CardContent>
                 <Typography variant="h5" component="div">
                     {props.room.name}
                 </Typography>
                 <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                    {roomState}
+                    {roomStatusText}
                 </Typography>
                 <PlayerAvatars room={props.room} />
             </CardContent>
@@ -61,6 +54,6 @@ export const RoomCard: FunctionComponent<RoomCardProps> = (props) => {
                 <Button size="small" color="primary" onClick={joinRoom}>Join</Button>
                 {isRoomAdmin && <Button size="small" color="error" onClick={deleteRoom}>Delete</Button>}
             </CardActions>
-        </Card>
+        </RoomCardRoot>
     );
 } 

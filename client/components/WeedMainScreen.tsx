@@ -1,24 +1,22 @@
 import React, { FunctionComponent, useEffect } from 'react';
 import { Header } from './Header/Header';
-import { Paper } from '@mui/material';
-import styled from "@emotion/styled";
+import { Paper, styled } from '@mui/material';
 import { useAuth } from '../hooks/useAuth';
 import { LoaderContainer } from './LoaderContainer';
 import { UserInfo } from '../../types/UserInfo';
 
-const RootContainer = styled("div")({
+const RootContainer = styled("div")(({
     display: 'flex',
     flexDirection: 'column',
     height: '100vh',
-    background: "rgb(228 249 239)",
-});
+    background: "rgb(234 243 238)",
+}));
 
 const MainContainer = styled(Paper)({
     display: 'flex',
     flexDirection: 'column',
     height: '100%',
     margin: '16px',
-    padding: '16px',
     overflow: 'auto',
 });
 
@@ -36,7 +34,7 @@ export const WeedMainScreen: FunctionComponent<WeedMainScreenProps> = (props) =>
     return (
         <RootContainer>
             <Header />
-            <MainContainer>
+            <MainContainer elevation={5}>
                 {props.children}
             </MainContainer>
         </RootContainer>
