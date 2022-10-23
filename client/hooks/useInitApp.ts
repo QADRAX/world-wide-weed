@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { setRooms } from "../redux/rooms/rooms";
+import { setIsLoading, setRooms } from "../redux/rooms/rooms";
 import { GameService } from "../services/GameService";
 import { useAppDispatch } from "./redux";
 
@@ -8,7 +8,9 @@ export const useInitApp = () => {
 
     useEffect(() => {
         (async () => {
+            dispatch(setIsLoading(true));
             const roomsDict = await GameService.getCurrentRooms();
+            dispatch(setIsLoading(false));
             dispatch(setRooms(roomsDict));
             GameService.attachToCurrentRooms((roomsDict) => {
                 dispatch(setRooms(roomsDict));

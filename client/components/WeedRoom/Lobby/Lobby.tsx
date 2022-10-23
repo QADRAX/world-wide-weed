@@ -4,7 +4,7 @@ import React from 'react';
 import { MAX_PLAYERS_IN_MATCH } from '../../../../shared/constants';
 import { toArray } from '../../../../utils/Dict';
 import { useCurrentPlayerRoom } from '../../../redux/getters';
-import { EmptyRoomPlayerEntry, RoomPlayerEntry } from './RoomPlayerEntry';
+import { RoomPlayerEntry } from './RoomPlayerEntry';
 
 const MainContainer = styled(Container)({
     display: 'flex',
@@ -36,7 +36,7 @@ export const Lobby = () => {
 
                     {
                         playersLeftToStart > 0 && Array(playersLeftToStart).fill(0).map((_, index) => {
-                            return <EmptyRoomPlayerEntry key={index} />
+                            return <RoomPlayerEntry key={index} />
                         })
                     }
                 </AnimatePresence>

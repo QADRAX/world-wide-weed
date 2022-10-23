@@ -1,8 +1,8 @@
-import { Avatar, Badge, styled } from '@mui/material';
+import { Avatar, Badge, Skeleton, styled } from '@mui/material';
 import { motion } from 'framer-motion';
 import React, { FunctionComponent } from 'react';
 import { WeedPlayer } from '../../../types/Player';
-import { ANIMATION_SIMPLE_FADE } from '../../config/animations';
+import { ANIMATION_HORIZONTAL_FADE } from '../../config/animations';
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
     '& .MuiBadge-badge': {
@@ -34,27 +34,35 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 }));
 
 export type PlayerAvatarsProps = {
-    player: WeedPlayer;
+    player?: WeedPlayer;
     isReady?: boolean;
     size?: number;
+    accent?: boolean;
 }
 
 export const PlayerAvatar: FunctionComponent<PlayerAvatarsProps> = (props) => {
-    const { player, isReady, size } = props;
+    const { player, isReady, accent } = props;
+
+    const size = props.size ?? 40;
+    const bgColor = accent ? 'grey.400' : 'grey.300';
     const sx = { width: size, height: size };
-    if (isReady) {
+    if (!player) {
+        return (
+                <Skeleton component={motion.div} {...ANIMATION_HORIZONTAL_FADE} variant="circular" width={size} height={size} animation="wave" sx={{ bgcolor: bgColor }} />
+        )
+    } else if (isReady) {
         return (
             <StyledBadge
                 overlap="circular"
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                 variant="dot"
             >
-                <Avatar component={motion.div} {...ANIMATION_SIMPLE_FADE} sx={sx} alt={player.name} src={player.avatarUrl} />
+                <Avatar component={motion.div} {...ANIMATION_HORIZONTAL_FADE} sx={sx} alt={player.name} src={player.avatarUrl} />
             </StyledBadge>
         );
     } else {
         return (
-            <Avatar component={motion.div} {...ANIMATION_SIMPLE_FADE} sx={sx} alt={player.name} src={player.avatarUrl} />
+            <Avatar component={motion.div} {...ANIMATION_HORIZONTAL_FADE} sx={sx} alt={player.name} src={player.avatarUrl} />
         );
     }
 }

@@ -9,6 +9,7 @@ const LoaderCenteredContainer = styled("div")({
     widht: '100%',
     alignContent: 'center',
     alignItems: 'center',
+    justifyContent: 'center',
 });
 
 

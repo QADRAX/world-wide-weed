@@ -8,37 +8,30 @@ import { ANIMATION_VERTICAL_FADE } from '../../../config/animations';
 const SIZE = 40;
 
 export type RoomPlayerEntryProps = {
-    player: WeedPlayer;
-    readyPlayersIds: string[];
+    player?: WeedPlayer;
+    readyPlayersIds?: string[];
+    accent?: boolean;
 }
 
 export const RoomPlayerEntry: FunctionComponent<RoomPlayerEntryProps> = (props) => {
-    const { player, readyPlayersIds } = props;
-    const isReady = readyPlayersIds.includes(player.id);
+    const { player } = props;
+
+    const readyPlayerIds = props.readyPlayersIds ?? [];
+    const isReady = player ? readyPlayerIds.includes(player.id) : false;
+    const bgColor = props.accent ? 'grey.400' : 'grey.300';
 
     return (
         <Box component={motion.div} {...ANIMATION_VERTICAL_FADE}>
             <Stack direction="row" justifyItems="flex-start" alignItems="center" spacing={2}>
                 <PlayerAvatar player={player} isReady={isReady} size={SIZE} />
-                <Typography>{player.name}</Typography>
+                <Typography>
+                    {
+                        player 
+                            ? player.name
+                            : <Skeleton animation="wave" width={150} sx={{ bgcolor: bgColor }} />
+                    }
+                </Typography>
             </Stack>
         </Box>
     )
 };
-
-export type RoomPlayerEntrySkeletonProps = {
-    accent?: boolean;
-}
-
-export const EmptyRoomPlayerEntry: FunctionComponent<RoomPlayerEntrySkeletonProps> = (props) => {
-    const { accent } = props;
-    const bgColor = accent ? 'grey.400' : 'grey.300';
-    return (
-        <Box component={motion.div} {...ANIMATION_VERTICAL_FADE}>
-            <Stack direction="row" alignItems="center" spacing={2}>
-                <Skeleton variant="circular" width={SIZE} height={SIZE} animation="wave" sx={{ bgcolor: bgColor }} />
-                <Typography><Skeleton animation="wave" width={150} sx={{ bgcolor: bgColor }} /></Typography>
-            </Stack>
-        </Box>
-    )
-}

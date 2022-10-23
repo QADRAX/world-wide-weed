@@ -25,7 +25,7 @@ type WeedMainScreenProps = {
     userInfo: UserInfo;
 }
 
-export const WeedMainScreen: FunctionComponent<WeedMainScreenProps> = (props) => {
+export const MainScreen: FunctionComponent<WeedMainScreenProps> = (props) => {
     const { setUser, user } = useAuth();
     useEffect(() => setUser(props.userInfo), []);
     if(user == null) {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { GetServerSidePropsContext } from 'next';
-import { WeedMainScreen } from '../client/components/WeedMainScreen';
+import { MainScreen } from '../client/components/MainScreen';
 import { MainView } from '../client/views/MainView';
 import { UserInfo } from '../types/UserInfo';
 import { getUserFromPropsContext } from '../server/authentication';
@@ -11,9 +11,9 @@ type IndexProps = {
 
 export default (props: IndexProps) => {
   return (
-      <WeedMainScreen userInfo={props.userInfo}>
+      <MainScreen userInfo={props.userInfo}>
         <MainView />
-      </WeedMainScreen>
+      </MainScreen>
   );
 };
 

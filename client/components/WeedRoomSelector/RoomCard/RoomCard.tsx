@@ -1,7 +1,9 @@
-import { Button, Card, CardActions, CardContent, styled, Typography } from "@mui/material";
+import { Button, Card, CardActions, CardContent, Typography } from "@mui/material";
+import { motion } from "framer-motion";
 import React, { FunctionComponent } from "react";
 import { getRoomStatusText } from "../../../../shared/weedUtils";
 import { WeedRoom } from "../../../../types/weed/WeedTypes";
+import { ANIMATION_VERTICAL_FADE } from "../../../config/animations";
 import { useAppDispatch } from "../../../hooks/redux";
 import { useIsRoomAdmin } from "../../../hooks/useAuth";
 import { setIsLoading } from "../../../redux/rooms/rooms";
@@ -11,11 +13,6 @@ import { PlayerAvatars } from "./PlayerAvatars/PlayerAvatars";
 type RoomCardProps = {
     room: WeedRoom;
 }
-
-const RoomCardRoot = styled(Card)(({
-    backgroundColor: '#e9fff4',
-}));
-
 
 export const RoomCard: FunctionComponent<RoomCardProps> = (props) => {
     const isRoomAdmin = useIsRoomAdmin();
@@ -40,7 +37,10 @@ export const RoomCard: FunctionComponent<RoomCardProps> = (props) => {
     };
 
     return (
-        <RoomCardRoot elevation={2}>
+        <Card component={motion.div}
+            {...ANIMATION_VERTICAL_FADE}
+            sx={{ backgroundColor: '#e9fff4' }}
+            elevation={2}>
             <CardContent>
                 <Typography variant="h5" component="div">
                     {props.room.name}
@@ -51,9 +51,13 @@ export const RoomCard: FunctionComponent<RoomCardProps> = (props) => {
                 <PlayerAvatars room={props.room} />
             </CardContent>
             <CardActions>
-                <Button size="small" color="primary" onClick={joinRoom}>Join</Button>
+                <Button size="small"
+                    color="primary"
+                    onClick={joinRoom}>
+                    Join
+                </Button>
                 {isRoomAdmin && <Button size="small" color="error" onClick={deleteRoom}>Delete</Button>}
             </CardActions>
-        </RoomCardRoot>
+        </Card>
     );
 } 

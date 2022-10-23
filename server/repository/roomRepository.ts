@@ -118,7 +118,7 @@ export namespace RoomRepository {
     ): Promise<void> {
         const database = firebaseAdmin.database();
         const readyPlayersIdsRef = database.ref(`/rooms/${roomId}/readyPlayersIds`);
-        await readyPlayersIdsRef.set({});
+        await readyPlayersIdsRef.remove();
     }
 
     export async function deletePlayers(
@@ -126,7 +126,7 @@ export namespace RoomRepository {
     ): Promise<void> {
         const database = firebaseAdmin.database();
         const playersRef = database.ref(`/rooms/${roomId}/players`);
-        await playersRef.set([]);
+        await playersRef.set({});
     }
 
     export async function deleteRoom(

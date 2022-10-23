@@ -46,9 +46,9 @@ export const CreateRoomButton = () => {
                 size="small"
                 type="submit"
                 color="primary"
-                variant="contained"
                 loading={isSubmitting}
                 onClick={handleModalOpen}
+                fullWidth
             >
                 {isSubmitting ? "loading..." : "Create Room"}
             </LoadingButton>
