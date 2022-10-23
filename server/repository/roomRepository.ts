@@ -94,6 +94,15 @@ export namespace RoomRepository {
         const nextReadyPlayerRef = database.ref(`/rooms/${roomId}/readyPlayersIds/${user.id}`);
         await nextReadyPlayerRef.set(user.id);
     }
+
+    export async function undoReadyToMatch(
+        user: UserInfo,
+        roomId: string,
+    ): Promise<void> {
+        const database = firebaseAdmin.database();
+        const nextReadyPlayerRef = database.ref(`/rooms/${roomId}/readyPlayersIds/${user.id}`);
+        await nextReadyPlayerRef.remove();
+    }
     
     export async function setMatchId(
         roomId: string,

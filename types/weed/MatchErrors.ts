@@ -1,4 +1,14 @@
 export type WeedError = 
+    | 'CannotUndoReadyDuringMatch'
+    | 'PlayerNotReady'
+    /**
+     * Caanot leave the room if the player is ready for the match
+     */
+    | 'CannotLeaveRoomIfPlayerReady'
+    /**
+     * Cannot leave the room during a match
+     */
+    | 'CannotLeaveRoomDuringMatch'
     /** 
      * The match not exists
      */

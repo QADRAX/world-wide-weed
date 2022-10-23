@@ -44,7 +44,7 @@ export class GameController implements IGameController {
         };
         const room = await RoomRepository.getWeedRoom(request.roomId);
         if (room) {
-            if(room.matchId){
+            if (room.matchId) {
                 await MatchRepository.deleteMatch(room.matchId);
             }
             await RoomRepository.deleteRoom(request.roomId);
@@ -86,8 +86,50 @@ export class GameController implements IGameController {
 
         const currentRoom = await RoomRepository.getPlayerRoom(this.userInfo.id);
         if (currentRoom) {
-            await RoomRepository.leaveRoom(this.userInfo, currentRoom.id);
-            result.result = currentRoom;
+            const readyPlayersIdsDict = currentRoom.readyPlayersIds ?? {};
+            const readyPlayersIds = toArray(readyPlayersIdsDict);
+            const isPlayerReady = readyPlayersIds.includes(this.userInfo.id);
+            const isMatchOngoing = currentRoom.matchId != null;
+
+            if (!isMatchOngoing) {
+                if (!isPlayerReady) {
+                    await RoomRepository.leaveRoom(this.userInfo, currentRoom.id);
+                    result.result = currentRoom;
+                } else {
+                    result.errors.push('CannotLeaveRoomIfPlayerReady');
+                }
+            } else {
+                result.errors.push('CannotLeaveRoomDuringMatch');
+            }
+        } else {
+            result.errors.push('PlayerNotInAnyRoom');
+        }
+
+        return result;
+    }
+
+    async undoReadyToMatch(): Promise<ValidationResult<WeedError, WeedRoom>> {
+        const result: ValidationResult<WeedError, WeedRoom> = {
+            result: undefined,
+            errors: [],
+        };
+
+        const currentRoom = await RoomRepository.getPlayerRoom(this.userInfo.id);
+        if (currentRoom) {
+            const readyPlayersIdsDict = currentRoom.readyPlayersIds ?? {};
+            const readyPlayersIds = toArray(readyPlayersIdsDict);
+            const isPlayerReady = readyPlayersIds.includes(this.userInfo.id);
+            const isMatchOngoing = currentRoom.matchId != null;
+            if (!isMatchOngoing) {
+                if (!isPlayerReady) {
+                    await RoomRepository.undoReadyToMatch(this.userInfo, currentRoom.id);
+                    result.result = currentRoom;
+                } else {
+                    result.errors.push('PlayerNotReady');
+                }
+            } else {
+                result.errors.push('CannotUndoReadyDuringMatch');
+            }
         } else {
             result.errors.push('PlayerNotInAnyRoom');
         }
@@ -145,7 +187,7 @@ export class GameController implements IGameController {
                 if (match) {
                     const matchValidator = new WeedMatchValidator(match.privateMatchSnapshots);
                     const validatedPlay = matchValidator.validatePlayCard(request);
-                    if(validatedPlay.result) {
+                    if (validatedPlay.result) {
                         await MatchRepository.addPrivateSnapshotToMatch(match, validatedPlay.result);
                         result.result = match;
 
