@@ -19,6 +19,7 @@ export const RoomCard: FunctionComponent<RoomCardProps> = (props) => {
     const dispatch = useAppDispatch();
 
     const roomStatusText = getRoomStatusText(props.room);
+    const isRoomStarted = props.room.matchId != null;
 
     const joinRoom = async () => {
         dispatch(setIsLoading(true));
@@ -53,6 +54,7 @@ export const RoomCard: FunctionComponent<RoomCardProps> = (props) => {
             <CardActions>
                 <Button size="small"
                     color="primary"
+                    disabled={isRoomStarted}
                     onClick={joinRoom}>
                     Join
                 </Button>

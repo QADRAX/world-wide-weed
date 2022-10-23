@@ -1,4 +1,5 @@
 export type WeedError = 
+    | 'RoomAlreadyStarted'
     | 'CannotUndoReadyDuringMatch'
     | 'PlayerNotReady'
     /**

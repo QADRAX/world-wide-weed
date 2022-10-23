@@ -98,7 +98,6 @@ export type WeedRoom = {
     name: string;
     players?: Dict<WeedPlayer>,
     readyPlayersIds?: Dict<string>,
-    isStarted: boolean;
     matchId?: string | null;
 }
 

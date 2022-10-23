@@ -4,27 +4,28 @@ import { Field, FieldValue } from "../../types/weed/WeedTypes";
 
 export const getMaxFields = (playerCount: number) => {
     let result = DEFAULT_FIELDS;
-    if(playerCount <= REDUCED_FIELDS_PLAYER_LIMIT) {
+    if (playerCount <= REDUCED_FIELDS_PLAYER_LIMIT) {
         result++;
     }
-    if(playerCount >= INCREASED_FIELDS_PLAYER_LIMIT) {
+    if (playerCount >= INCREASED_FIELDS_PLAYER_LIMIT) {
         result--;
     }
     return result;
 };
 
 export const getInitialFields = (playerCount: number) => {
+    const result: Field[] = [];
+
     const maxFields = getMaxFields(playerCount);
 
-    const result = Array(maxFields).map(() => {
+    for (let i = 0; i < maxFields; i++) {
         const field: Field = {
             id: uuidv4(),
             value: 'empty',
             protectedValue: 'empty',
-        }
-        return field;
-    });
-
+        };
+        result.push(field);
+    }
     return result;
 }
 

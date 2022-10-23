@@ -7,6 +7,7 @@ import { ValidationResult } from "../types/ValidationResult";
 import { WeedError } from "../types/weed/MatchErrors";
 import { CardRequest, WeedMatch, WeedRoom } from "../types/weed/WeedTypes";
 import { toArray } from "../utils/Dict";
+import { Log } from "../utils/Log";
 import { WeedMatchValidator } from "./game/WeedMatchValidator";
 import { IGameController } from "./GameController.interface";
 import { MatchRepository } from "./repository/matchRepository";
@@ -70,8 +71,13 @@ export class GameController implements IGameController {
             if (!targetRoom) {
                 result.errors.push('RoomNotExists');
             } else {
-                await RoomRepository.joinToRoom(this.userInfo, request.roomId);
-                result.result = targetRoom;
+                const isAlreadyStarted = targetRoom.matchId != null;
+                if (isAlreadyStarted) {
+                    result.errors.push('RoomAlreadyStarted');
+                } else {
+                    await RoomRepository.joinToRoom(this.userInfo, request.roomId);
+                    result.result = targetRoom;
+                }
             }
         }
 
@@ -121,7 +127,7 @@ export class GameController implements IGameController {
             const isPlayerReady = readyPlayersIds.includes(this.userInfo.id);
             const isMatchOngoing = currentRoom.matchId != null;
             if (!isMatchOngoing) {
-                if (!isPlayerReady) {
+                if (isPlayerReady) {
                     await RoomRepository.undoReadyToMatch(this.userInfo, currentRoom.id);
                     result.result = currentRoom;
                 } else {
@@ -152,17 +158,7 @@ export class GameController implements IGameController {
                 result.result = currentRoom;
 
                 // Auto start match
-                const room = await RoomRepository.getPlayerRoom(this.userInfo.id);
-                if (room) {
-                    const playersReady = toArray(readyPlayersIds);
-                    const roomPlayers = toArray(room.players);
-                    const isAllPlayersReady = roomPlayers.length == playersReady.length;
-                    if (isAllPlayersReady && playersReady.length > MIN_PLAYERS_IN_MATCH) {
-                        this.startMatch(room);
-                    }
-                } else {
-                    result.errors.push('PlayerNotInAnyRoom');
-                }
+                this.autoStartMatch();
 
             } else {
                 result.errors.push('PlayerAlreadyReady');
@@ -211,16 +207,32 @@ export class GameController implements IGameController {
         return result;
     }
 
+    private async autoStartMatch(): Promise<void> {
+        const room = await RoomRepository.getPlayerRoom(this.userInfo.id);
+        if (room) {
+            const readyPlayersIds = room.readyPlayersIds ?? {};
+            const playersReady = toArray(readyPlayersIds);
+            const roomPlayers = toArray(room.players);
+            const isAllPlayersReady = roomPlayers.length == playersReady.length;
+            Log(`isAllPlayersReady: ${isAllPlayersReady}`);
+            if (isAllPlayersReady && playersReady.length >= MIN_PLAYERS_IN_MATCH) {
+                Log('All players ready, starting match', 'info');
+                this.startMatch(room);
+            }
+        } else {
+            Log('Start match failed, room disapear... This shold not happen', 'critical');
+        }
+    }
+
     private async startMatch(room: WeedRoom) {
         const match = await MatchRepository.createMatch(room);
-        await RoomRepository.setMatchId(match.id, room.id);
-        await RoomRepository.setIsMatchStarted(room.id, true);
+        await RoomRepository.setMatchId(room.id, match.id);
     }
 
     private async finishMatch(room: WeedRoom, match: WeedMatch) {
         await RoomRepository.clearReadyPlayers(room.id);
         await RoomRepository.deletePlayers(room.id);
-        await RoomRepository.setIsMatchStarted(room.id, false);
+        await RoomRepository.setMatchId(room.id, undefined);
         await MatchRepository.deleteMatch(match.id);
     }
 }

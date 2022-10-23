@@ -2,15 +2,20 @@ import { v4 as uuidv4 } from 'uuid';
 import { CardType, WeedCard } from '../../types/weed/WeedTypes';
 
 export const getCard = (type: CardType): WeedCard => {
-    return {
+    const result: WeedCard = {
         id: uuidv4(),
-        type: type,
+        type,
     };
+    return result;
 };
 
-export const getCards = (type: CardType, count: number): WeedCard[] =>
-    Array(count).map(() => getCard(type));
-
+export const getCards = (type: CardType, count: number): WeedCard[] => {
+    const result: WeedCard[] = [];
+    for (let i = 0; i < count; i++) {
+        result.push(getCard(type));
+    }
+    return result;
+};
 
 export const getDeck = (): WeedCard[] => {
     return [

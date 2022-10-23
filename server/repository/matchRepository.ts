@@ -10,7 +10,6 @@ export namespace MatchRepository {
         room: WeedRoom,
     ): Promise<WeedMatch> {
         const database = firebaseAdmin.database();
-
         let protectedMatchSnapshots: Dict<ProtectedMatchSnapshot[]> = {};
 
         const players = toArray(room.players);
@@ -32,7 +31,7 @@ export namespace MatchRepository {
 
         newMatch = addPrivateSnapshot(newMatch, initialPrivateSnapshot);
 
-        await database.ref(`matches/${room.matchId}`).set(newMatch);
+        await database.ref(`matches/${matchId}`).set(newMatch);
         return newMatch;
     }
 
@@ -67,6 +66,9 @@ function addPrivateSnapshot(
     match: WeedMatch,
     privateSnapshot: PrivateMatchSnapshot
 ): WeedMatch {
+    if (match.privateMatchSnapshots == null) {
+        match.privateMatchSnapshots = [];
+    }
     match.privateMatchSnapshots.push(privateSnapshot);
 
     const publicMatchPlayers: PublicMatchPlayer[] = privateSnapshot.players.map((p) => {
@@ -85,14 +87,32 @@ function addPrivateSnapshot(
         discards: privateSnapshot.discards,
     };
 
+    if (match.publicMatchSnapshots == null) {
+        match.publicMatchSnapshots = [];
+    }
     match.publicMatchSnapshots.push(nextPublicMatchSnapshot);
 
+
+    let protectedMatchSnapshots = match.protectedMatchSnapshots;
+    if (protectedMatchSnapshots) {
+        protectedMatchSnapshots = {};
+    }
     privateSnapshot.players.forEach((p) => {
         const protectedSnapshot: ProtectedMatchSnapshot = {
             hand: p.hand,
         };
-        match.protectedMatchSnapshots[p.player.id].push(protectedSnapshot);
+        if (protectedMatchSnapshots) {
+            let protectedSnapshots = protectedMatchSnapshots[p.player.id];
+            if (!protectedSnapshots) {
+                protectedSnapshots = [];
+                protectedMatchSnapshots[p.player.id] = protectedSnapshots;
+            }
+
+            protectedMatchSnapshots[p.player.id].push(protectedSnapshot);
+        }
     });
+
+    match.protectedMatchSnapshots = protectedMatchSnapshots;
 
     return match;
 }

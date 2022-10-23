@@ -22,13 +22,13 @@ export const PlayerAvatars: FunctionComponent<PlayerAvatarsProps> = (props) => {
                         const idsDict = props.room.readyPlayersIds ?? {};
                         const readyPlayerIds = toArray(idsDict);
                         const isReady = readyPlayerIds.includes(player.id);
-                        return <PlayerAvatar key={player.id} player={player} isReady={isReady} />
+                        return <PlayerAvatar key={player.id} player={player} isReady={isReady} size={30} />
                     })
                 }
 
                 {
-                    playersLeftToStart > 0 && Array(playersLeftToStart).fill(0).map((_, index) => {
-                        return <PlayerAvatar key={index} />
+                    props.room.matchId == null && playersLeftToStart > 0 && Array(playersLeftToStart).fill(0).map((_, index) => {
+                        return <PlayerAvatar key={index} size={30} />
                     })
                 }
             </AnimatePresence>

@@ -17,7 +17,6 @@ export namespace RoomRepository {
             name: roomName,
             players: {},
             readyPlayersIds: {},
-            isStarted: false,
             matchId: null,
         };
         await database.ref(`rooms/${roomId}`).set(room);
@@ -106,20 +105,11 @@ export namespace RoomRepository {
     
     export async function setMatchId(
         roomId: string,
-        matchId: string,
+        matchId: string | undefined,
     ): Promise<void> {
         const database = firebaseAdmin.database();
         const matchIdRef = database.ref(`/rooms/${roomId}/matchId`);
         await matchIdRef.set(matchId);
-    }
-
-    export async function setIsMatchStarted(
-        roomId: string,
-        isStarted: boolean,
-    ): Promise<void> {
-        const database = firebaseAdmin.database();
-        const isStartedRef = database.ref(`/rooms/${roomId}/isStarted`);
-        await isStartedRef.set(isStarted);
     }
 
     export async function clearReadyPlayers(
@@ -127,7 +117,7 @@ export namespace RoomRepository {
     ): Promise<void> {
         const database = firebaseAdmin.database();
         const readyPlayersIdsRef = database.ref(`/rooms/${roomId}/readyPlayersIds`);
-        await readyPlayersIdsRef.remove();
+        await readyPlayersIdsRef.set({});
     }
 
     export async function deletePlayers(

@@ -9,10 +9,10 @@ export const getInitialMatchSnapshot = (players: WeedPlayer[]): PrivateMatchSnap
     const matchPlayers: PrivateMatchPlayer[] = shuffle(players.map((player) => {
         const initialFields = getInitialFields(players.length);
         const matchPlayer: PrivateMatchPlayer = {
-            hand: [],
             fields: initialFields,
             player,
             smokedScore: 0,
+            hand: [],
         };
         return matchPlayer;
     }));
