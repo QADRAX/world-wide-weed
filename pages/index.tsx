@@ -1,105 +1,34 @@
-import { Box, Container, Divider, IconButton, Link, Stack, Typography } from "@mui/material";
-import styled from "@emotion/styled";
-import { motion } from "framer-motion";
-import { Logo } from "components/shared/Logo";
-import GoogleIcon from '@mui/icons-material/Google';
-import { GetServerSideProps } from "next";
-import { getCookie } from "cookies-next";
+import React from 'react';
+import { GetServerSidePropsContext } from 'next';
+import { MainScreen } from '../client/components/Shared/MainScreen';
+import { MainView } from '../client/components/MainView';
+import { UserInfo } from '../types/UserInfo';
+import { getUserFromPropsContext } from '../server/authentication';
 
-const RootStyle = styled("div")({
-  background: "rgb(228 249 239)",
-  height: "100vh",
-  display: "grid",
-  placeItems: "center",
-});
-
-const HeadingStyle = styled(Box)({
-  textAlign: "center",
-});
-
-const ContentStyle = styled("div")({
-  maxWidth: 480,
-  padding: 25,
-  margin: "auto",
-  display: "flex",
-  justifyContent: "center",
-  flexDirection: "column",
-  background: "#fff",
-});
-
-let easing = [0.6, -0.05, 0.01, 0.99];
-const fadeInUp = {
-  initial: {
-    y: 60,
-    opacity: 0,
-    transition: { duration: 0.6, ease: easing },
-  },
-  animate: {
-    y: 0,
-    opacity: 1,
-    transition: {
-      duration: 0.6,
-      ease: easing,
-    },
-  },
-};
-
-export default function Home() {
-  return (
-    <RootStyle>
-      <Container maxWidth="sm">
-        <ContentStyle>
-          <HeadingStyle component={motion.div} {...fadeInUp}>
-            <Logo />
-            <Typography variant="h5" sx={{ color: "text.secondary", mb: 5 }}>
-              Welcome to World Wide Weed!
-            </Typography>
-
-          </HeadingStyle>
-
-          <Divider sx={{ mb: 3 }} component={motion.div} {...fadeInUp}>
-            <Typography variant="body2" sx={{ color: "text.secondary" }}>
-              LOGIN
-            </Typography>
-          </Divider>
-
-          <Box component={motion.div} {...fadeInUp}>
-            <Stack direction="row" spacing={2}>
-              <IconButton
-                component={Link}
-                sx={{
-                  border: "2px solid #ccc",
-                  borderRadius: "5px",
-                  padding: "0.5675rem",
-                  flex: 1,
-                }}
-                color="primary"
-                href="/api/google"
-              >
-                <GoogleIcon />
-              </IconButton>
-            </Stack >
-          </Box>
-        </ContentStyle>
-      </Container>
-    </RootStyle>
-  );
+type IndexProps = {
+  userInfo: UserInfo;
 }
 
+export default (props: IndexProps) => {
+  return (
+      <MainScreen userInfo={props.userInfo}>
+        <MainView />
+      </MainScreen>
+  );
+};
 
-export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-  // check cookie
-  const token = getCookie("token", { req, res })?.toString();
-  if (token) {
+export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  const userInfo = await getUserFromPropsContext(ctx);
+  if (userInfo) {
     return {
-      redirect: {
-        statusCode: 302,
-        destination: "/game",
-      },
-    };
-  } else {
-    return {
-      props: {}
+      props: { userInfo },
     };
   }
+  return {
+    redirect: {
+      permanent: false,
+      destination: "/login",
+    },
+    props: {} as never,
+  };
 }
