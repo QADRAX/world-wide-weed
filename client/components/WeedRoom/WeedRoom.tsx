@@ -5,7 +5,7 @@ import { getRoomStatusText } from '../../../shared/weedUtils';
 import { toArray } from '../../../utils/Dict';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { useAuthenticatedUser } from '../../hooks/useAuth';
-import { useCurrentPlayerRoom } from '../../redux/getters';
+import { useCurrentPlayerRoom } from '../../hooks/usePlayerRoom';
 import { setIsLoading } from '../../redux/rooms/rooms';
 import { GameService } from '../../services/GameService';
 import { MainCard } from '../Shared/MainCard';

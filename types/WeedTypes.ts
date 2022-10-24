@@ -50,14 +50,14 @@ export type Field = {
 export type PrivateMatchPlayer = {
     hand: WeedCard[];
     fields: Field[];
-    player: WeedPlayer;
+    playerId: string;
     smokedScore: number;
 }
 
 export type PublicMatchPlayer = {
     handSize: number;
     fields: Field[];
-    player: WeedPlayer;
+    playerId: string;
     smokedScore: number;
 }
 
@@ -85,6 +85,8 @@ export type WeedMatch = {
     id: string;
     /** Current players in the match (anybody could read this) */
     players: WeedPlayer[];
+    /** Flag that indicates if current player is briked */
+    isCurrentPlayerBriked: boolean;
     /** Server side info. (only server side could read) */
     privateMatchSnapshots: PrivateMatchSnapshot[];
     /** Public match info. (anybody could read) */

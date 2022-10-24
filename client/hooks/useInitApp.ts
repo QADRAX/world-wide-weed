@@ -7,14 +7,22 @@ export const useInitApp = () => {
     const dispatch = useAppDispatch();
 
     useEffect(() => {
+        let unsubscribe: (() => void) | undefined = undefined;
+
         (async () => {
             dispatch(setIsLoading(true));
             const roomsDict = await GameService.getCurrentRooms();
             dispatch(setIsLoading(false));
             dispatch(setRooms(roomsDict));
-            GameService.attachToCurrentRooms((roomsDict) => {
+            unsubscribe = GameService.subscribeToCurrentRooms((roomsDict) => {
                 dispatch(setRooms(roomsDict));
             });
-        })()
-    }, []);
+        })();
+
+        return () => {
+            if (unsubscribe) {
+                unsubscribe();
+            }
+        };
+    }, [dispatch]);
 };

@@ -10,7 +10,7 @@ export const getInitialMatchSnapshot = (players: WeedPlayer[]): PrivateMatchSnap
         const initialFields = getInitialFields(players.length);
         const matchPlayer: PrivateMatchPlayer = {
             fields: initialFields,
-            player,
+            playerId: player.id,
             smokedScore: 0,
             hand: [],
         };

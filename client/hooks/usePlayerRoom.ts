@@ -1,6 +1,6 @@
 import { toArray } from "../../utils/Dict";
-import { useAppSelector } from "../hooks/redux";
-import { useAuthenticatedUser } from "../hooks/useAuth";
+import { useAppSelector } from "./redux";
+import { useAuthenticatedUser } from "./useAuth";
 
 export const useCurrentRooms = () => {
     const roomsDict = useAppSelector((state) => state.rooms.currentRooms);
@@ -27,5 +27,14 @@ export const useCurrentPlayerRoom = () => {
         return playerRoom;
     } else {
         throw new Error('You need to have a player in room to use this hook');
+    }
+}
+
+export const useCurrentPlayerMatchId = () => {
+    const playerRoom = useCurrentPlayerRoom();
+    if (playerRoom.matchId) {
+        return playerRoom.matchId;
+    } else {
+        throw new Error('You need to have a player in a room with a started match to use this hook');
     }
 }

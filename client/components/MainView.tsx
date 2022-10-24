@@ -4,7 +4,7 @@ import { WeedRoom } from "./WeedRoom/WeedRoom";
 import { WeedRoomSelector } from "./WeedRoomSelector/WeedRoomSelector";
 import { useAppSelector } from "../hooks/redux";
 import { useInitApp } from "../hooks/useInitApp";
-import { usePlayerRoom } from "../redux/getters";
+import { usePlayerRoom } from "../hooks/usePlayerRoom";
 
 export const MainView: FunctionComponent = () => {
     useInitApp();

@@ -3,6 +3,7 @@ import { firebaseAdmin } from "../firebaseAdmin";
 import { v4 } from 'uuid';
 import { getInitialMatchSnapshot } from "../game/initialGame";
 import { Dict, toArray } from "../../utils/Dict";
+import { WeedMatchValidator } from "../game/WeedMatchValidator";
 
 export namespace MatchRepository {
 
@@ -22,6 +23,7 @@ export namespace MatchRepository {
         let newMatch: WeedMatch = {
             id: matchId,
             players: players,
+            isCurrentPlayerBriked: false,
             publicMatchSnapshots: [],
             privateMatchSnapshots: [],
             protectedMatchSnapshots: {},
@@ -74,7 +76,7 @@ function addPrivateSnapshot(
     const publicMatchPlayers: PublicMatchPlayer[] = privateSnapshot.players.map((p) => {
         const publicMatchPlayer: PublicMatchPlayer = {
             handSize: p.hand.length,
-            player: p.player,
+            playerId: p.playerId,
             smokedScore: p.smokedScore,
             fields: p.fields,
         };
@@ -102,17 +104,20 @@ function addPrivateSnapshot(
             hand: p.hand,
         };
         if (protectedMatchSnapshots) {
-            let protectedSnapshots = protectedMatchSnapshots[p.player.id];
+            let protectedSnapshots = protectedMatchSnapshots[p.playerId];
             if (!protectedSnapshots) {
                 protectedSnapshots = [];
-                protectedMatchSnapshots[p.player.id] = protectedSnapshots;
+                protectedMatchSnapshots[p.playerId] = protectedSnapshots;
             }
 
-            protectedMatchSnapshots[p.player.id].push(protectedSnapshot);
+            protectedMatchSnapshots[p.playerId].push(protectedSnapshot);
         }
     });
 
     match.protectedMatchSnapshots = protectedMatchSnapshots;
+
+    const validator = new WeedMatchValidator(match.privateMatchSnapshots);
+    match.isCurrentPlayerBriked = validator.isCurrentPlayerBriked;
 
     return match;
 }

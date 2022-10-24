@@ -3,7 +3,7 @@ import { AnimatePresence } from 'framer-motion';
 import React from 'react';
 import { MAX_PLAYERS_IN_MATCH } from '../../../../shared/constants';
 import { toArray } from '../../../../utils/Dict';
-import { useCurrentPlayerRoom } from '../../../redux/getters';
+import { useCurrentPlayerRoom } from '../../../hooks/usePlayerRoom';
 import { RoomPlayerEntry } from './RoomPlayerEntry';
 
 const MainContainer = styled(Container)({
