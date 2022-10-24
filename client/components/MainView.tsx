@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from "react";
-import { LoaderContainer } from "../components/LoaderContainer";
-import { WeedRoom } from "../components/WeedRoom/WeedRoom";
-import { WeedRoomSelector } from "../components/WeedRoomSelector/WeedRoomSelector";
+import { LoaderContainer } from "./Shared/LoaderContainer";
+import { WeedRoom } from "./WeedRoom/WeedRoom";
+import { WeedRoomSelector } from "./WeedRoomSelector/WeedRoomSelector";
 import { useAppSelector } from "../hooks/redux";
 import { useInitApp } from "../hooks/useInitApp";
 import { usePlayerRoom } from "../redux/getters";

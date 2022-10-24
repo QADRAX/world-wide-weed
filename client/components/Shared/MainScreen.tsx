@@ -1,8 +1,8 @@
 import React, { FunctionComponent, useEffect } from 'react';
-import { Header } from '../Header/Header';
+import { Header } from './Header/Header';
 import { Paper, styled } from '@mui/material';
 import { useAuth } from '../../hooks/useAuth';
-import { LoaderContainer } from '../LoaderContainer';
+import { LoaderContainer } from './LoaderContainer';
 import { UserInfo } from '../../../types/UserInfo';
 
 const RootContainer = styled("div")(({

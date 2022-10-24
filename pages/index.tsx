@@ -1,7 +1,7 @@
 import React from 'react';
 import { GetServerSidePropsContext } from 'next';
 import { MainScreen } from '../client/components/Shared/MainScreen';
-import { MainView } from '../client/views/MainView';
+import { MainView } from '../client/components/MainView';
 import { UserInfo } from '../types/UserInfo';
 import { getUserFromPropsContext } from '../server/authentication';
 
