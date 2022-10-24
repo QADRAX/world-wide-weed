@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getUserInfoFromRequest } from "../../../server/authentication";
 import { GameController } from "../../../server/GameController";
-import { DiscardCardRequest } from "../../../types/weed/WeedTypes";
+import { DiscardCardRequest } from "../../../types/WeedTypes";
 import { Log } from "../../../utils/Log";
 
 interface ExtendedNextApiRequest extends NextApiRequest {

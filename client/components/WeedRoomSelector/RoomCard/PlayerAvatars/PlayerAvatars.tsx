@@ -2,7 +2,7 @@ import { Stack } from '@mui/material';
 import { AnimatePresence } from 'framer-motion';
 import React, { FunctionComponent } from 'react';
 import { MAX_PLAYERS_IN_MATCH } from '../../../../../shared/constants';
-import { WeedRoom } from '../../../../../types/weed/WeedTypes';
+import { WeedRoom } from '../../../../../types/WeedTypes';
 import { toArray } from '../../../../../utils/Dict';
 import { PlayerAvatar } from '../../../Shared/PlayerAvatar';
 

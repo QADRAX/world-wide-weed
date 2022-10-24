@@ -1,5 +1,5 @@
-import { Dict } from "../../utils/Dict";
-import { WeedPlayer } from "../Player";
+import { Dict } from "../utils/Dict";
+import { WeedPlayer } from "./Player";
 
 // CARD TYPES
 

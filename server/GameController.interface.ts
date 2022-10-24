@@ -2,8 +2,8 @@ import { CreateRoomRequest } from "../pages/api/rooms/create";
 import { JoinRoomRequest } from "../pages/api/rooms/join";
 import { ReadyToMatchRequest } from "../pages/api/rooms/ready";
 import { ValidationResult } from "../types/ValidationResult";
-import { WeedError } from "../types/weed/MatchErrors";
-import { WeedRoom } from "../types/weed/WeedTypes";
+import { WeedError } from "../types/MatchErrors";
+import { WeedRoom } from "../types/WeedTypes";
 
 export interface IGameController {
     /**

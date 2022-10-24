@@ -2,7 +2,7 @@ import { Button, Card, CardActions, CardContent, Typography } from "@mui/materia
 import { motion } from "framer-motion";
 import React, { FunctionComponent } from "react";
 import { getRoomStatusText } from "../../../../shared/weedUtils";
-import { WeedRoom } from "../../../../types/weed/WeedTypes";
+import { WeedRoom } from "../../../../types/WeedTypes";
 import { ANIMATION_VERTICAL_FADE } from "../../../config/animations";
 import { useAppDispatch } from "../../../hooks/redux";
 import { useIsRoomAdmin } from "../../../hooks/useAuth";

@@ -1,7 +1,7 @@
 import { ValidationResult } from "../../types/ValidationResult";
-import { CardRequest, DiscardCardRequest, isPlayCardRequest, PlayCardRequest, PrivateMatchSnapshot as MatchSnapshot } from "../../types/weed/WeedTypes";
+import { CardRequest, DiscardCardRequest, isPlayCardRequest, PlayCardRequest, PrivateMatchSnapshot as MatchSnapshot } from "../../types/WeedTypes";
 import { getFieldValue } from "./fields";
-import { WeedError } from "../../types/weed/MatchErrors";
+import { WeedError } from "../../types/MatchErrors";
 
 export class WeedMatchValidator {
     history: MatchSnapshot[];

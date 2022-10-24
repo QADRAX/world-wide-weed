@@ -2,7 +2,7 @@ import { CreateRoomRequest } from "../../pages/api/rooms/create";
 import { DeleteRoomRequest } from "../../pages/api/rooms/delete";
 import { JoinRoomRequest } from "../../pages/api/rooms/join";
 import { ReadyToMatchRequest } from "../../pages/api/rooms/ready";
-import { WeedRoom } from "../../types/weed/WeedTypes";
+import { WeedRoom } from "../../types/WeedTypes";
 import { Dict } from "../../utils/Dict";
 import { firebaseClient } from "../firebaseClient";
 

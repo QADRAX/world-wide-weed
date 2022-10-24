@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { CardType, WeedCard } from '../../types/weed/WeedTypes';
+import { CardType, WeedCard } from '../../types/WeedTypes';
 
 export const getCard = (type: CardType): WeedCard => {
     const result: WeedCard = {

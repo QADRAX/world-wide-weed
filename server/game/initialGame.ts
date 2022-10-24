@@ -1,5 +1,5 @@
 import { WeedPlayer } from "../../types/Player";
-import { PrivateMatchPlayer, PrivateMatchSnapshot } from "../../types/weed/WeedTypes";
+import { PrivateMatchPlayer, PrivateMatchSnapshot } from "../../types/WeedTypes";
 import { shuffle } from "../../utils/ArrayShuffle";
 import { getDeck } from "./decks";
 import { getInitialFields } from "./fields";

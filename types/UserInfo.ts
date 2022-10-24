@@ -1,4 +1,4 @@
-import { WeedMatch } from "./weed/WeedTypes";
+import { WeedMatch } from "./WeedTypes";
 
 export type UserRole = 
     /**

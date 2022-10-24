@@ -1,4 +1,4 @@
-import { WeedRoom } from "../../types/weed/WeedTypes";
+import { WeedRoom } from "../../types/WeedTypes";
 import { firebaseAdmin } from "../firebaseAdmin";
 import { v4 } from 'uuid';
 import { toWeedPlayer } from "../../shared/mappers";

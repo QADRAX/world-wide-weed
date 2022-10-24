@@ -1,4 +1,4 @@
-import { PrivateMatchSnapshot, ProtectedMatchSnapshot, PublicMatchPlayer, PublicMatchSnapshot, WeedMatch, WeedRoom } from "../../types/weed/WeedTypes";
+import { PrivateMatchSnapshot, ProtectedMatchSnapshot, PublicMatchPlayer, PublicMatchSnapshot, WeedMatch, WeedRoom } from "../../types/WeedTypes";
 import { firebaseAdmin } from "../firebaseAdmin";
 import { v4 } from 'uuid';
 import { getInitialMatchSnapshot } from "../game/initialGame";

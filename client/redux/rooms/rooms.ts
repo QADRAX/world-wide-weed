@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { WeedRoom } from "../../../types/weed/WeedTypes";
+import { WeedRoom } from "../../../types/WeedTypes";
 import { Dict } from "../../../utils/Dict";
 
 export interface RoomsSliceState {

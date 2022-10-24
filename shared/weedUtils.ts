@@ -1,4 +1,4 @@
-import { WeedRoom } from "../types/weed/WeedTypes";
+import { WeedRoom } from "../types/WeedTypes";
 import { toArray } from "../utils/Dict";
 import { MAX_PLAYERS_IN_MATCH, MIN_PLAYERS_IN_MATCH } from "./constants";
 

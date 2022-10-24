@@ -1,5 +1,5 @@
 import { firebaseAdmin } from "../server/firebaseAdmin";
-import { WeedRoom } from "../types/weed/WeedTypes";
+import { WeedRoom } from "../types/WeedTypes";
 import { Log } from "../utils/Log";
 import dotenv from "dotenv";
 import { Dict, toArray } from "../utils/Dict";

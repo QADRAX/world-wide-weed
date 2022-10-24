@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import { DEFAULT_FIELDS, INCREASED_FIELDS_PLAYER_LIMIT, REDUCED_FIELDS_PLAYER_LIMIT } from '../../shared/constants';
-import { Field, FieldValue } from "../../types/weed/WeedTypes";
+import { Field, FieldValue } from "../../types/WeedTypes";
 
 export const getMaxFields = (playerCount: number) => {
     let result = DEFAULT_FIELDS;
