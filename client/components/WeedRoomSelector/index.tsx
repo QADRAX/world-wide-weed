@@ -5,8 +5,8 @@ import React from 'react';
 import { useIsRoomAdmin } from '../../hooks/useAuth';
 import { useCurrentRooms } from '../../hooks/usePlayerRoom';
 import { MainCard } from '../Shared/MainCard';
-import { CreateRoomButton } from './CreateRoomButton.tsx/CreateRoomButton';
-import { RoomCard } from './RoomCard/RoomCard';
+import { CreateRoomButton } from './CreateRoomButton.tsx';
+import { RoomCard } from './RoomCard';
 
 export const WeedRoomSelector = () => {
     const rooms = useCurrentRooms();
