@@ -292,7 +292,7 @@ export class WeedMatchValidator {
                                             if (targetField.protectedValue == 'dog' && !isOwnTarget) {
                                                 result.errors.push('ProtectedByDog');
                                             } else {
-                                                if (targetField.value != 'empty' && targetField.value != 'dandileon') {
+                                                if (targetField.value != 'empty' && targetField.value != 'dandeleon') {
                                                     applyNextMove(() => {
                                                         const harvestValue = getFieldValue(targetField.value);
                                                         targetField.value = 'empty';
@@ -354,7 +354,7 @@ export class WeedMatchValidator {
                                             if (targetField.protectedValue == 'dog') {
                                                 result.errors.push('ProtectedByDog');
                                             } else {
-                                                if (targetField.value == 'empty' || targetField.value == 'dandileon') {
+                                                if (targetField.value == 'empty' || targetField.value == 'dandeleon') {
                                                     result.errors.push('NotIlegalField');
                                                 } else {
                                                     // Apply

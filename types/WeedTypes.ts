@@ -18,7 +18,7 @@ export type HarvestableCardType = 'weed1'
     | 'weed3'
     | 'weed4'
     | 'weed6'
-    | 'dandileon'
+    | 'dandeleon'
 
 export type CardType = HarvestableCardType
     | ProtectableCardType
