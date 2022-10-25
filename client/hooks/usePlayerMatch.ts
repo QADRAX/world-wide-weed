@@ -1,3 +1,4 @@
+import { WeedPlayer } from "../../types/Player";
 import { useAppSelector } from "./redux";
 
 export function useCurrentHand(){
@@ -18,13 +19,16 @@ export function useCurrentTurn(){
     return currentTurn;
 }
 
-export function useCurrentPlayer(){
+export function useCurrentPlayer(): {
+    currentPlayer: WeedPlayer | undefined;
+    isBriked: boolean;
+} {
     const currentTurn = useCurrentTurn();
     const players = useAppSelector((state) => state.match.players);
     const isBriked = useAppSelector((state) => state.match.isCurrentPlayerBriked);
     const numberOfPlayers = players.length;
     const currentPlayerIndex = currentTurn % numberOfPlayers;
-    const currentPlayer = players[currentPlayerIndex];
+    const currentPlayer: WeedPlayer | undefined = players[currentPlayerIndex];
 
     return { currentPlayer, isBriked };
 }

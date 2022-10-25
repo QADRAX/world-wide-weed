@@ -1,10 +1,10 @@
-import { Box, Divider, styled } from '@mui/material';
+import { Box, styled } from '@mui/material';
 import React from 'react';
 import { useInitMatch } from '../../../hooks/useInitMatch';
 import { GameBoard } from './GameBoard';
 import { Hand } from './Hand';
 
-const MainContainer = styled(Box)({
+const MainContainer = styled("div")({
     display: 'flex',
     flexDirection: 'column',
     height: '100%',
@@ -24,8 +24,6 @@ export const Match = () => {
             <GameBoardContainer>
                 <GameBoard />
             </GameBoardContainer>
-            
-            <Divider sx={{ mb: 1 }}>Hand</Divider>
             
             <Hand />
         </MainContainer>

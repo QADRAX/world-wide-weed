@@ -7,7 +7,7 @@ const MainContainer = styled(Container)({
     height: '100%',
 });
 
-const BodyContainer = styled(Container)({
+const BodyContainer = styled('div')({
     flex: 1,
     overflowY: 'auto',
     overflowX: 'hidden',
@@ -29,7 +29,7 @@ export const MainCard: FunctionComponent<MainCardProps> = (props) => {
 
             <Divider sx={{ mb: 1 }}></Divider>
 
-            <BodyContainer maxWidth={false}>
+            <BodyContainer>
                 {props.children}
             </BodyContainer>
             {
