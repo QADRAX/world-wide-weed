@@ -23,6 +23,8 @@ export const getInitialFields = (playerCount: number) => {
             id: uuidv4(),
             value: 'empty',
             protectedValue: 'empty',
+            valueOwnerId: '',
+            protectedValueOwnerId: '',
         };
         result.push(field);
     }
@@ -33,7 +35,7 @@ export const getFieldValue = (type: FieldValue): number => {
     switch (type) {
         default:
         case 'empty':
-        case 'dandileon':
+        case 'dandeleon':
             return 0;
         case 'weed1':
             return 1;

@@ -31,9 +31,15 @@ export const matchSlice = createSlice({
         setIsLoading: (state, action: PayloadAction<boolean>) => {
             state.isLoading = action.payload;
         },
+        setIsCurrentPlayerBriked: (state, action: PayloadAction<boolean>) => {
+            state.isCurrentPlayerBriked = action.payload;
+        },
+        setMatchPlayers: (state, action: PayloadAction<WeedPlayer[]>) => {
+            state.players = action.payload;
+        },
     },
 });
 
-export const { setPublicSnapshots, setProtectedSnapshots, setIsLoading } = matchSlice.actions;
+export const { setPublicSnapshots, setProtectedSnapshots, setIsLoading, setIsCurrentPlayerBriked, setMatchPlayers } = matchSlice.actions;
 
 export default matchSlice.reducer;

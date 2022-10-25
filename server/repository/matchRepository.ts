@@ -26,7 +26,7 @@ export namespace MatchRepository {
             isCurrentPlayerBriked: false,
             publicMatchSnapshots: [],
             privateMatchSnapshots: [],
-            protectedMatchSnapshots: {},
+            protectedMatchSnapshots,
         };
 
         const initialPrivateSnapshot = getInitialMatchSnapshot(players);
@@ -68,9 +68,6 @@ function addPrivateSnapshot(
     match: WeedMatch,
     privateSnapshot: PrivateMatchSnapshot
 ): WeedMatch {
-    if (match.privateMatchSnapshots == null) {
-        match.privateMatchSnapshots = [];
-    }
     match.privateMatchSnapshots.push(privateSnapshot);
 
     const publicMatchPlayers: PublicMatchPlayer[] = privateSnapshot.players.map((p) => {
@@ -78,7 +75,7 @@ function addPrivateSnapshot(
             handSize: p.hand.length,
             playerId: p.playerId,
             smokedScore: p.smokedScore,
-            fields: p.fields,
+            fields: [...p.fields],
         };
         return publicMatchPlayer;
     });
@@ -86,32 +83,18 @@ function addPrivateSnapshot(
     const nextPublicMatchSnapshot: PublicMatchSnapshot = {
         players: publicMatchPlayers,
         deckSize: privateSnapshot.deck.length,
-        discards: privateSnapshot.discards,
+        discards: [...privateSnapshot.discards],
     };
 
-    if (match.publicMatchSnapshots == null) {
-        match.publicMatchSnapshots = [];
-    }
     match.publicMatchSnapshots.push(nextPublicMatchSnapshot);
 
 
-    let protectedMatchSnapshots = match.protectedMatchSnapshots;
-    if (protectedMatchSnapshots) {
-        protectedMatchSnapshots = {};
-    }
+    const protectedMatchSnapshots = match.protectedMatchSnapshots;
     privateSnapshot.players.forEach((p) => {
         const protectedSnapshot: ProtectedMatchSnapshot = {
-            hand: p.hand,
+            hand: [...p.hand],
         };
-        if (protectedMatchSnapshots) {
-            let protectedSnapshots = protectedMatchSnapshots[p.playerId];
-            if (!protectedSnapshots) {
-                protectedSnapshots = [];
-                protectedMatchSnapshots[p.playerId] = protectedSnapshots;
-            }
-
-            protectedMatchSnapshots[p.playerId].push(protectedSnapshot);
-        }
+        protectedMatchSnapshots[p.playerId].push(protectedSnapshot);
     });
 
     match.protectedMatchSnapshots = protectedMatchSnapshots;

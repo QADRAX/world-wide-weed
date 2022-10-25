@@ -44,6 +44,29 @@ export namespace GameService {
         return snapshots;
     }
 
+    export async function getIsCurrentPlayerBriked(
+        matchId: string,
+    ): Promise<boolean> {
+        const database = firebaseClient.database();
+        const isBrikedRef = database.ref(`/matches/${matchId}/isCurrentPlayerBriked`);
+        const snap = await isBrikedRef.once('value');
+        const isBriked = snap.val() as boolean;
+        return isBriked;
+    }
+
+    export function subscribeToIsCurrentPlayerBriked(
+        matchId: string,
+        callback: (isBriked: boolean) => void,
+    ): () => void {
+        const database = firebaseClient.database();
+        const isBrikedRef = database.ref(`/matches/${matchId}/isCurrentPlayerBriked`);
+        isBrikedRef.on('value', (snap) => {
+            const isBriked = snap.val() as boolean;
+            callback(isBriked);
+        });
+        return () => isBrikedRef.off();
+    }
+
     export function subscribeToProtectedMatchSnapshots(
         playerId: string,
         matchId: string, 

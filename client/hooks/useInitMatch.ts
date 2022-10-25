@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useCurrentPlayerMatchId } from "./usePlayerRoom";
 import { GameService } from "../services/GameService";
 import { useAppDispatch } from "./redux";
-import { setProtectedSnapshots, setPublicSnapshots } from "../redux/match/match";
+import { setIsCurrentPlayerBriked, setMatchPlayers, setProtectedSnapshots, setPublicSnapshots } from "../redux/match/match";
 import { useAuthenticatedUser } from "./useAuth";
 
 export const useInitMatch = () => {
@@ -13,12 +13,15 @@ export const useInitMatch = () => {
     useEffect(() => {
         let unsubscribePublic: (() => void) | undefined = undefined;
         let unsubscribeProtected: (() => void) | undefined = undefined;
+        let unsubscribeIsCurrentPlayerBriked: (() => void) | undefined = undefined;
 
         (async () => {
             const publicSnapshots = await GameService.getPublicMatchSnapshots(matchId);
             dispatch(setPublicSnapshots(publicSnapshots));
             const protectedSnapshots = await GameService.getProtectedMatchSnapshots(user.id, matchId);
             dispatch(setProtectedSnapshots(protectedSnapshots));
+            const matchPlayers = await GameService.getMatchPlayers(matchId);
+            dispatch(setMatchPlayers(matchPlayers));
 
             unsubscribePublic = GameService.subscribeToPublicMatchSnapshots(matchId, (snapshots) => {
                 dispatch(setPublicSnapshots(snapshots));
@@ -32,6 +35,14 @@ export const useInitMatch = () => {
                 }
             );
 
+            unsubscribeIsCurrentPlayerBriked = GameService.subscribeToIsCurrentPlayerBriked(
+                matchId,
+                (isBriked) => {
+                    dispatch(setIsCurrentPlayerBriked(isBriked));
+                }
+            );
+
+
         })();
 
         return () => {
@@ -40,6 +51,9 @@ export const useInitMatch = () => {
             }
             if (unsubscribeProtected) {
                 unsubscribeProtected();
+            }
+            if (unsubscribeIsCurrentPlayerBriked) {
+                unsubscribeIsCurrentPlayerBriked();
             }
         };
     }, [dispatch, matchId, user]);

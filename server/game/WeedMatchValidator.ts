@@ -2,6 +2,7 @@ import { ValidationResult } from "../../types/ValidationResult";
 import { CardRequest, DiscardCardRequest, isPlayCardRequest, PlayCardRequest, PrivateMatchPlayer, PrivateMatchSnapshot as MatchSnapshot } from "../../types/WeedTypes";
 import { getFieldValue } from "./fields";
 import { WeedError } from "../../types/MatchErrors";
+import structuredClone from '@ungap/structured-clone';
 
 export class WeedMatchValidator {
     history: MatchSnapshot[];
@@ -61,7 +62,7 @@ export class WeedMatchValidator {
             result: undefined,
             errors: [],
         };
-        const snap = Object.assign({}, snapshot);
+        const snap = structuredClone(snapshot);
         const isGameOver = this.isGameOver(snap);
         if (isGameOver) {
             result.errors.push('GameOver');
@@ -410,7 +411,7 @@ export class WeedMatchValidator {
             result: undefined,
             errors: [],
         };
-        const snap = Object.assign({}, snapshot);
+        const snap = structuredClone(snapshot);
         const isGameOver = this.isGameOver(snap);
 
         if (isGameOver) {

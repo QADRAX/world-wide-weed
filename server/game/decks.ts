@@ -24,7 +24,7 @@ export const getDeck = (): WeedCard[] => {
         ...getCards('weed3', 4),
         ...getCards('weed4', 3),
         ...getCards('weed6', 1),
-        ...getCards('dandileon', 5),
+        ...getCards('dandeleon', 5),
         ...getCards('weedkiller', 5),
         ...getCards('busted', 2),
         ...getCards('hippie', 3),
