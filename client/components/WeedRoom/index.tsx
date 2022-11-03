@@ -11,6 +11,7 @@ import { GameService } from '../../services/GameService';
 import { MainCard } from '../Shared/MainCard';
 import { Lobby } from './Lobby/Lobby';
 import { Match } from './Match/Match';
+import { MatchInfo } from './Match/MatchInfo';
 
 export const WeedRoom = () => {
     const isLoading = useAppSelector(state => state.rooms.isLoading);
@@ -52,9 +53,14 @@ export const WeedRoom = () => {
                     <Typography variant="h5" component="div" sx={{ p: 1 }}>
                         {currentRoom.name}
                     </Typography>
-                    <Typography color="text.secondary">
-                        {roomStatusText}
-                    </Typography>
+                    {
+                        !isMatchStarted ?
+                            (<Typography color="text.secondary">
+                                {roomStatusText}
+                            </Typography>)
+                            : <MatchInfo />
+                    }
+
                 </>
             }
             footer={

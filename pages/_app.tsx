@@ -8,6 +8,7 @@ import theme from '../client/config/theme';
 import createEmotionCache from '../client/config/createEmotionCache';
 import { ReduxProvider } from '../client/context/ReduxContext.component';
 import { AuthProvider } from '../client/context/AuthContext.component';
+import '../client/styles/globals.css';
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();

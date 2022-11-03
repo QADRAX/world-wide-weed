@@ -1,37 +1,45 @@
-import { Box, Card, Skeleton } from '@mui/material';
+import { Box, Card, Skeleton, styled } from '@mui/material';
 import { AnimatePresence, motion } from 'framer-motion';
 import React, { FunctionComponent } from 'react';
 import { CardType, EmptyCardType } from '../../../../types/WeedTypes';
-import { ANIMATION_HORIZONTAL_FADE, ANIMATION_SIMPLE_FADE } from '../../../config/animations';
+import { ANIMATION_SIMPLE_FADE } from '../../../config/animations';
+
+const StyledCard = styled(Card)({
+    display: 'grid',
+    fontSize: '1.5rem',
+})
 
 export type WeedCardProps = {
     cardType: CardType | EmptyCardType;
     disabled?: boolean;
+    selected?: boolean;
+    highlighted?: boolean;
+    onClick?: () => void;
 }
 
-const width = '60px';
-const height = '90px';
+const width = '50px';
+const height = '75px';
 
 export const WeedCard: FunctionComponent<WeedCardProps> = (props) => {
-    const [shadow, setShadow] = React.useState(3);
 
     const imageUrl = props.cardType != 'empty'
         ? `url(/cards/${props.cardType}.jpg)`
         : undefined;
 
-    const onMouseOver = () => setShadow(8);
-    const onMouseOut = () => setShadow(3);
+    const cursor = props.cardType == 'empty'
+        ? 'default'
+        : props.disabled
+            ? 'not-allowed'
+            : 'pointer';
 
     return (
-        <Card
-            component={motion.div} 
-            {...ANIMATION_HORIZONTAL_FADE}
+        <StyledCard
+            className={props.selected ? 'selected' : ''}
             sx={{
                 position: 'relative',
+                cursor: cursor,
             }}
-            elevation={shadow}
-            onMouseOver={onMouseOver}
-            onMouseOut={onMouseOut}
+            elevation={3}
         >
             <AnimatePresence>
                 {
@@ -39,16 +47,15 @@ export const WeedCard: FunctionComponent<WeedCardProps> = (props) => {
                         <Skeleton
                             component={motion.div}
                             {...ANIMATION_SIMPLE_FADE}
+                            color="primary"
                             sx={{
                                 position: 'absolute',
                                 width,
                                 height,
-
                             }}
                         >
-
                         </Skeleton>
-                        )
+                    )
                 }
             </AnimatePresence>
             <Box sx={{
@@ -61,6 +68,6 @@ export const WeedCard: FunctionComponent<WeedCardProps> = (props) => {
                 opacity: props.disabled ? 0.2 : 1,
                 transition: 'opacity 0.2s',
             }} />
-        </Card >
+        </StyledCard >
     );
 }

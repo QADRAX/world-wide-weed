@@ -34,6 +34,11 @@ export const PlayerZone: FunctionComponent<PlayerZoneProps> = (props) => {
                 <Typography variant="h6">
                     {props.playerInfo.name}
                 </Typography>
+
+                <Typography variant="caption">
+                    Hand: {props.playerSnap.handSize}
+                </Typography>
+
                 <Typography variant="caption">
                     Score: {props.playerSnap.smokedScore} ({virtualScore})
                 </Typography>
