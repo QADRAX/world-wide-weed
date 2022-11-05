@@ -9,7 +9,7 @@ export const MatchInfo = () => {
     const isCurrentPlayerTurn = useIsCurrentPlayerTurn();
     const currentSnap = useCurrentMatchSnapshot();
 
-    const turnText = `Turn: ${currentTurn}/${totalTurns}`;
+    const turnText = `Turn: ${currentTurn+1}/${totalTurns}`;
     const playerText = isCurrentPlayerTurn ? `It's your turn` : `Turn of: ${currentPlayer?.name}`;
     const deckSize = currentSnap?.deckSize ?? 0;
     const deckText = `Deck size: ${deckSize}`;

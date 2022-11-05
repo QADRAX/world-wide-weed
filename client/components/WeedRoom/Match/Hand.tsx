@@ -17,7 +17,7 @@ export const Hand = () => {
             </Divider>
             <Stack sx={{ ml: 2, mr: 2, mb: 2 }} direction="row" spacing={1} justifyContent="center" alignItems="center">
                 {hand.map((card) => (
-                    <WeedCard key={card.id} cardType={card.type} selected disabled={!isCurrentPlayerTurn} />
+                    <WeedCard key={card.id} cardType={card.type}  disabled={!isCurrentPlayerTurn} />
                 ))}
             </Stack>
         </Stack>
