@@ -51,3 +51,42 @@ export function useIsCurrentPlayerTurn(){
     const isCurrentPlayerTurn = user.id === currentPlayer?.id;
     return isCurrentPlayerTurn;
 }
+
+export function useSelectedCardType(){
+    const selectedCardId = useAppSelector((state) => state.match.selectedCardId);
+    const currentHand = useCurrentHand();
+    const selectedCard = currentHand.find((card) => card.id === selectedCardId);
+    return selectedCard?.type;
+}
+
+export function useSelectedTargetField() {
+    const targetFieldId = useAppSelector((state) => state.match.tagetFieldId);
+    const currentSnap = useCurrentMatchSnapshot();
+    const player = currentSnap?.players.find((player) => player.fields.some((field) => field.id === targetFieldId));
+    const field = player?.fields.find((field) => field.id === targetFieldId);
+    return { player, field };
+}
+
+export function useSelectedDestinationField() {
+    const destinationFieldId = useAppSelector((state) => state.match.destinationFieldId);
+    const currentSnap = useCurrentMatchSnapshot();
+    const player = currentSnap?.players.find((player) => player.fields.some((field) => field.id === destinationFieldId));
+    const field = player?.fields.find((field) => field.id === destinationFieldId);
+    return { player, field };
+}
+
+export function useIsValidSelection() {
+    const selectedCardType = useSelectedCardType();
+    const { field: targetField } = useSelectedTargetField();
+    const { field: destinationField } = useSelectedDestinationField();
+
+    let isValid = false;
+    if (selectedCardType) {
+        if (selectedCardType === 'stealer') {
+            isValid = !!destinationField;
+        } else {
+            isValid = !!targetField;
+        }
+    }
+    return isValid;
+}

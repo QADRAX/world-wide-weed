@@ -3,7 +3,7 @@ import { DeleteRoomRequest } from "../../pages/api/rooms/delete";
 import { JoinRoomRequest } from "../../pages/api/rooms/join";
 import { ReadyToMatchRequest } from "../../pages/api/rooms/ready";
 import { WeedPlayer } from "../../types/Player";
-import { ProtectedMatchSnapshot, PublicMatchSnapshot, WeedRoom } from "../../types/WeedTypes";
+import { PlayCardRequest, ProtectedMatchSnapshot, PublicMatchSnapshot, WeedRoom } from "../../types/WeedTypes";
 import { Dict } from "../../utils/Dict";
 import { firebaseClient } from "../firebaseClient";
 
@@ -147,6 +147,16 @@ export namespace GameService {
 
     export async function deleteRoom(request: DeleteRoomRequest) {
         await window.fetch('/api/rooms/delete', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(request)
+        });
+    }
+
+    export async function playCard(request: PlayCardRequest) {
+        await window.fetch('/api/match/play', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

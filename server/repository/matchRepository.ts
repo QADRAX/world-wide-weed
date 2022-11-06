@@ -72,7 +72,7 @@ function addPrivateSnapshot(
 
     const publicMatchPlayers: PublicMatchPlayer[] = privateSnapshot.players.map((p) => {
         const publicMatchPlayer: PublicMatchPlayer = {
-            handSize: p.hand.length,
+            handSize: p.hand?.length ?? 0,
             playerId: p.playerId,
             smokedScore: p.smokedScore,
             fields: [...p.fields],
@@ -82,7 +82,7 @@ function addPrivateSnapshot(
 
     const nextPublicMatchSnapshot: PublicMatchSnapshot = {
         players: publicMatchPlayers,
-        deckSize: privateSnapshot.deck.length,
+        deckSize: privateSnapshot.deck?.length ?? 0,
         discards: [...privateSnapshot.discards],
     };
 
@@ -91,15 +91,16 @@ function addPrivateSnapshot(
 
     const protectedMatchSnapshots = match.protectedMatchSnapshots;
     privateSnapshot.players.forEach((p) => {
+        const playerHand = p.hand ?? [];
         const protectedSnapshot: ProtectedMatchSnapshot = {
-            hand: [...p.hand],
+            hand: [...playerHand],
         };
         protectedMatchSnapshots[p.playerId].push(protectedSnapshot);
     });
 
     match.protectedMatchSnapshots = protectedMatchSnapshots;
 
-    const validator = new WeedMatchValidator(match.privateMatchSnapshots);
+    const validator = new WeedMatchValidator(match.privateMatchSnapshots, match.players);
     match.isCurrentPlayerBriked = validator.isCurrentPlayerBriked;
 
     return match;

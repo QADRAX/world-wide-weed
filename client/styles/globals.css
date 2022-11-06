@@ -3,8 +3,22 @@
     --angle: "45deg";
 }
 
+.selected-0 {
+    border: var(--border-size) dashed #399953;
+}
+
+.selected-1 {
+    border: var(--border-size) dashed #377af5;
+}
+
+.selected-2 {
+    border: var(--border-size) dashed #d53e33;
+}
+
+
 .selected {
-    --border-size: 0.1rem;
+    --border-size: 0.2rem;
+    border-radius: 4px;
     border: var(--border-size) dashed #399953;
 }
 
@@ -33,18 +47,34 @@
         }
     }
 
-    .selected {
-        --border-size: 0.2rem;
-        border: var(--border-size) dashed transparent;
+    .selected-0 {
         border-image: conic-gradient(from var(--angle),
                 #d53e33 0deg 90deg,
                 #fbb300 90deg 180deg,
                 #377af5 180deg 270deg,
                 #399953 270deg 360deg) 1 stretch;
-        background: rgb(255 255 255 / var(--opacity));
+    }
+
+    .selected-1 {
+        border-image: conic-gradient(from var(--angle),
+                #d53e33 0deg 90deg,
+                #377af5 90deg 180deg,
+                #d53e33 180deg 270deg,
+                #377af5 270deg 360deg) 1 stretch;
+    }
+
+    .selected-2 {
+        border-image: conic-gradient(from var(--angle),
+                #399953 0deg 90deg,
+                #fbb300 90deg 180deg,
+                #399953 180deg 270deg,
+                #fbb300 270deg 360deg) 1 stretch;
     }
 
     .selected {
+        --border-size: 0.2rem;
+        border-radius: 4px;
         animation: rotate 4s linear infinite, opacityChange 3s infinite alternate;
+        background: rgb(255 255 255 / var(--opacity));
     }
 }

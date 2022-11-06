@@ -3,9 +3,11 @@ import { CardRequest, DiscardCardRequest, isPlayCardRequest, PlayCardRequest, Pr
 import { getFieldValue } from "./fields";
 import { WeedError } from "../../types/MatchErrors";
 import structuredClone from '@ungap/structured-clone';
+import { WeedPlayer } from "../../types/Player";
 
 export class WeedMatchValidator {
     history: MatchSnapshot[];
+    players: WeedPlayer[];
 
     get currentTurn() {
         return this.history.length - 1;
@@ -23,10 +25,6 @@ export class WeedMatchValidator {
         return this.isGameOver(this.currentSnapshot);
     }
 
-    get players() {
-        return this.currentSnapshot.players;
-    }
-
     get currentPlayer() {
         const numberOfPlayers = this.currentSnapshot.players.length;
 
@@ -40,8 +38,9 @@ export class WeedMatchValidator {
         return this.isPlayerBrick(this.currentPlayer, this.currentSnapshot);
     }
 
-    constructor(history: MatchSnapshot[]) {
+    constructor(history: MatchSnapshot[], players: WeedPlayer[]) {
         this.history = history;
+        this.players = players;
     }
 
     public validatePlayCard(request: CardRequest): ValidationResult<WeedError, MatchSnapshot> {
@@ -55,7 +54,7 @@ export class WeedMatchValidator {
     // PRIVATE METHODS
 
     private executePlayCard(
-        snapshot: MatchSnapshot, 
+        snapshot: MatchSnapshot,
         request: PlayCardRequest
     ): ValidationResult<WeedError, MatchSnapshot> {
         const result: ValidationResult<WeedError, MatchSnapshot> = {
@@ -70,45 +69,53 @@ export class WeedMatchValidator {
             const numberOfPlayers = snap.players.length;
 
             const currentPlayerIndex = this.currentTurn % numberOfPlayers;
-            const currentPlayer = snap.players[currentPlayerIndex];
+            const currentWeedPlayer = this.players[currentPlayerIndex];
+            const currentPlayer = snap.players.find((p) => p.playerId == currentWeedPlayer.id);
 
             const nextPlayerIndex = (this.currentTurn + 1) % numberOfPlayers;
-            const nextPlayer = snap.players[nextPlayerIndex];
+            const nextWeedPlayer = this.players[nextPlayerIndex];
+            const nextPlayer = snap.players.find((p) => p.playerId == nextWeedPlayer.id);
 
             const player = snap.players.find((p) => p.playerId == request.playerId);
-            if (player) {
+            if (player && currentPlayer && nextPlayer) {
                 const isPlayersTurn = currentPlayer.playerId == request.playerId;
                 if (isPlayersTurn) {
                     const targetPlayer = snap.players.find((p) => p.playerId == request.targetPlayerId);
                     if (targetPlayer) {
-                        const currentPlayerHand = player.hand;
+                        const currentPlayerHand = player.hand ?? [];
                         const currentCard = currentPlayerHand.find((c) => c.type == request.cardType);
                         if (currentCard) {
 
                             const isOwnTarget = targetPlayer.playerId == player.playerId;
-                            const targetField = targetPlayer.fields.find((f) => f.id == request.tagetPlayerFieldId);
+                            const targetField = targetPlayer.fields.find((f) => f.id == request.targetFieldId);
+
+                            const applyDiscard = () => {
+                                const currentCardIndex = player.hand.indexOf(currentCard);
+                                player.hand.splice(currentCardIndex, 1);
+                                if (!snap.discards) {
+                                    snap.discards = [];
+                                }
+                                snap.discards.push(currentCard);
+                            };
+
+                            const applyNextPlayerDraw = () => {
+                                const handSize = nextPlayer.hand?.length ?? 0;
+                                const numberOfFields = nextPlayer.fields.length
+
+
+                                if (handSize < numberOfFields && snap.deck?.length > 0) {
+                                    const nextCard = snap.deck?.pop();
+                                    if (nextCard) {
+                                        nextPlayer.hand?.push(nextCard);
+                                    }
+                                }
+                            };
 
                             /**
                              * Apply next play 
                              * @param applyCardLogic 
                              */
                             const applyNextMove = (applyCardLogic: () => void) => {
-                                const applyDiscard = () => {
-                                    const currentCardIndex = player.hand.indexOf(currentCard);
-                                    player.hand.splice(currentCardIndex, 1);
-                                    snap.discards.push(currentCard);
-                                };
-                                const applyNextPlayerDraw = () => {
-                                    const handSize = nextPlayer.hand.length;
-                                    const numberOfFields = nextPlayer.fields.length
-
-                                    if (handSize < numberOfFields) {
-                                        const nextCard = snap.deck.pop();
-                                        if (nextCard) {
-                                            nextPlayer.hand.push(nextCard);
-                                        }
-                                    }
-                                };
                                 applyDiscard();
                                 applyCardLogic();
                                 applyNextPlayerDraw();
@@ -174,7 +181,7 @@ export class WeedMatchValidator {
                                                 if (targetField.value != 'empty') {
                                                     applyNextMove(() => {
                                                         targetField.value = 'empty';
-                                                        targetField.valueOwnerId = undefined;
+                                                        targetField.valueOwnerId = '';
                                                     });
                                                 } else {
                                                     result.errors.push('CannotKillEmptyFields');
@@ -193,10 +200,10 @@ export class WeedMatchValidator {
                                             applyNextMove(() => {
                                                 if (targetField.protectedValue != 'empty') {
                                                     targetField.protectedValue = 'empty';
-                                                    targetField.protectedValueOwnerId = undefined;
+                                                    targetField.protectedValueOwnerId = '';
                                                 } else {
                                                     targetField.value = 'empty';
-                                                    targetField.valueOwnerId = undefined;
+                                                    targetField.valueOwnerId = '';
                                                 }
                                             });
                                         } else {
@@ -207,7 +214,7 @@ export class WeedMatchValidator {
                                     }
                                     break;
                                 case 'stealer':
-                                    const destinationFieldId = request.destinationPlayerFieldId;
+                                    const destinationFieldId = request.destinationFieldId;
                                     const destinationPlayer = snap.players.find((p) => {
                                         const field = p.fields.find((f) => f.id == destinationFieldId);
                                         return field != null;
@@ -263,7 +270,7 @@ export class WeedMatchValidator {
                                                                                         const targetValue = targetField.value;
 
                                                                                         targetField.value = 'empty';
-                                                                                        targetField.valueOwnerId = undefined;
+                                                                                        targetField.valueOwnerId = '';
 
                                                                                         destinationField.value = targetValue;
                                                                                         destinationField.valueOwnerId = targetOwner;
@@ -306,7 +313,7 @@ export class WeedMatchValidator {
                                                     applyNextMove(() => {
                                                         const harvestValue = getFieldValue(targetField.value);
                                                         targetField.value = 'empty';
-                                                        targetField.valueOwnerId = undefined;
+                                                        targetField.valueOwnerId = '';
                                                         player.smokedScore += harvestValue;
                                                     });
                                                 } else {
@@ -326,10 +333,10 @@ export class WeedMatchValidator {
                                         targetPlayer.fields.forEach((field) => {
                                             if (field.protectedValue != 'empty') {
                                                 field.protectedValue = 'empty';
-                                                field.protectedValueOwnerId = undefined;
+                                                field.protectedValueOwnerId = '';
                                             } else {
                                                 field.value = 'empty';
-                                                field.valueOwnerId = undefined;
+                                                field.valueOwnerId = '';
                                             }
                                         });
                                     });
@@ -337,7 +344,7 @@ export class WeedMatchValidator {
 
                                 // Protectable Cards
 
-                                case 'busted':
+                                case 'dog':
                                     if (targetField) {
                                         if (targetField.protectedValue != 'busted') {
                                             if (targetField.protectedValue == 'dog') {
@@ -345,7 +352,7 @@ export class WeedMatchValidator {
                                             } else {
                                                 // Apply
                                                 applyNextMove(() => {
-                                                    targetField.protectedValue = 'busted';
+                                                    targetField.protectedValue = 'dog';
                                                     targetField.protectedValueOwnerId = player.playerId;
                                                 });
                                             }
@@ -358,7 +365,7 @@ export class WeedMatchValidator {
 
                                     break;
 
-                                case 'dog':
+                                case 'busted':
                                     if (targetField) {
                                         if (targetField.protectedValue != 'busted') {
                                             if (targetField.protectedValue == 'dog') {
@@ -369,7 +376,7 @@ export class WeedMatchValidator {
                                                 } else {
                                                     // Apply
                                                     applyNextMove(() => {
-                                                        targetField.protectedValue = 'dog';
+                                                        targetField.protectedValue = 'busted';
                                                         targetField.protectedValueOwnerId = player.playerId;
                                                     });
                                                 }
@@ -404,7 +411,7 @@ export class WeedMatchValidator {
     }
 
     private executeDiscardCard(
-        snapshot: MatchSnapshot, 
+        snapshot: MatchSnapshot,
         request: DiscardCardRequest
     ): ValidationResult<WeedError, MatchSnapshot> {
         const result: ValidationResult<WeedError, MatchSnapshot> = {
@@ -473,17 +480,17 @@ export class WeedMatchValidator {
     }
 
     private isGameOver(snap: MatchSnapshot): boolean {
-        const emptyHandsPlayers = snap.players.filter((p) => p.hand.length == 0);
+        const emptyHandsPlayers = snap.players.filter((p) => p.hand?.length == 0);
         const isEmptyHandsForAllPlayers = emptyHandsPlayers.length == snap.players.length;
-        const isDeckEmpty = snap.deck.length == 0;
+        const isDeckEmpty = snap.deck?.length == 0;
         const isGameOver = (isEmptyHandsForAllPlayers && isDeckEmpty) || snap.players.length == 0;
         return isGameOver;
     }
 
     private isPlayerBrick(player: PrivateMatchPlayer, snap: MatchSnapshot): boolean {
         let isBrick = true;
-
-        for (const card of player.hand) {
+        const playerHand = player.hand ?? [];
+        for (const card of playerHand) {
             for (const targetPlayer of snap.players) {
                 for (const targetPlayerField of targetPlayer.fields) {
                     for (const destinationPlayers of snap.players) {
@@ -491,9 +498,9 @@ export class WeedMatchValidator {
                             const validationResult = this.executePlayCard(snap, {
                                 playerId: player.playerId,
                                 targetPlayerId: targetPlayer.playerId,
-                                tagetPlayerFieldId: targetPlayerField.id,
+                                targetFieldId: targetPlayerField.id,
                                 cardType: card.type,
-                                destinationPlayerFieldId: destinationField.id,
+                                destinationFieldId: destinationField.id,
                             });
                             if (validationResult.result) {
                                 isBrick = false;

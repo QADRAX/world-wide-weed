@@ -3,9 +3,10 @@ import React, { FunctionComponent } from 'react';
 import { getFieldValue } from '../../../../server/game/fields';
 import { WeedPlayer } from '../../../../types/Player';
 import { PublicMatchPlayer } from '../../../../types/WeedTypes';
+import { useAuthenticatedUser } from '../../../hooks/useAuth';
 import { useCurrentPlayer } from '../../../hooks/usePlayerMatch';
 import { MatchPlayerAvatar, MatchPlayerAvatarState } from '../../Shared/PlayerAvatar';
-import { WeedCard } from './WeedCard';
+import { PlayerField } from './PlayerField';
 
 export type PlayerZoneProps = {
     playerSnap: PublicMatchPlayer;
@@ -14,6 +15,7 @@ export type PlayerZoneProps = {
 
 export const PlayerZone: FunctionComponent<PlayerZoneProps> = (props) => {
     const { currentPlayer, isBriked } = useCurrentPlayer();
+    const { user } = useAuthenticatedUser();
 
     if(currentPlayer == null) {
         return null;
@@ -31,22 +33,32 @@ export const PlayerZone: FunctionComponent<PlayerZoneProps> = (props) => {
         <Stack direction="column" spacing={2} justifyContent="center" alignContent="center">
             <Stack direction="row" spacing={2} justifyContent="center" alignItems="center">
                 <MatchPlayerAvatar state={state} player={props.playerInfo} />
-                <Typography variant="h6">
+                <Typography variant="h6"
+                    sx={{
+                        textDecoration: user.id == props.playerInfo.id ? 'underline' : 'none',
+                        cursor: 'default',
+                    }}>
                     {props.playerInfo.name}
                 </Typography>
 
-                <Typography variant="caption">
+                <Typography variant="caption" 
+                    sx={{
+                        cursor: 'default',
+                    }}>
                     Hand: {props.playerSnap.handSize}
                 </Typography>
 
-                <Typography variant="caption">
+                <Typography variant="caption"
+                    sx={{
+                        cursor: 'default',
+                    }}>
                     Score: {props.playerSnap.smokedScore} ({virtualScore})
                 </Typography>
             </Stack>
             <Stack direction="row" spacing={1} justifyContent="center" alignItems="center" alignContent="center">
                 {
                 props.playerSnap.fields.map((field) => (
-                    <WeedCard key={field.id} cardType={field.value} />
+                    <PlayerField key={field.id} player={props.playerInfo} field={field} />
                 ))
                 }
             </Stack>

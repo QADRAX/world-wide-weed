@@ -122,8 +122,8 @@ export type PlayCardRequest = {
     playerId: string;
     targetPlayerId: string;
     cardType: CardType;
-    tagetPlayerFieldId?: string;
-    destinationPlayerFieldId?: string;
+    targetFieldId?: string;
+    destinationFieldId?: string;
 }
 
 export type DiscardCardRequest = {

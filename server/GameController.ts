@@ -181,14 +181,17 @@ export class GameController implements IGameController {
             if (currentRoom.matchId) {
                 const match = await MatchRepository.getMatch(currentRoom.matchId);
                 if (match) {
-                    const matchValidator = new WeedMatchValidator(match.privateMatchSnapshots);
+                    const matchValidator = new WeedMatchValidator(match.privateMatchSnapshots, match.players);
                     const validatedPlay = matchValidator.validatePlayCard(request);
                     if (validatedPlay.result) {
-                        await MatchRepository.addPrivateSnapshotToMatch(match, validatedPlay.result);
+                        const nextMatch = await MatchRepository.addPrivateSnapshotToMatch(match, validatedPlay.result);
                         result.result = match;
 
                         // Auto game over
-                        this.finishMatch(currentRoom, match);
+                        const nextValidator = new WeedMatchValidator(nextMatch.privateMatchSnapshots, nextMatch.players);
+                        if (nextValidator.gameOver) {
+                            this.finishMatch(currentRoom, match);
+                        }
 
                     } else {
                         result.errors = [...result.errors, ...validatedPlay.errors];

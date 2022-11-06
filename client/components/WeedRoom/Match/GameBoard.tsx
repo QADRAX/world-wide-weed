@@ -7,9 +7,6 @@ import { PlayerZone } from './PlayerZone';
 export const GameBoard = () => {
     const currentSnapshot = useCurrentMatchSnapshot();
     const matchPlayers = useAppSelector((state) => state.match.players);
-
-
-
     return (
         <Stack direction="column" spacing={2} sx={{ py: 2}}>
             {matchPlayers.map((player) => {
