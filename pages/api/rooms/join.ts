@@ -12,7 +12,7 @@ interface ExtendedNextApiRequest extends NextApiRequest {
     body: JoinRoomRequest;
 }
 
-export default async (req: ExtendedNextApiRequest, res: NextApiResponse) => {
+const Join = async (req: ExtendedNextApiRequest, res: NextApiResponse) => {
     const player = await getUserInfoFromRequest(req);
     const joinRoomRequest = req.body;
 
@@ -40,3 +40,5 @@ export default async (req: ExtendedNextApiRequest, res: NextApiResponse) => {
         return res.status(403).json({ message: "You are banned to play weed" });
     }
 };
+
+export default Join;

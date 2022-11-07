@@ -12,8 +12,8 @@ export type MatchSliceState = {
 
     players: WeedPlayer[];
     isCurrentPlayerBriked: boolean;
-    publicSnapshots: PublicMatchSnapshot[];
-    protectedSnapshots: ProtectedMatchSnapshot[];
+    publicSnapshots: PublicMatchSnapshot[] | undefined;
+    protectedSnapshots: ProtectedMatchSnapshot[] | undefined;
 
     // CURRENT SELECTION
 

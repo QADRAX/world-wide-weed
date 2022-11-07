@@ -11,7 +11,7 @@ interface ExtendedNextApiRequest extends NextApiRequest {
     body: CreateRoomRequest;
 }
 
-export default async (req: ExtendedNextApiRequest, res: NextApiResponse) => {
+const Create = async (req: ExtendedNextApiRequest, res: NextApiResponse) => {
     const player = await getUserInfoFromRequest(req);
     const createMatchRequest = req.body;
 
@@ -38,3 +38,5 @@ export default async (req: ExtendedNextApiRequest, res: NextApiResponse) => {
         return res.status(403).json({ message: "You are not a room admin" });
     }
 };
+
+export default Create;

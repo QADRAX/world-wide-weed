@@ -12,7 +12,7 @@ interface ExtendedNextApiRequest extends NextApiRequest {
     body: ReadyToMatchRequest;
 }
 
-export default async (req: ExtendedNextApiRequest, res: NextApiResponse) => {
+const Ready = async (req: ExtendedNextApiRequest, res: NextApiResponse) => {
     const readyToMatchRequest = req.body;
 
     if (!readyToMatchRequest) {
@@ -43,3 +43,5 @@ export default async (req: ExtendedNextApiRequest, res: NextApiResponse) => {
         return res.status(403).json({ message: "You are banned to play weed" });
     }
 };
+
+export default Ready;

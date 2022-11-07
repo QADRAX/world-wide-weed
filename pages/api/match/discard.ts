@@ -8,7 +8,7 @@ interface ExtendedNextApiRequest extends NextApiRequest {
     body: DiscardCardRequest;
 }
 
-export default async (req: ExtendedNextApiRequest, res: NextApiResponse) => {
+const Discard = async (req: ExtendedNextApiRequest, res: NextApiResponse) => {
     switch (req.method) {
         case 'POST':
             const player = await getUserInfoFromRequest(req);
@@ -40,3 +40,5 @@ export default async (req: ExtendedNextApiRequest, res: NextApiResponse) => {
             return res.status(404);
     }
 }
+
+export default Discard;

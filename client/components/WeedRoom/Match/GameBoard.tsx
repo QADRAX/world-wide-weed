@@ -13,7 +13,7 @@ export const GameBoard = () => {
                 const playerSnap = currentSnapshot?.players.find((p) => p.playerId === player.id);
 
                 if(!playerSnap) {
-                    throw new Error('Corrupted data: player not found in snapshot');
+                    return null;
                 }
 
                 return (

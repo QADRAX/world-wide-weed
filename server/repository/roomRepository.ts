@@ -11,7 +11,7 @@ export namespace RoomRepository {
     ): Promise<WeedRoom> {
         const database = firebaseAdmin.database();
         const roomId = v4();
-    
+
         const room: WeedRoom = {
             id: roomId,
             name: roomName,
@@ -20,10 +20,10 @@ export namespace RoomRepository {
             matchId: null,
         };
         await database.ref(`rooms/${roomId}`).set(room);
-    
+
         return room;
     }
-    
+
     export async function getPlayerRoom(
         playerId: string
     ): Promise<WeedRoom | undefined> {
@@ -36,7 +36,7 @@ export namespace RoomRepository {
             .find((m) => toArray(m.players).find(((p) => p.id == playerId)) != null);
         return room;
     }
-    
+
     export async function getWeedRooms(
     ): Promise<WeedRoom[]> {
         const database = firebaseAdmin.database();
@@ -45,7 +45,7 @@ export namespace RoomRepository {
         const rooms = toArray(roomsDict);
         return rooms;
     }
-    
+
     export async function getWeedRoom(
         roomId: string
     ): Promise<WeedRoom | undefined> {
@@ -54,7 +54,7 @@ export namespace RoomRepository {
         const ongoingMatch = snap.val() as WeedRoom | undefined;
         return ongoingMatch;
     }
-    
+
     export async function joinToRoom(
         user: UserInfo,
         roomId: string,
@@ -72,7 +72,7 @@ export namespace RoomRepository {
         const nextPlayerRef = database.ref(`/rooms/${roomId}/players/${user.id}`);
         await nextPlayerRef.remove();
     }
-    
+
     export async function isPlayerReady(
         user: UserInfo,
         roomId: string,
@@ -84,7 +84,7 @@ export namespace RoomRepository {
         const isPlayerReady = readyPlayersIds.includes(user.id);
         return isPlayerReady;
     }
-    
+
     export async function setReadyToMatch(
         user: UserInfo,
         roomId: string,
@@ -102,14 +102,18 @@ export namespace RoomRepository {
         const nextReadyPlayerRef = database.ref(`/rooms/${roomId}/readyPlayersIds/${user.id}`);
         await nextReadyPlayerRef.remove();
     }
-    
+
     export async function setMatchId(
         roomId: string,
         matchId: string | undefined,
     ): Promise<void> {
         const database = firebaseAdmin.database();
         const matchIdRef = database.ref(`/rooms/${roomId}/matchId`);
-        await matchIdRef.set(matchId);
+        if (matchId) {
+            await matchIdRef.set(matchId);
+        } else {
+            await matchIdRef.remove();
+        }
     }
 
     export async function clearReadyPlayers(

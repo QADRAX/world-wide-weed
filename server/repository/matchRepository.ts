@@ -4,6 +4,7 @@ import { v4 } from 'uuid';
 import { getInitialMatchSnapshot } from "../game/initialGame";
 import { Dict, toArray } from "../../utils/Dict";
 import { WeedMatchValidator } from "../game/WeedMatchValidator";
+import { shuffle } from "../../utils/ArrayShuffle";
 
 export namespace MatchRepository {
 
@@ -13,7 +14,7 @@ export namespace MatchRepository {
         const database = firebaseAdmin.database();
         let protectedMatchSnapshots: Dict<ProtectedMatchSnapshot[]> = {};
 
-        const players = toArray(room.players);
+        const players = shuffle(toArray(room.players));
 
         players.forEach((p) => {
             protectedMatchSnapshots[p.id] = [];
@@ -68,6 +69,9 @@ function addPrivateSnapshot(
     match: WeedMatch,
     privateSnapshot: PrivateMatchSnapshot
 ): WeedMatch {
+    if(match.privateMatchSnapshots === undefined) {
+        match.privateMatchSnapshots = [];
+    }
     match.privateMatchSnapshots.push(privateSnapshot);
 
     const publicMatchPlayers: PublicMatchPlayer[] = privateSnapshot.players.map((p) => {
@@ -83,9 +87,12 @@ function addPrivateSnapshot(
     const nextPublicMatchSnapshot: PublicMatchSnapshot = {
         players: publicMatchPlayers,
         deckSize: privateSnapshot.deck?.length ?? 0,
-        discards: [...privateSnapshot.discards],
+        discards: [...(privateSnapshot.discards ?? [])],
     };
 
+    if(match.publicMatchSnapshots === undefined) {
+        match.publicMatchSnapshots = [];
+    }
     match.publicMatchSnapshots.push(nextPublicMatchSnapshot);
 
 
@@ -94,8 +101,12 @@ function addPrivateSnapshot(
         const playerHand = p.hand ?? [];
         const protectedSnapshot: ProtectedMatchSnapshot = {
             hand: [...playerHand],
+            isEmpty: playerHand.length === 0,
         };
-        protectedMatchSnapshots[p.playerId].push(protectedSnapshot);
+        if(protectedMatchSnapshots[p.playerId] === undefined) {
+            protectedMatchSnapshots[p.playerId] = [];
+        }
+        protectedMatchSnapshots[p.playerId]?.push(protectedSnapshot);
     });
 
     match.protectedMatchSnapshots = protectedMatchSnapshots;

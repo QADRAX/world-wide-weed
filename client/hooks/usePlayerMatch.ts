@@ -4,20 +4,20 @@ import { useAppSelector } from "./redux";
 import { useAuthenticatedUser } from "./useAuth";
 
 export function useCurrentHand(){
-    const protectedSnapshots = useAppSelector((state) => state.match.protectedSnapshots);
+    const protectedSnapshots = useAppSelector((state) => state.match.protectedSnapshots) || [];
     const currentSnap = protectedSnapshots[protectedSnapshots.length - 1];
     return currentSnap?.hand ?? [];
 }
 
 export function useCurrentMatchSnapshot(): PublicMatchSnapshot | undefined {
-    const publicSnapshots = useAppSelector((state) => state.match.publicSnapshots);
+    const publicSnapshots = useAppSelector((state) => state.match.publicSnapshots) || [];
     const currentSnap = publicSnapshots[publicSnapshots.length - 1];
     return currentSnap;
 }
 
 export function useCurrentTurn(){
     const publicSnapshots = useAppSelector((state) => state.match.publicSnapshots);
-    const currentTurn = publicSnapshots.length - 1;
+    const currentTurn = publicSnapshots ? publicSnapshots.length - 1 : 0;
     return currentTurn;
 }
 
@@ -28,6 +28,13 @@ export function useTotalTurns(){
     const deckSize = currentSnap?.deckSize ?? 0;
     const total = deckSize + discardSize + carsInHands;
     return total;
+}
+
+export function useIsGameOver(){
+    const totalTurns = useTotalTurns();
+    const currentTurn = useCurrentTurn();
+    const isGameOver = currentTurn + 1 > totalTurns;
+    return isGameOver;
 }
 
 export function useCurrentPlayer(): {

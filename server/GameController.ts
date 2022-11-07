@@ -235,7 +235,7 @@ export class GameController implements IGameController {
     private async finishMatch(room: WeedRoom, match: WeedMatch) {
         await RoomRepository.clearReadyPlayers(room.id);
         await RoomRepository.deletePlayers(room.id);
-        await RoomRepository.setMatchId(room.id, undefined);
+        await RoomRepository.setMatchId(room.id, '');
         await MatchRepository.deleteMatch(match.id);
     }
 }

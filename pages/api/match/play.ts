@@ -8,13 +8,13 @@ interface ExtendedNextApiRequest extends NextApiRequest {
     body: PlayCardRequest;
 }
 
-export default async (req: ExtendedNextApiRequest, res: NextApiResponse) => {
+const Play = async (req: ExtendedNextApiRequest, res: NextApiResponse) => {
     switch (req.method) {
         case 'POST':
             const player = await getUserInfoFromRequest(req);
-            const playCardRequest = req.body;
+            const request = req.body;
 
-            if (!playCardRequest) {
+            if (!request) {
                 return res.status(400);
             }
 
@@ -24,13 +24,13 @@ export default async (req: ExtendedNextApiRequest, res: NextApiResponse) => {
 
             if (player.userRoles.includes('playWeed')) {
                 const controller = new GameController(player);
-                const roomResult = await controller.playCard(playCardRequest);
+                const result = await controller.playCard(request);
 
-                if(roomResult.errors.length > 0) {
-                    Log(`Controlled error(s) happened with ${player.email} trying to play a card: ${roomResult.errors.join()}`, 'warning');
-                    return res.status(400).json(roomResult.errors);
+                if(result.errors.length > 0) {
+                    Log(`Controlled error(s) happened with ${player.email} trying to play a card: ${result.errors.join()}`, 'warning');
+                    return res.status(400).json(result.errors);
                 } else {
-                    Log(`Player ${player.email} discarded a card`, 'app');
+                    Log(`Player ${player.email} play ${request.cardType} from his hand`, 'app');
                     return res.status(200).json(true);
                 }
             } else {
@@ -40,3 +40,5 @@ export default async (req: ExtendedNextApiRequest, res: NextApiResponse) => {
             return res.status(404);
     }
 }
+
+export default Play;

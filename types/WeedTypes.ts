@@ -48,7 +48,7 @@ export type Field = {
 // MATCH PLAYER
 
 export type PrivateMatchPlayer = {
-    hand: WeedCard[];
+    hand: WeedCard[] | undefined;
     fields: Field[];
     playerId: string;
     smokedScore: number;
@@ -65,18 +65,19 @@ export type PublicMatchPlayer = {
 
 export type PrivateMatchSnapshot = {
     players: PrivateMatchPlayer[];
-    deck: WeedCard[];
-    discards: WeedCard[];
+    deck: WeedCard[] | undefined;
+    discards: WeedCard[] | undefined;
 }
 
 export type PublicMatchSnapshot = {
     players: PublicMatchPlayer[];
     deckSize: number;
-    discards: WeedCard[];
+    discards: WeedCard[] | undefined;
 }
 
 export type ProtectedMatchSnapshot = {
-    hand: WeedCard[];
+    hand: WeedCard[] | undefined;
+    isEmpty: boolean;
 }
 
 // MATCH
@@ -88,11 +89,11 @@ export type WeedMatch = {
     /** Flag that indicates if current player is briked */
     isCurrentPlayerBriked: boolean;
     /** Server side info. (only server side could read) */
-    privateMatchSnapshots: PrivateMatchSnapshot[];
+    privateMatchSnapshots?: PrivateMatchSnapshot[];
     /** Public match info. (anybody could read) */
-    publicMatchSnapshots: PublicMatchSnapshot[];
+    publicMatchSnapshots?: PublicMatchSnapshot[];
     /** Protected match info. (only match users could read) */
-    protectedMatchSnapshots: Dict<ProtectedMatchSnapshot[]>;
+    protectedMatchSnapshots: Dict<ProtectedMatchSnapshot[] | undefined>;
 }
 
 export type WeedRoom = {

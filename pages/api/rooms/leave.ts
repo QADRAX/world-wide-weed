@@ -4,7 +4,7 @@ import { getUserInfoFromRequest } from '../../../server/authentication';
 import { GameController } from '../../../server/GameController';
 import { Log } from '../../../utils/Log';
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
+const Leave = async (req: NextApiRequest, res: NextApiResponse) => {
     const player = await getUserInfoFromRequest(req);
 
     if (!player) {
@@ -26,3 +26,5 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         return res.status(403).json({ message: "You are banned to play weed" });
     }
 };
+
+export default Leave;

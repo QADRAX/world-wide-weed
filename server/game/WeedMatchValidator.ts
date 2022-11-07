@@ -18,7 +18,7 @@ export class WeedMatchValidator {
     }
 
     get deckSike() {
-        return this.currentSnapshot.deck.length;
+        return this.currentSnapshot.deck?.length ?? 0;
     }
 
     get gameOver() {
@@ -38,8 +38,8 @@ export class WeedMatchValidator {
         return this.isPlayerBrick(this.currentPlayer, this.currentSnapshot);
     }
 
-    constructor(history: MatchSnapshot[], players: WeedPlayer[]) {
-        this.history = history;
+    constructor(history: MatchSnapshot[] | undefined, players: WeedPlayer[]) {
+        this.history = history || [];
         this.players = players;
     }
 
@@ -90,8 +90,8 @@ export class WeedMatchValidator {
                             const targetField = targetPlayer.fields.find((f) => f.id == request.targetFieldId);
 
                             const applyDiscard = () => {
-                                const currentCardIndex = player.hand.indexOf(currentCard);
-                                player.hand.splice(currentCardIndex, 1);
+                                const currentCardIndex = player.hand?.indexOf(currentCard);
+                                player.hand?.splice(currentCardIndex!, 1);
                                 if (!snap.discards) {
                                     snap.discards = [];
                                 }
@@ -103,7 +103,7 @@ export class WeedMatchValidator {
                                 const numberOfFields = nextPlayer.fields.length
 
 
-                                if (handSize < numberOfFields && snap.deck?.length > 0) {
+                                if (handSize < numberOfFields && (snap.deck?.length ?? 0) > 0) {
                                     const nextCard = snap.deck?.pop();
                                     if (nextCard) {
                                         nextPlayer.hand?.push(nextCard);
@@ -438,23 +438,23 @@ export class WeedMatchValidator {
                 const isPlayersTurn = currentPlayer.playerId == request.playerId;
                 if (isPlayersTurn) {
                     const currentPlayerHand = player.hand;
-                    const currentCard = currentPlayerHand.find((c) => c.type == request.cardType);
+                    const currentCard = currentPlayerHand?.find((c) => c.type == request.cardType);
                     if (currentCard) {
                         const isBrick = this.isPlayerBrick(player, snap);
                         if (isBrick) {
                             const applyDiscard = () => {
-                                const currentCardIndex = player.hand.indexOf(currentCard);
-                                player.hand.splice(currentCardIndex, 1);
-                                snap.discards.push(currentCard);
+                                const currentCardIndex = player.hand?.indexOf(currentCard);
+                                player.hand?.splice(currentCardIndex!, 1);
+                                snap.discards?.push(currentCard);
                             };
                             const applyNextPlayerDraw = () => {
-                                const handSize = nextPlayer.hand.length;
+                                const handSize = nextPlayer.hand?.length;
                                 const numberOfFields = nextPlayer.fields.length
 
-                                if (handSize < numberOfFields) {
-                                    const nextCard = snap.deck.pop();
+                                if (handSize! < numberOfFields) {
+                                    const nextCard = snap.deck?.pop();
                                     if (nextCard) {
-                                        nextPlayer.hand.push(nextCard);
+                                        nextPlayer.hand?.push(nextCard);
                                     }
                                 }
                             };
@@ -480,10 +480,14 @@ export class WeedMatchValidator {
     }
 
     private isGameOver(snap: MatchSnapshot): boolean {
-        const emptyHandsPlayers = snap.players.filter((p) => p.hand?.length == 0);
-        const isEmptyHandsForAllPlayers = emptyHandsPlayers.length == snap.players.length;
-        const isDeckEmpty = snap.deck?.length == 0;
-        const isGameOver = (isEmptyHandsForAllPlayers && isDeckEmpty) || snap.players.length == 0;
+        const currentTurn = this.currentTurn + 1;
+
+        const discardSize = snap.discards?.length ?? 0;
+        const carsInHands = snap.players.reduce((acc, player) => acc + (player.hand?.length ?? 0), 0) ?? 0;
+        const deckSize = snap.deck?.length ?? 0;
+        const total = deckSize + discardSize + carsInHands;
+        const isGameOver = currentTurn > total;
+
         return isGameOver;
     }
 

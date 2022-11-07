@@ -9,13 +9,15 @@ type IndexProps = {
   userInfo: UserInfo;
 }
 
-export default (props: IndexProps) => {
+const Main = (props: IndexProps) => {
   return (
       <MainScreen userInfo={props.userInfo}>
         <MainView />
       </MainScreen>
   );
 };
+
+export default Main;
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const userInfo = await getUserFromPropsContext(ctx);

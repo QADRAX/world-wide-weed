@@ -6,7 +6,7 @@ import { getInitialFields } from "./fields";
 
 export const getInitialMatchSnapshot = (players: WeedPlayer[]): PrivateMatchSnapshot => {
     const deck = shuffle(getDeck());
-    const matchPlayers: PrivateMatchPlayer[] = shuffle(players.map((player) => {
+    const matchPlayers: PrivateMatchPlayer[] = players.map((player) => {
         const initialFields = getInitialFields(players.length);
         const matchPlayer: PrivateMatchPlayer = {
             fields: initialFields,
@@ -15,7 +15,7 @@ export const getInitialMatchSnapshot = (players: WeedPlayer[]): PrivateMatchSnap
             hand: [],
         };
         return matchPlayer;
-    }));
+    });
     const initialSnapshot: PrivateMatchSnapshot = {
         players: matchPlayers,
         deck,
@@ -26,8 +26,11 @@ export const getInitialMatchSnapshot = (players: WeedPlayer[]): PrivateMatchSnap
 
     initialSnapshot.players.forEach((player) => {
         player.fields.forEach(() => {
-            const drawedCard = initialSnapshot.deck.pop();
+            const drawedCard = initialSnapshot.deck?.pop();
             if (drawedCard) {
+                if(player.hand === undefined) {
+                    player.hand = [];
+                }
                 player.hand.push(drawedCard);
             }
         });
