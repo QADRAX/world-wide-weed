@@ -1,7 +1,9 @@
 import * as firebaseAdmin from "firebase-admin";
 import { Log } from "../utils/Log";
 
-const privateKey = process.env["PRIVATE_KEY"];
+const privateKey = process.env["PRIVATE_KEY"]
+  ? process.env["PRIVATE_KEY"].replace(/\\n/gm, "\n")
+  : undefined;
 const clientEmail = process.env["CLIENT_EMAIL"];
 const projectId = process.env["PROJECT_ID"];
 
