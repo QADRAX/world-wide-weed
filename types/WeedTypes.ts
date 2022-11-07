@@ -94,6 +94,8 @@ export type WeedMatch = {
     publicMatchSnapshots?: PublicMatchSnapshot[];
     /** Protected match info. (only match users could read) */
     protectedMatchSnapshots: Dict<ProtectedMatchSnapshot[] | undefined>;
+    /** History of requests did by the users (anybody could read) */
+    cardRequestHistory?: CardRequest[];
 }
 
 export type WeedRoom = {

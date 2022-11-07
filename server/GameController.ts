@@ -184,7 +184,7 @@ export class GameController implements IGameController {
                     const matchValidator = new WeedMatchValidator(match.privateMatchSnapshots, match.players);
                     const validatedPlay = matchValidator.validatePlayCard(request);
                     if (validatedPlay.result) {
-                        const nextMatch = await MatchRepository.addPrivateSnapshotToMatch(match, validatedPlay.result);
+                        const nextMatch = await MatchRepository.addPrivateSnapshotToMatch(match, validatedPlay.result, request);
                         result.result = match;
 
                         // Auto game over
@@ -202,7 +202,6 @@ export class GameController implements IGameController {
             } else {
                 result.errors.push('TargetPlayerNotInMatch');
             }
-
         } else {
             result.errors.push('PlayerNotInAnyRoom');
         }

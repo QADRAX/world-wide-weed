@@ -1,4 +1,4 @@
-import { PrivateMatchSnapshot, ProtectedMatchSnapshot, PublicMatchPlayer, PublicMatchSnapshot, WeedMatch, WeedRoom } from "../../types/WeedTypes";
+import { CardRequest, PrivateMatchSnapshot, ProtectedMatchSnapshot, PublicMatchPlayer, PublicMatchSnapshot, WeedMatch, WeedRoom } from "../../types/WeedTypes";
 import { firebaseAdmin } from "../firebaseAdmin";
 import { v4 } from 'uuid';
 import { getInitialMatchSnapshot } from "../game/initialGame";
@@ -50,9 +50,10 @@ export namespace MatchRepository {
     export async function addPrivateSnapshotToMatch(
         match: WeedMatch,
         privateMatchSnapshot: PrivateMatchSnapshot,
+        request: CardRequest,
     ): Promise<WeedMatch> {
         const database = firebaseAdmin.database();
-        const newMatch = addPrivateSnapshot(match, privateMatchSnapshot);
+        const newMatch = addPrivateSnapshot(match, privateMatchSnapshot, request);
         await database.ref(`matches/${match.id}`).set(newMatch);
         return newMatch;
     }
@@ -67,9 +68,10 @@ export namespace MatchRepository {
 
 function addPrivateSnapshot(
     match: WeedMatch,
-    privateSnapshot: PrivateMatchSnapshot
+    privateSnapshot: PrivateMatchSnapshot,
+    request?: CardRequest,
 ): WeedMatch {
-    if(match.privateMatchSnapshots === undefined) {
+    if (match.privateMatchSnapshots === undefined) {
         match.privateMatchSnapshots = [];
     }
     match.privateMatchSnapshots.push(privateSnapshot);
@@ -90,7 +92,7 @@ function addPrivateSnapshot(
         discards: [...(privateSnapshot.discards ?? [])],
     };
 
-    if(match.publicMatchSnapshots === undefined) {
+    if (match.publicMatchSnapshots === undefined) {
         match.publicMatchSnapshots = [];
     }
     match.publicMatchSnapshots.push(nextPublicMatchSnapshot);
@@ -103,7 +105,7 @@ function addPrivateSnapshot(
             hand: [...playerHand],
             isEmpty: playerHand.length === 0,
         };
-        if(protectedMatchSnapshots[p.playerId] === undefined) {
+        if (protectedMatchSnapshots[p.playerId] === undefined) {
             protectedMatchSnapshots[p.playerId] = [];
         }
         protectedMatchSnapshots[p.playerId]?.push(protectedSnapshot);
@@ -113,6 +115,13 @@ function addPrivateSnapshot(
 
     const validator = new WeedMatchValidator(match.privateMatchSnapshots, match.players);
     match.isCurrentPlayerBriked = validator.isCurrentPlayerBriked;
+
+    if (match.cardRequestHistory === undefined) {
+        match.cardRequestHistory = [];
+    }
+    if (request) {
+        match.cardRequestHistory.push(request);
+    }
 
     return match;
 }

@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useCurrentPlayerMatchId } from "./usePlayerRoom";
 import { GameService } from "../services/GameService";
 import { useAppDispatch } from "./redux";
-import { setIsCurrentPlayerBriked, setMatchPlayers, setProtectedSnapshots, setPublicSnapshots } from "../redux/match/match";
+import { setCardRequestHistory, setIsCurrentPlayerBriked, setMatchPlayers, setProtectedSnapshots, setPublicSnapshots } from "../redux/match/match";
 import { useAuthenticatedUser } from "./useAuth";
 
 export const useInitMatch = () => {
@@ -14,6 +14,7 @@ export const useInitMatch = () => {
         let unsubscribePublic: (() => void) | undefined = undefined;
         let unsubscribeProtected: (() => void) | undefined = undefined;
         let unsubscribeIsCurrentPlayerBriked: (() => void) | undefined = undefined;
+        let unsubscribeCardRequestHistory: (() => void) | undefined = undefined;
 
         (async () => {
             const publicSnapshots = await GameService.getPublicMatchSnapshots(matchId);
@@ -42,6 +43,12 @@ export const useInitMatch = () => {
                 }
             );
 
+            unsubscribeCardRequestHistory = GameService.subscribeToCardRequestHistory(
+                matchId,
+                (cardRequestHistory) => {
+                    dispatch(setCardRequestHistory(cardRequestHistory));
+                }
+            );
 
         })();
 
@@ -54,6 +61,9 @@ export const useInitMatch = () => {
             }
             if (unsubscribeIsCurrentPlayerBriked) {
                 unsubscribeIsCurrentPlayerBriked();
+            }
+            if (unsubscribeCardRequestHistory) {
+                unsubscribeCardRequestHistory();
             }
         };
     }, [dispatch, matchId, user]);
