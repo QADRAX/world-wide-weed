@@ -17,17 +17,22 @@ export const PlayerZone: FunctionComponent<PlayerZoneProps> = (props) => {
     const { currentPlayer, isBriked } = useCurrentPlayer();
     const { user } = useAuthenticatedUser();
 
-    if(currentPlayer == null) {
+    if (currentPlayer == null) {
         return null;
     }
 
-    const state: MatchPlayerAvatarState = currentPlayer.id == props.playerInfo.id 
+    const state: MatchPlayerAvatarState = currentPlayer.id == props.playerInfo.id
         ? isBriked
             ? 'briked'
             : 'playerTurn'
         : 'none';
 
-    const virtualScore = props.playerSnap.fields.reduce((acc, field) => acc + getFieldValue(field.value), 0) + props.playerSnap.smokedScore;
+    const virtualScore = props.playerSnap.fields.reduce(
+        (acc, field) => field.protectedValue == 'busted'
+            ? acc
+            : acc + getFieldValue(field.value),
+        0
+    ) + props.playerSnap.smokedScore;
 
     return (
         <Stack direction="column" spacing={2} justifyContent="center" alignContent="center">
@@ -41,7 +46,7 @@ export const PlayerZone: FunctionComponent<PlayerZoneProps> = (props) => {
                     {props.playerInfo.name}
                 </Typography>
 
-                <Typography variant="caption" 
+                <Typography variant="caption"
                     sx={{
                         cursor: 'default',
                     }}>
@@ -57,9 +62,9 @@ export const PlayerZone: FunctionComponent<PlayerZoneProps> = (props) => {
             </Stack>
             <Stack direction="row" spacing={1} justifyContent="center" alignItems="center" alignContent="center">
                 {
-                props.playerSnap.fields.map((field) => (
-                    <PlayerField key={field.id} player={props.playerInfo} field={field} />
-                ))
+                    props.playerSnap.fields.map((field) => (
+                        <PlayerField key={field.id} player={props.playerInfo} field={field} />
+                    ))
                 }
             </Stack>
         </Stack>
