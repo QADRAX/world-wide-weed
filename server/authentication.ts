@@ -23,8 +23,8 @@ export async function getUserInfoFromToken(
     token: string
 ): Promise<UserInfo | undefined> {
     let result: UserInfo | undefined = undefined;
+    const auth = firebaseAdmin.auth();
     try {
-        const auth = firebaseAdmin.auth();
         const verifiedToken = await auth.verifyIdToken(token);
         const user = await auth.getUser(verifiedToken.uid);
         result = await getOrCreateUserInfo(user);

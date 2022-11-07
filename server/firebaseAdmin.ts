@@ -12,6 +12,7 @@ if (!privateKey || !clientEmail || !projectId) {
     `Failed to load Firebase credentials. Follow the instructions in the README to set your Firebase credentials inside environment variables.`,
     'critical'
   );
+  throw new Error('Failed to load Firebase credentials.');
 }
 
 if (!firebaseAdmin.apps.length) {
