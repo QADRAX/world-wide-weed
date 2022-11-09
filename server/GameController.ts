@@ -12,6 +12,8 @@ import { WeedMatchValidator } from "./game/WeedMatchValidator";
 import { IGameController } from "./GameController.interface";
 import { MatchRepository } from "./repository/matchRepository";
 import { RoomRepository } from "./repository/roomRepository";
+import { ChatMessage } from "../types/ChatMessage";
+import { toWeedPlayer } from "../shared/mappers";
 
 export class GameController implements IGameController {
     private userInfo: UserInfo;
@@ -163,6 +165,28 @@ export class GameController implements IGameController {
             } else {
                 result.errors.push('PlayerAlreadyReady');
             }
+        } else {
+            result.errors.push('PlayerNotInAnyRoom');
+        }
+
+        return result;
+    }
+
+    public async postChatMessage(message: string): Promise<ValidationResult<WeedError, boolean>> {
+        const result: ValidationResult<WeedError, boolean> = {
+            result: undefined,
+            errors: [],
+        };
+
+        const currentRoom = await RoomRepository.getPlayerRoom(this.userInfo.id);
+        if (currentRoom) {
+            const chatMessage: ChatMessage = {
+                text: message,
+                date: new Date().getTime(),
+                sender: toWeedPlayer(this.userInfo),
+            };
+            await RoomRepository.postChatMessage(currentRoom.id, chatMessage);
+            result.result = true;
         } else {
             result.errors.push('PlayerNotInAnyRoom');
         }

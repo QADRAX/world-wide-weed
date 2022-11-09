@@ -7,8 +7,11 @@ import { LobbyInfo } from './Lobby/LobbyInfo';
 import { Match } from './Match/Match';
 import { MatchInfo } from './Match/MatchInfo';
 import ChatIcon from '@mui/icons-material/Chat';
+import { useInitRoom } from '../../hooks/useInitRoom';
+import { Chat } from './Chat/Chat';
 
 export const WeedRoom = () => {
+    useInitRoom();
     const currentRoom = useCurrentPlayerRoom();
     const isMatchStarted = currentRoom.matchId != null;
     return (
@@ -26,6 +29,7 @@ export const WeedRoom = () => {
                 !isMatchStarted && <LobbyFooter />
             }
             expandIcon={<ChatIcon />}
+            innerContent={<Chat />}
         >
             {
                 isMatchStarted

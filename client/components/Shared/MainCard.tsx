@@ -1,7 +1,7 @@
 import { Container, Divider, IconButton, Paper, Stack, styled } from '@mui/material';
 import React, { FunctionComponent, useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ANIMATION_DRAWER, ANIMATION_DRAWER_OVERLAY } from '../../config/animations';
+import { ANIMATION_DRAWER_OVERLAY } from '../../config/animations';
 
 const MainContainer = styled(Container)({
     display: 'flex',
@@ -66,7 +66,7 @@ export const MainCard: FunctionComponent<MainCardProps> = (props) => {
                 </Stack>
                 <IconButton onClick={toggleDrawer}>
                     {props.expandIcon}
-                    
+
                 </IconButton>
             </Stack>
 
@@ -75,23 +75,21 @@ export const MainCard: FunctionComponent<MainCardProps> = (props) => {
             <BodyContainer ref={containerRef} className={open ? 'drawer-open' : ''}>
                 <AnimatePresence>
                     {open && (
-                        <OverlayContainer key={'container'}
-                            {...ANIMATION_DRAWER}>
-                            <OverlayContent elevation={6}>
-                                {props.innerContent}
-                            </OverlayContent>
-                        </OverlayContainer>
-                    )}
-
-                    {open && (
-                        <motion.div
-                            key={'overlay'}
-                            {...ANIMATION_DRAWER_OVERLAY}>
-                            <OverlayToggle
-                                onClick={toggleDrawer}>
-                            </OverlayToggle>
-                        </motion.div>
-
+                        <>
+                            <OverlayContainer key={'container'}
+                                {...ANIMATION_DRAWER_OVERLAY}>
+                                <OverlayContent elevation={6}>
+                                    {props.innerContent}
+                                </OverlayContent>
+                            </OverlayContainer>
+                            <motion.div
+                                key={'overlay'}
+                                {...ANIMATION_DRAWER_OVERLAY}>
+                                <OverlayToggle
+                                    onClick={toggleDrawer}>
+                                </OverlayToggle>
+                            </motion.div>
+                        </>
                     )}
                 </AnimatePresence>
                 {props.children}

@@ -122,7 +122,7 @@ function addPrivateSnapshot(
     if (request) {
         const cardRequestSnap: CardRequestSnapshot = {
             request,
-            date: new Date().getMilliseconds(),
+            date: new Date().getTime(),
         }
         match.cardRequestHistory.push(cardRequestSnap);
     }

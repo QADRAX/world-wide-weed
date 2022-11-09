@@ -4,6 +4,7 @@ import { v4 } from 'uuid';
 import { toWeedPlayer } from "../../shared/mappers";
 import { UserInfo } from "../../types/UserInfo";
 import { Dict, toArray } from "../../utils/Dict";
+import { ChatMessage } from "../../types/ChatMessage";
 
 export namespace RoomRepository {
     export async function createRoom(
@@ -138,5 +139,14 @@ export namespace RoomRepository {
         const database = firebaseAdmin.database();
         const roomRef = database.ref(`/rooms/${roomId}`);
         await roomRef.remove();
+    }
+
+    export async function postChatMessage(
+        roomId: string,
+        message: ChatMessage,
+    ): Promise<void> {
+        const database = firebaseAdmin.database();
+        const chatRef = database.ref(`/roomChat/${roomId}/chat`);
+        await chatRef.push().set(message);
     }
 }
