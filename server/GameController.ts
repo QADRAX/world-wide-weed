@@ -51,6 +51,7 @@ export class GameController implements IGameController {
                 await MatchRepository.deleteMatch(room.matchId);
             }
             await RoomRepository.deleteRoom(request.roomId);
+            await RoomRepository.deleteRoomChat(request.roomId);
             result.result = true;
         } else {
             result.errors.push('RoomNotExists');
@@ -259,6 +260,7 @@ export class GameController implements IGameController {
         await RoomRepository.clearReadyPlayers(room.id);
         await RoomRepository.deletePlayers(room.id);
         await RoomRepository.setMatchId(room.id, '');
+        await RoomRepository.deleteRoomChat(room.id);
         await MatchRepository.deleteMatch(match.id);
     }
 }

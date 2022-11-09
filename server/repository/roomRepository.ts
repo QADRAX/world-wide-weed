@@ -149,4 +149,12 @@ export namespace RoomRepository {
         const chatRef = database.ref(`/roomChat/${roomId}/chat`);
         await chatRef.push().set(message);
     }
+
+    export async function deleteRoomChat(
+        roomId: string,
+    ): Promise<void> {
+        const database = firebaseAdmin.database();
+        const chatRef = database.ref(`/roomChat/${roomId}/chat`);
+        await chatRef.remove();
+    }
 }
