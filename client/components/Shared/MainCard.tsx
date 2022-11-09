@@ -16,6 +16,9 @@ const BodyContainer = styled('div')({
     flex: 1,
     overflowY: 'auto',
     overflowX: 'hidden',
+    '&.drawer-open': {
+        overflowY: 'hidden',
+    },
 });
 
 const OverlayToggle = styled('div')({
@@ -28,7 +31,7 @@ const OverlayToggle = styled('div')({
 
 const OverlayContainer = styled(motion.div)({
     position: 'absolute',
-    width: '70%',
+    width: '80%',
     height: '100%',
     right: 0,
     zIndex: 90,
@@ -69,7 +72,7 @@ export const MainCard: FunctionComponent<MainCardProps> = (props) => {
 
             <Divider></Divider>
 
-            <BodyContainer ref={containerRef}>
+            <BodyContainer ref={containerRef} className={open ? 'drawer-open' : ''}>
                 <AnimatePresence>
                     {open && (
                         <OverlayContainer key={'container'}
