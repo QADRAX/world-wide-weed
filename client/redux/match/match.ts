@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { WeedPlayer } from "../../../types/Player";
-import { CardRequest, PlayCardRequest, ProtectedMatchSnapshot, PublicMatchSnapshot } from "../../../types/WeedTypes";
+import { CardRequestSnapshot, PlayCardRequest, ProtectedMatchSnapshot, PublicMatchSnapshot } from "../../../types/WeedTypes";
 import { GameService } from "../../services/GameService";
 
 export type MatchSliceState = {
@@ -14,7 +14,7 @@ export type MatchSliceState = {
     isCurrentPlayerBriked: boolean;
     publicSnapshots: PublicMatchSnapshot[] | undefined;
     protectedSnapshots: ProtectedMatchSnapshot[] | undefined;
-    cardRequestHistory: CardRequest[] | undefined;
+    cardRequestHistory: CardRequestSnapshot[] | undefined;
 
     // CURRENT SELECTION
 
@@ -48,7 +48,7 @@ export const matchSlice = createSlice({
         setProtectedSnapshots: (state, action: PayloadAction<ProtectedMatchSnapshot[]>) => {
             state.protectedSnapshots = action.payload;
         },
-        setCardRequestHistory: (state, action: PayloadAction<CardRequest[] | undefined>) => {
+        setCardRequestHistory: (state, action: PayloadAction<CardRequestSnapshot[] | undefined>) => {
             state.cardRequestHistory = action.payload;
         },
         setIsLoading: (state, action: PayloadAction<boolean>) => {

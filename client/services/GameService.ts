@@ -3,7 +3,7 @@ import { DeleteRoomRequest } from "../../pages/api/rooms/delete";
 import { JoinRoomRequest } from "../../pages/api/rooms/join";
 import { ReadyToMatchRequest } from "../../pages/api/rooms/ready";
 import { WeedPlayer } from "../../types/Player";
-import { CardRequest, PlayCardRequest, ProtectedMatchSnapshot, PublicMatchSnapshot, WeedRoom } from "../../types/WeedTypes";
+import { CardRequestSnapshot, PlayCardRequest, ProtectedMatchSnapshot, PublicMatchSnapshot, WeedRoom } from "../../types/WeedTypes";
 import { Dict } from "../../utils/Dict";
 import { firebaseClient } from "../firebaseClient";
 
@@ -100,12 +100,12 @@ export namespace GameService {
 
     export function subscribeToCardRequestHistory(
         matchId: string,
-        callback: (cardRequests: CardRequest[] | undefined) => void
+        callback: (cardRequests: CardRequestSnapshot[] | undefined) => void
     ): () => void {
         const database = firebaseClient.database();
         const cardRequestsRef = database.ref(`/matches/${matchId}/cardRequestsHistory`);
         cardRequestsRef.on('value', (snap) => {
-            const cardRequests = snap.val() as CardRequest[] | undefined;
+            const cardRequests = snap.val() as CardRequestSnapshot[] | undefined;
             callback(cardRequests);
         });
         return () => {

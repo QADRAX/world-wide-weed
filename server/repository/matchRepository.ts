@@ -1,4 +1,4 @@
-import { CardRequest, PrivateMatchSnapshot, ProtectedMatchSnapshot, PublicMatchPlayer, PublicMatchSnapshot, WeedMatch, WeedRoom } from "../../types/WeedTypes";
+import { CardRequest, CardRequestSnapshot, PrivateMatchSnapshot, ProtectedMatchSnapshot, PublicMatchPlayer, PublicMatchSnapshot, WeedMatch, WeedRoom } from "../../types/WeedTypes";
 import { firebaseAdmin } from "../firebaseAdmin";
 import { v4 } from 'uuid';
 import { getInitialMatchSnapshot } from "../game/initialGame";
@@ -120,7 +120,11 @@ function addPrivateSnapshot(
         match.cardRequestHistory = [];
     }
     if (request) {
-        match.cardRequestHistory.push(request);
+        const cardRequestSnap: CardRequestSnapshot = {
+            request,
+            date: new Date().getMilliseconds(),
+        }
+        match.cardRequestHistory.push(cardRequestSnap);
     }
 
     return match;
