@@ -49,7 +49,7 @@ export type MainCardProps = {
     children?: React.ReactNode;
     footer?: React.ReactNode;
     innerContent?: React.ReactNode;
-    expandIcon: React.ReactNode;
+    expandIcon?: React.ReactNode;
 };
 
 export const MainCard: FunctionComponent<MainCardProps> = (props) => {

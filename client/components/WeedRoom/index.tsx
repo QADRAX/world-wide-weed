@@ -22,7 +22,7 @@ export const WeedRoom = () => {
             title={
                 <>
                     {
-                        !isMatchStarted 
+                        !isMatchStarted
                             ? <LobbyInfo />
                             : <MatchInfo />
                     }
@@ -31,13 +31,15 @@ export const WeedRoom = () => {
             footer={
                 !isMatchStarted && <LobbyFooter />
             }
-            expandIcon={<>
-            {
-                !hasPendingMessages
-                    ? <ChatIcon />
-                    : <MarkUnreadChatAltIcon color='primary' />
+            expandIcon={
+                <>
+                    {
+                        !hasPendingMessages
+                            ? <ChatIcon />
+                            : <MarkUnreadChatAltIcon color='primary' />
+                    }
+                </>
             }
-            </>}
             innerContent={<Chat />}
         >
             {
