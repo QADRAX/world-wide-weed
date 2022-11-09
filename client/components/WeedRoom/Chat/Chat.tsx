@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
 import { useAuthenticatedUser } from '../../../hooks/useAuth';
 import { useRoomMessages } from '../../../hooks/usePlayerRoom';
-import { setIsPostingMessage, setTextMessage } from '../../../redux/rooms/rooms';
+import { setHasPendingMessage, setIsPostingMessage, setTextMessage } from '../../../redux/rooms/rooms';
 import { GameService } from '../../../services/GameService';
 import { MessageLeft, MessageRight } from './ChatMessage';
 import { TextInput } from './TextInput';
@@ -46,7 +46,8 @@ export const Chat = () => {
     };
 
     const scrollToBottom = () => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'auto' })
+        messagesEndRef.current?.scrollIntoView({ behavior: 'auto' });
+        dispatch(setHasPendingMessage(false));
     }
 
     useEffect(() => {

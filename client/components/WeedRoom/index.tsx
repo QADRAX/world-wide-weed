@@ -7,11 +7,14 @@ import { LobbyInfo } from './Lobby/LobbyInfo';
 import { Match } from './Match/Match';
 import { MatchInfo } from './Match/MatchInfo';
 import ChatIcon from '@mui/icons-material/Chat';
+import MarkUnreadChatAltIcon from '@mui/icons-material/MarkUnreadChatAlt';
 import { useInitRoom } from '../../hooks/useInitRoom';
 import { Chat } from './Chat/Chat';
+import { useAppSelector } from '../../hooks/redux';
 
 export const WeedRoom = () => {
     useInitRoom();
+    const hasPendingMessages = useAppSelector((state) => state.rooms.hasPendingMessages);
     const currentRoom = useCurrentPlayerRoom();
     const isMatchStarted = currentRoom.matchId != null;
     return (
@@ -28,7 +31,13 @@ export const WeedRoom = () => {
             footer={
                 !isMatchStarted && <LobbyFooter />
             }
-            expandIcon={<ChatIcon />}
+            expandIcon={<>
+            {
+                !hasPendingMessages
+                    ? <ChatIcon />
+                    : <MarkUnreadChatAltIcon color='primary' />
+            }
+            </>}
             innerContent={<Chat />}
         >
             {

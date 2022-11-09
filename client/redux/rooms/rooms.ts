@@ -9,12 +9,14 @@ export interface RoomsSliceState {
     isLoading: boolean,
     textMessage: string,
     isPostingMessage: boolean,
+    hasPendingMessages: boolean,
 };
 
 export const initialState: RoomsSliceState = {
     isLoading: false,
     textMessage: '',
     isPostingMessage: false,
+    hasPendingMessages: false,
 };
 
 export type RoomActionPayload = {
@@ -41,9 +43,12 @@ export const roomsSlice = createSlice({
         setIsPostingMessage: (state, action: PayloadAction<boolean>) => {
             state.isPostingMessage = action.payload;
         },
+        setHasPendingMessage: (state, action: PayloadAction<boolean>) => {
+            state.hasPendingMessages = action.payload;
+        },
     },
 });
 
-export const { setRooms, setIsLoading, setChatMessages, setTextMessage, setIsPostingMessage } = roomsSlice.actions;
+export const { setRooms, setIsLoading, setChatMessages, setTextMessage, setIsPostingMessage, setHasPendingMessage } = roomsSlice.actions;
 
 export default roomsSlice.reducer;
