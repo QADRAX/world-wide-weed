@@ -82,5 +82,42 @@ export const ANIMATION_SIMPLE_FADE = {
     }
 };
 
+export const ANIMATION_DRAWER = {
+    initial: {
+        x: 160,
+        opacity: 0,
+        transition: { duration: 0.6, ease: ANIMATION_EASING },
+    },
+    animate: {
+        x: 0,
+        opacity: 1,
+        transition: {
+            duration: 0.6,
+            ease: ANIMATION_EASING,
+        },
+    },
+    exit: {
+        x: 160,
+        opacity: 0,
+        transition: { duration: 0.6, ease: ANIMATION_EASING },
+    }
+};
 
-
+export const ANIMATION_DRAWER_OVERLAY = {
+    initial: {
+        opacity: 0,
+        transition: { duration: 0.6, ease: ANIMATION_EASING },
+    },
+    animate: {
+        y: 0,
+        opacity: 1,
+        transition: {
+            duration: 0.6,
+            ease: ANIMATION_EASING,
+        },
+    },
+    exit: {
+        opacity: 0,
+        transition: { duration: 0.6, ease: ANIMATION_EASING },
+    }
+};

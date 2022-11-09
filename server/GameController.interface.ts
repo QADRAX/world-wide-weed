@@ -4,6 +4,7 @@ import { ReadyToMatchRequest } from "../pages/api/rooms/ready";
 import { ValidationResult } from "../types/ValidationResult";
 import { WeedError } from "../types/MatchErrors";
 import { WeedRoom } from "../types/WeedTypes";
+import { DeleteRoomRequest } from "../pages/api/rooms/delete";
 
 export interface IGameController {
     /**
@@ -12,6 +13,13 @@ export interface IGameController {
      * @returns roomId
      */
     createRoom(request: CreateRoomRequest): Promise<ValidationResult<WeedError, WeedRoom>>;
+
+    /**
+     * Deletes a weed room
+     * @param request
+     * @returns true if room was deleted
+     */
+    deleteRoom(request: DeleteRoomRequest): Promise<ValidationResult<WeedError, boolean>>
 
     /**
      * Join player to room
@@ -26,4 +34,25 @@ export interface IGameController {
      * @returns roomId
      */
     readyToMatch(request: ReadyToMatchRequest): Promise<ValidationResult<WeedError, WeedRoom>>;
+
+    /**
+     * Leave room
+     */
+    leaveRoom(): Promise<ValidationResult<WeedError, WeedRoom>>;
+
+    /**
+     * Set a player not ready
+     */
+    undoReadyToMatch(): Promise<ValidationResult<WeedError, WeedRoom>>;
+
+    /**
+     * Set ready to match
+     */
+    readyToMatch(): Promise<ValidationResult<WeedError, WeedRoom>>;
+
+    /**
+     * Sends a message to the room
+     * @param message 
+     */
+    postChatMessage(message: string): Promise<ValidationResult<WeedError, boolean>>;
 }

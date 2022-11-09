@@ -42,11 +42,12 @@ export const Hand = () => {
 
     return (
         <Stack direction="column">
-            <LoadingButton disabled={!isValidSelection} sx={{ mt: 1 }} onClick={onPlayClick} loading={isLoading}>
+
+            <Divider flexItem component={motion.div} {...ANIMATION_VERTICAL_FADE}>
+            </Divider>
+            <LoadingButton disabled={!isValidSelection} onClick={onPlayClick} loading={isLoading}>
                 Play
             </LoadingButton>
-            <Divider flexItem sx={{ mt: 1, mb: 3 }} component={motion.div} {...ANIMATION_VERTICAL_FADE}>
-            </Divider>
             <Stack sx={{ ml: 2, mr: 2, mb: 2 }} direction="row" spacing={1} justifyContent="center" alignItems="center">
                 {hand.map((card) => (
                     <HandCard key={card.id} card={card} />

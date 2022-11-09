@@ -1,5 +1,5 @@
 import { WeedPlayer } from "../../types/Player";
-import { PublicMatchSnapshot } from "../../types/WeedTypes";
+import { CardRequestSnapshot, PublicMatchSnapshot } from "../../types/WeedTypes";
 import { useAppSelector } from "./redux";
 import { useAuthenticatedUser } from "./useAuth";
 
@@ -97,3 +97,9 @@ export function useIsValidSelection() {
     }
     return isValid;
 }
+
+export function useLastCardRequest(): CardRequestSnapshot | undefined {
+    const history = useAppSelector((state) => state.match.cardRequestHistory) ?? [];
+    const lastCardRequest: CardRequestSnapshot | undefined = history[history.length - 1];
+    return lastCardRequest;
+} 

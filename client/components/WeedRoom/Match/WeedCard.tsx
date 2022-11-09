@@ -14,23 +14,26 @@ export type WeedCardProps = {
     protectedValue?: ProtectableCardType | EmptyCardType;
     disabled?: boolean;
     selected?: 'hand' | 'target' | 'destination';
+    width?: number;
+    height?: number;
     onClick?: () => void;
 }
 
-const width = '50px';
-const height = '75px';
-
-const protectedValueWidth = '20px';
-const protectedValueHeight = '30px';
+const DEFAULT_WIDTH = 50;
+const DEFAULT_HEIGHT = 75;
+const DEFUALT_PROTECTED_ASPECT_RATIO = 0.4;
 
 export const WeedCard: FunctionComponent<WeedCardProps> = (props) => {
+    const width = props.width || DEFAULT_WIDTH;
+    const height = props.height || DEFAULT_HEIGHT;
+    const protectedValueWidth = width * DEFUALT_PROTECTED_ASPECT_RATIO;
+    const protectedValueHeight = height * DEFUALT_PROTECTED_ASPECT_RATIO;
+
+    const widthCss = `${width}px`;
+    const heightCss = `${height}px`;
 
     const imageUrl = props.cardType != 'empty'
         ? `url(/cards/${props.cardType}.jpg)`
-        : undefined;
-
-    const protectedValueImageUrl = props.protectedValue != 'empty'
-        ? `url(/cards/${props.protectedValue}.jpg)`
         : undefined;
 
     const cursor = props.cardType == 'empty'
@@ -40,7 +43,7 @@ export const WeedCard: FunctionComponent<WeedCardProps> = (props) => {
             : 'pointer';
 
     let className = '';
-    switch(props.selected) {
+    switch (props.selected) {
         case 'hand':
             className = 'selected selected-0';
             break;
@@ -65,17 +68,7 @@ export const WeedCard: FunctionComponent<WeedCardProps> = (props) => {
                 <>
                     {
                         props.protectedValue != 'empty' && props.protectedValue != undefined &&
-                        <Card elevation={4}>
-                            <Box sx={{
-                                width: protectedValueWidth,
-                                height: protectedValueHeight,
-                                opacity: props.disabled ? 0.2 : 1,
-                                transition: 'opacity 0.2s',
-                                backgroundImage: protectedValueImageUrl,
-                                backgroundSize: 'contain',
-                                backgroundPosition: 'center',
-                            }} />
-                        </Card>
+                        <WeedCard cardType={props.protectedValue} width={protectedValueWidth} height={protectedValueHeight} />
                     }
                 </>
             }
@@ -109,8 +102,8 @@ export const WeedCard: FunctionComponent<WeedCardProps> = (props) => {
                 </AnimatePresence>
                 <Box sx={{
                     position: 'relative',
-                    width,
-                    height,
+                    width: widthCss,
+                    height: heightCss,
                     backgroundImage: imageUrl,
                     backgroundSize: 'contain',
                     backgroundPosition: 'center',

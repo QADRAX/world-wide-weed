@@ -1,10 +1,12 @@
 import { CreateRoomRequest } from "../../pages/api/rooms/create";
 import { DeleteRoomRequest } from "../../pages/api/rooms/delete";
 import { JoinRoomRequest } from "../../pages/api/rooms/join";
+import { MessageRequest } from "../../pages/api/rooms/message";
 import { ReadyToMatchRequest } from "../../pages/api/rooms/ready";
+import { ChatMessage } from "../../types/ChatMessage";
 import { WeedPlayer } from "../../types/Player";
-import { PlayCardRequest, ProtectedMatchSnapshot, PublicMatchSnapshot, WeedRoom } from "../../types/WeedTypes";
-import { Dict } from "../../utils/Dict";
+import { CardRequestSnapshot, PlayCardRequest, ProtectedMatchSnapshot, PublicMatchSnapshot, WeedRoom } from "../../types/WeedTypes";
+import { Dict, toArray } from "../../utils/Dict";
 import { firebaseClient } from "../firebaseClient";
 
 export namespace GameService {
@@ -96,6 +98,48 @@ export namespace GameService {
         return () => {
             publicSnapsRef.off();
         };
+    }
+
+    export function subscribeToCardRequestHistory(
+        matchId: string,
+        callback: (cardRequests: CardRequestSnapshot[] | undefined) => void
+    ): () => void {
+        const database = firebaseClient.database();
+        const cardRequestsRef = database.ref(`/matches/${matchId}/cardRequestHistory`);
+        cardRequestsRef.on('value', (snap) => {
+            const cardRequests = snap.val() as CardRequestSnapshot[] | undefined;
+            callback(cardRequests);
+        });
+        return () => {
+            cardRequestsRef.off();
+        };
+    }
+
+    export function subscribeToChat(
+        roomId: string,
+        callback: (chat: ChatMessage[] | undefined) => void
+    ): () => void {
+        const database = firebaseClient.database();
+        const chatRef = database.ref(`/roomChat/${roomId}/chat`);
+        chatRef.on('value', (snap) => {
+            const chat = snap.val() as Dict<ChatMessage> | undefined;
+            callback(toArray(chat));
+        });
+        return () => {
+            chatRef.off();
+        };
+    }
+
+    export async function sendRoomMessage(
+        request: MessageRequest,
+    ): Promise<void> {
+        await window.fetch('/api/rooms/message', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(request)
+        });
     }
 
     export function subscribeToCurrentRooms(callback: (rooms: Dict<WeedRoom> | undefined) => void) {

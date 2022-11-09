@@ -3,6 +3,7 @@ import React from 'react';
 import { useInitMatch } from '../../../hooks/useInitMatch';
 import { GameBoard } from './GameBoard';
 import { Hand } from './Hand';
+import { LastCardRequest } from './LastCardRequest';
 
 const MainContainer = styled("div")({
     display: 'flex',
@@ -21,6 +22,7 @@ export const Match = () => {
     
     return (
         <MainContainer>
+            <LastCardRequest />
             <GameBoardContainer>
                 <GameBoard />
             </GameBoardContainer>

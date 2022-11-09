@@ -1,103 +1,46 @@
-import { LoadingButton } from '@mui/lab';
-import { Button, Typography } from '@mui/material';
 import React from 'react';
-import { getRoomStatusText } from '../../../shared/weedUtils';
-import { toArray } from '../../../utils/Dict';
-import { useAppDispatch, useAppSelector } from '../../hooks/redux';
-import { useAuthenticatedUser } from '../../hooks/useAuth';
 import { useCurrentPlayerRoom } from '../../hooks/usePlayerRoom';
-import { setIsLoading } from '../../redux/rooms/rooms';
-import { GameService } from '../../services/GameService';
 import { MainCard } from '../Shared/MainCard';
 import { Lobby } from './Lobby/Lobby';
+import { LobbyFooter } from './Lobby/LobbyFooter';
+import { LobbyInfo } from './Lobby/LobbyInfo';
 import { Match } from './Match/Match';
 import { MatchInfo } from './Match/MatchInfo';
+import ChatIcon from '@mui/icons-material/Chat';
+import MarkUnreadChatAltIcon from '@mui/icons-material/MarkUnreadChatAlt';
+import { useInitRoom } from '../../hooks/useInitRoom';
+import { Chat } from './Chat/Chat';
+import { useAppSelector } from '../../hooks/redux';
 
 export const WeedRoom = () => {
-    const isLoading = useAppSelector(state => state.rooms.isLoading);
-    const { user } = useAuthenticatedUser();
-    const dispatch = useAppDispatch();
+    useInitRoom();
+    const hasPendingMessages = useAppSelector((state) => state.rooms.hasPendingMessages);
     const currentRoom = useCurrentPlayerRoom();
-
-    const readyPlayersIdsDict = currentRoom.readyPlayersIds ?? {};
-    const readyPlayersIds = toArray(readyPlayersIdsDict);
-
-    const isPlayerReady = readyPlayersIds.includes(user.id);
-
     const isMatchStarted = currentRoom.matchId != null;
-
-    const roomStatusText = getRoomStatusText(currentRoom);
-
-    const leaveRoom = async () => {
-        dispatch(setIsLoading(true));
-        await GameService.leaveRoom();
-        dispatch(setIsLoading(false));
-    };
-
-    const setReady = async () => {
-        dispatch(setIsLoading(true));
-        await GameService.readyToPlay({ isReady: true });
-        dispatch(setIsLoading(false));
-    };
-
-    const setNotReady = async () => {
-        dispatch(setIsLoading(true));
-        await GameService.readyToPlay({ isReady: false });
-        dispatch(setIsLoading(false));
-    };
-
     return (
         <MainCard
             title={
                 <>
-                    <Typography variant="h5" component="div" sx={{ p: 1 }}>
-                        {currentRoom.name}
-                    </Typography>
                     {
-                        !isMatchStarted ?
-                            (<Typography color="text.secondary">
-                                {roomStatusText}
-                            </Typography>)
+                        !isMatchStarted
+                            ? <LobbyInfo />
                             : <MatchInfo />
                     }
-
                 </>
             }
             footer={
-                !isMatchStarted && (
-                    <>
-                        {
-                            isPlayerReady ? (
-                                <LoadingButton
-                                    loading={isLoading}
-                                    size="small"
-                                    variant="contained"
-                                    color="error"
-                                    onClick={setNotReady}>
-                                    Not Ready
-                                </LoadingButton>
-                            ) : (
-                                <LoadingButton
-                                    size="small"
-                                    loading={isLoading}
-                                    variant="contained"
-                                    color="success"
-                                    onClick={setReady}>
-                                    Ready
-                                </LoadingButton>
-                            )
-                        }
-                        <Button
-                            size="small"
-                            fullWidth
-                            color="error"
-                            disabled={isPlayerReady || isLoading}
-                            onClick={leaveRoom}>
-                            Leave
-                        </Button>
-                    </>
-                )
+                !isMatchStarted && <LobbyFooter />
             }
+            expandIcon={
+                <>
+                    {
+                        !hasPendingMessages
+                            ? <ChatIcon />
+                            : <MarkUnreadChatAltIcon color='primary' />
+                    }
+                </>
+            }
+            innerContent={<Chat />}
         >
             {
                 isMatchStarted
