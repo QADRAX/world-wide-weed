@@ -3,6 +3,7 @@ import { WeedPlayer } from '../../../../types/Player';
 import { Field } from '../../../../types/WeedTypes';
 import { useAppDispatch } from '../../../hooks/redux';
 import { 
+    useIsCurrentPlayerBriked,
     useIsCurrentPlayerTurn, 
     useSelectedCardType, 
     useSelectedDestinationField, 
@@ -30,6 +31,8 @@ export const PlayerField: React.FunctionComponent<PlayerFieldProps> = (props) =>
         field: destinationField,
     } = useSelectedDestinationField();
 
+    const isCurrentPlayerBriked = useIsCurrentPlayerBriked();
+
     const isOwnTarget = targetPlayer?.playerId === props.player.id;
     const isOwnDestination = destinationPlayer?.playerId === props.player.id;
 
@@ -43,7 +46,7 @@ export const PlayerField: React.FunctionComponent<PlayerFieldProps> = (props) =>
     const isDestinationEnabled = isDestinationNeeded && isTargetSelected && !isOwnTarget;
 
     const onFieldClick = () => {
-        if (selectedCard != null && isCurrentPlayerTurn) {
+        if (!isCurrentPlayerBriked && selectedCard != null && isCurrentPlayerTurn) {
 
             if (isTargetSelected) {
                 if(isDestinationEnabled) {

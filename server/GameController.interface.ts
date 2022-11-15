@@ -29,13 +29,6 @@ export interface IGameController {
     joinRoom(request: JoinRoomRequest): Promise<ValidationResult<WeedError, WeedRoom>>;
 
     /**
-     * Set a player ready for the weed match
-     * @param request 
-     * @returns roomId
-     */
-    readyToMatch(request: ReadyToMatchRequest): Promise<ValidationResult<WeedError, WeedRoom>>;
-
-    /**
      * Leave room
      */
     leaveRoom(): Promise<ValidationResult<WeedError, WeedRoom>>;

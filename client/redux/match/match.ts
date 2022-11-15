@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { WeedPlayer } from "../../../types/Player";
-import { CardRequestSnapshot, PlayCardRequest, ProtectedMatchSnapshot, PublicMatchSnapshot } from "../../../types/WeedTypes";
+import { CardRequestSnapshot, DiscardCardRequest, PlayCardRequest, ProtectedMatchSnapshot, PublicMatchSnapshot } from "../../../types/WeedTypes";
 import { GameService } from "../../services/GameService";
 
 export type MatchSliceState = {
@@ -38,6 +38,11 @@ export const playCardAction = createAsyncThunk('match/playCard',
         await GameService.playCard(request);
     });
 
+export const discardCardAction = createAsyncThunk('match/discardCard',
+    async (request: DiscardCardRequest) => {
+        await GameService.discardCard(request);
+    });
+
 export const matchSlice = createSlice({
     name: 'match',
     initialState,
@@ -72,6 +77,18 @@ export const matchSlice = createSlice({
         setDestinationFieldId: (state, action: PayloadAction<string | undefined>) => {
             state.destinationFieldId = action.payload;
         },
+        flushMatch: (state) => {
+            state.selectedCardId = undefined;
+            state.targetPlayerId = undefined;
+            state.tagetFieldId = undefined;
+            state.destinationFieldId = undefined;
+            state.isCurrentPlayerBriked = false;
+            state.isLoading = false;
+            state.cardRequestHistory = [];
+            state.protectedSnapshots = [];
+            state.publicSnapshots = [];
+            state.players = [];
+        }
     },
     extraReducers: (builder) => {
         builder.addCase(playCardAction.pending, (state) => {
@@ -85,6 +102,20 @@ export const matchSlice = createSlice({
             state.targetPlayerId = undefined;
         });
         builder.addCase(playCardAction.rejected, (state) => {
+            state.isLoading = false;
+        });
+
+        builder.addCase(discardCardAction.pending, (state) => {
+            state.isLoading = true;
+        });
+        builder.addCase(discardCardAction.fulfilled, (state) => {
+            state.isLoading = false;
+            state.destinationFieldId = undefined;
+            state.selectedCardId = undefined;
+            state.tagetFieldId = undefined;
+            state.targetPlayerId = undefined;
+        });
+        builder.addCase(discardCardAction.rejected, (state) => {
             state.isLoading = false;
         });
     },
@@ -101,6 +132,7 @@ export const {
     setTargetFieldId,
     setSelectedCardId,
     setTargetPlayerId,
+    flushMatch,
 } = matchSlice.actions;
 
 export default matchSlice.reducer;

@@ -3,12 +3,20 @@ import { Divider } from '@mui/material';
 import { Stack } from '@mui/system';
 import { motion } from 'framer-motion';
 import React from 'react';
-import { PlayCardRequest } from '../../../../types/WeedTypes';
+import { DiscardCardRequest, PlayCardRequest } from '../../../../types/WeedTypes';
 import { ANIMATION_VERTICAL_FADE } from '../../../config/animations';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
 import { useAuthenticatedUser } from '../../../hooks/useAuth';
-import { useCurrentHand, useIsValidSelection, useSelectedCardType, useSelectedDestinationField, useSelectedTargetField } from '../../../hooks/usePlayerMatch';
-import { playCardAction } from '../../../redux/match/match';
+import {
+    useCurrentHand,
+    useIsCurrentPlayerBriked,
+    useIsGameOver,
+    useIsValidSelection,
+    useSelectedCardType,
+    useSelectedDestinationField,
+    useSelectedTargetField
+} from '../../../hooks/usePlayerMatch';
+import { discardCardAction, flushMatch, playCardAction } from '../../../redux/match/match';
 import { HandCard } from './HandCard';
 
 export const Hand = () => {
@@ -19,13 +27,14 @@ export const Hand = () => {
     const {
         field: targetField,
     } = useSelectedTargetField();
-
     const {
         field: destinationField,
     } = useSelectedDestinationField();
     const isLoading = useAppSelector((state) => state.match.isLoading);
     const hand = useCurrentHand();
     const isValidSelection = useIsValidSelection();
+    const isGameOver = useIsGameOver();
+    const isCurrentPlayerBriked = useIsCurrentPlayerBriked();
 
     const onPlayClick = () => {
         if (selectedCard && targetPlayerId && targetField) {
@@ -40,14 +49,49 @@ export const Hand = () => {
         }
     };
 
+    const onFinishGame = () => {
+        dispatch(flushMatch());
+    };
+
+    const onDiscardCard = () => {
+        if (selectedCard) {
+            const request: DiscardCardRequest = {
+                playerId: user.id,
+                cardType: selectedCard,
+            };
+            dispatch(discardCardAction(request));
+        }
+    };
+
     return (
         <Stack direction="column">
-
             <Divider flexItem component={motion.div} {...ANIMATION_VERTICAL_FADE}>
             </Divider>
-            <LoadingButton disabled={!isValidSelection} onClick={onPlayClick} loading={isLoading}>
-                Play
-            </LoadingButton>
+
+            {
+                isGameOver
+                    ? (
+                        <LoadingButton onClick={onFinishGame} loading={isLoading}>
+                            Finish
+                        </LoadingButton>
+                    )
+                    : (
+                        <>
+                            {
+                                isCurrentPlayerBriked
+                                    ?
+                                    <LoadingButton onClick={onDiscardCard} loading={isLoading} disabled={!selectedCard}>
+                                        Discard
+                                    </LoadingButton>
+                                    :
+                                    <LoadingButton onClick={onPlayClick} disabled={!isValidSelection} loading={isLoading}>
+                                        Play
+                                    </LoadingButton>
+                            }
+                        </>
+                    )
+            }
+
             <Stack sx={{ ml: 2, mr: 2, mb: 2 }} direction="row" spacing={1} justifyContent="center" alignItems="center">
                 {hand.map((card) => (
                     <HandCard key={card.id} card={card} />
