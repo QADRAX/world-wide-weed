@@ -77,18 +77,6 @@ export const matchSlice = createSlice({
         setDestinationFieldId: (state, action: PayloadAction<string | undefined>) => {
             state.destinationFieldId = action.payload;
         },
-        flushMatch: (state) => {
-            state.selectedCardId = undefined;
-            state.targetPlayerId = undefined;
-            state.tagetFieldId = undefined;
-            state.destinationFieldId = undefined;
-            state.isCurrentPlayerBriked = false;
-            state.isLoading = false;
-            state.cardRequestHistory = [];
-            state.protectedSnapshots = [];
-            state.publicSnapshots = [];
-            state.players = [];
-        }
     },
     extraReducers: (builder) => {
         builder.addCase(playCardAction.pending, (state) => {
@@ -132,7 +120,6 @@ export const {
     setTargetFieldId,
     setSelectedCardId,
     setTargetPlayerId,
-    flushMatch,
 } = matchSlice.actions;
 
 export default matchSlice.reducer;

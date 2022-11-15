@@ -10,13 +10,12 @@ import { useAuthenticatedUser } from '../../../hooks/useAuth';
 import {
     useCurrentHand,
     useIsCurrentPlayerBriked,
-    useIsGameOver,
     useIsValidSelection,
     useSelectedCardType,
     useSelectedDestinationField,
     useSelectedTargetField
 } from '../../../hooks/usePlayerMatch';
-import { discardCardAction, flushMatch, playCardAction } from '../../../redux/match/match';
+import { discardCardAction, playCardAction } from '../../../redux/match/match';
 import { HandCard } from './HandCard';
 
 export const Hand = () => {
@@ -33,7 +32,6 @@ export const Hand = () => {
     const isLoading = useAppSelector((state) => state.match.isLoading);
     const hand = useCurrentHand();
     const isValidSelection = useIsValidSelection();
-    const isGameOver = useIsGameOver();
     const isCurrentPlayerBriked = useIsCurrentPlayerBriked();
 
     const onPlayClick = () => {
@@ -47,10 +45,6 @@ export const Hand = () => {
             };
             dispatch(playCardAction(request));
         }
-    };
-
-    const onFinishGame = () => {
-        dispatch(flushMatch());
     };
 
     const onDiscardCard = () => {
@@ -67,31 +61,17 @@ export const Hand = () => {
         <Stack direction="column">
             <Divider flexItem component={motion.div} {...ANIMATION_VERTICAL_FADE}>
             </Divider>
-
             {
-                isGameOver
-                    ? (
-                        <LoadingButton onClick={onFinishGame} loading={isLoading}>
-                            Finish
-                        </LoadingButton>
-                    )
-                    : (
-                        <>
-                            {
-                                isCurrentPlayerBriked
-                                    ?
-                                    <LoadingButton onClick={onDiscardCard} loading={isLoading} disabled={!selectedCard}>
-                                        Discard
-                                    </LoadingButton>
-                                    :
-                                    <LoadingButton onClick={onPlayClick} disabled={!isValidSelection} loading={isLoading}>
-                                        Play
-                                    </LoadingButton>
-                            }
-                        </>
-                    )
+                isCurrentPlayerBriked
+                    ?
+                    <LoadingButton onClick={onDiscardCard} loading={isLoading} disabled={!selectedCard}>
+                        Discard
+                    </LoadingButton>
+                    :
+                    <LoadingButton onClick={onPlayClick} disabled={!isValidSelection} loading={isLoading}>
+                        Play
+                    </LoadingButton>
             }
-
             <Stack sx={{ ml: 2, mr: 2, mb: 2 }} direction="row" spacing={1} justifyContent="center" alignItems="center">
                 {hand.map((card) => (
                     <HandCard key={card.id} card={card} />

@@ -2,7 +2,13 @@ import { useEffect } from "react";
 import { useCurrentPlayerMatchId } from "./usePlayerRoom";
 import { GameService } from "../services/GameService";
 import { useAppDispatch } from "./redux";
-import { setCardRequestHistory, setIsCurrentPlayerBriked, setMatchPlayers, setProtectedSnapshots, setPublicSnapshots } from "../redux/match/match";
+import {
+    setCardRequestHistory,
+    setIsCurrentPlayerBriked,
+    setMatchPlayers,
+    setProtectedSnapshots,
+    setPublicSnapshots
+} from "../redux/match/match";
 import { useAuthenticatedUser } from "./useAuth";
 import { useIsGameOver } from "./usePlayerMatch";
 
@@ -53,6 +59,9 @@ export const useInitMatch = () => {
                     }
                 );
             })();
+        } else {
+            // MATCH IS OVER
+            console.log('Match is over!!!');
         }
 
         return () => {
@@ -69,6 +78,6 @@ export const useInitMatch = () => {
                 unsubscribeCardRequestHistory();
             }
         };
-        
+
     }, [dispatch, matchId, user, isGameOver]);
 };
