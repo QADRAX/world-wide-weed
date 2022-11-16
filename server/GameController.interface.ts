@@ -1,6 +1,5 @@
 import { CreateRoomRequest } from "../pages/api/rooms/create";
 import { JoinRoomRequest } from "../pages/api/rooms/join";
-import { ReadyToMatchRequest } from "../pages/api/rooms/ready";
 import { ValidationResult } from "../types/ValidationResult";
 import { WeedError } from "../types/MatchErrors";
 import { WeedRoom } from "../types/WeedTypes";
