@@ -19,7 +19,6 @@ export const getCards = (type: CardType, count: number): WeedCard[] => {
 
 export const getDeck = (): WeedCard[] => {
     return [
-        /*
         ...getCards('weed1', 8),
         ...getCards('weed2', 6),
         ...getCards('weed3', 4),
@@ -33,7 +32,5 @@ export const getDeck = (): WeedCard[] => {
         ...getCards('dog', 2),
         ...getCards('monzon', 1),
         ...getCards('potzilla', 1),
-        */
-       ...getCards('stealer', 15),
     ];
 }
