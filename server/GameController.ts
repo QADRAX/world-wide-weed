@@ -215,7 +215,7 @@ export class GameController implements IGameController {
                         // Auto game over
                         const nextValidator = new WeedMatchValidator(nextMatch.privateMatchSnapshots, nextMatch.players);
                         if (nextValidator.gameOver) {
-                            this.finishMatch(currentRoom, match);
+                            await this.finishMatch(currentRoom, match);
                         }
 
                     } else {
@@ -244,7 +244,7 @@ export class GameController implements IGameController {
             Log(`isAllPlayersReady: ${isAllPlayersReady}`);
             if (isAllPlayersReady && playersReady.length >= MIN_PLAYERS_IN_MATCH) {
                 Log('All players ready, starting match', 'info');
-                this.startMatch(room);
+                await this.startMatch(room);
             }
         } else {
             Log('Start match failed, room disapear... This shold not happen', 'critical');

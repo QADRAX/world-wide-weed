@@ -33,6 +33,9 @@ export function useTotalTurns(){
 export function useIsGameOver(){
     const totalTurns = useTotalTurns();
     const currentTurn = useCurrentTurn();
+    if(totalTurns === 0) {
+        return false;
+    }
     const isGameOver = currentTurn + 1 > totalTurns;
     return isGameOver;
 }
@@ -57,6 +60,13 @@ export function useIsCurrentPlayerTurn(){
     
     const isCurrentPlayerTurn = user.id === currentPlayer?.id;
     return isCurrentPlayerTurn;
+}
+
+export function useIsCurrentPlayerBriked() {
+    const isBriked = useAppSelector((state) => state.match.isCurrentPlayerBriked);
+    const isCurrentPlayerTurn = useIsCurrentPlayerTurn();
+    const isCurrentPlayerBriked = isBriked && isCurrentPlayerTurn;
+    return isCurrentPlayerBriked;
 }
 
 export function useSelectedCardType(){

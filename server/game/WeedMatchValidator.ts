@@ -445,7 +445,10 @@ export class WeedMatchValidator {
                             const applyDiscard = () => {
                                 const currentCardIndex = player.hand?.indexOf(currentCard);
                                 player.hand?.splice(currentCardIndex!, 1);
-                                snap.discards?.push(currentCard);
+                                if(!snap.discards){
+                                    snap.discards = [];
+                                }
+                                snap.discards.push(currentCard);
                             };
                             const applyNextPlayerDraw = () => {
                                 const handSize = nextPlayer.hand?.length;

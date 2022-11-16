@@ -5,7 +5,7 @@ import { MessageRequest } from "../../pages/api/rooms/message";
 import { ReadyToMatchRequest } from "../../pages/api/rooms/ready";
 import { ChatMessage } from "../../types/ChatMessage";
 import { WeedPlayer } from "../../types/Player";
-import { CardRequestSnapshot, PlayCardRequest, ProtectedMatchSnapshot, PublicMatchSnapshot, WeedRoom } from "../../types/WeedTypes";
+import { CardRequestSnapshot, DiscardCardRequest, PlayCardRequest, ProtectedMatchSnapshot, PublicMatchSnapshot, WeedRoom } from "../../types/WeedTypes";
 import { Dict, toArray } from "../../utils/Dict";
 import { firebaseClient } from "../firebaseClient";
 
@@ -209,4 +209,13 @@ export namespace GameService {
         });
     }
 
+    export async function discardCard(request: DiscardCardRequest) {
+        await window.fetch('/api/match/discard', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(request)
+        });
+    }
 }

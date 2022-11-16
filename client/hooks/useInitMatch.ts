@@ -2,13 +2,21 @@ import { useEffect } from "react";
 import { useCurrentPlayerMatchId } from "./usePlayerRoom";
 import { GameService } from "../services/GameService";
 import { useAppDispatch } from "./redux";
-import { setCardRequestHistory, setIsCurrentPlayerBriked, setMatchPlayers, setProtectedSnapshots, setPublicSnapshots } from "../redux/match/match";
+import {
+    setCardRequestHistory,
+    setIsCurrentPlayerBriked,
+    setMatchPlayers,
+    setProtectedSnapshots,
+    setPublicSnapshots
+} from "../redux/match/match";
 import { useAuthenticatedUser } from "./useAuth";
+import { useIsGameOver } from "./usePlayerMatch";
 
 export const useInitMatch = () => {
     const { user } = useAuthenticatedUser();
     const matchId = useCurrentPlayerMatchId();
     const dispatch = useAppDispatch();
+    const isGameOver = useIsGameOver();
 
     useEffect(() => {
         let unsubscribePublic: (() => void) | undefined = undefined;
@@ -16,41 +24,45 @@ export const useInitMatch = () => {
         let unsubscribeIsCurrentPlayerBriked: (() => void) | undefined = undefined;
         let unsubscribeCardRequestHistory: (() => void) | undefined = undefined;
 
-        (async () => {
-            const publicSnapshots = await GameService.getPublicMatchSnapshots(matchId);
-            dispatch(setPublicSnapshots(publicSnapshots));
-            const protectedSnapshots = await GameService.getProtectedMatchSnapshots(user.id, matchId);
-            dispatch(setProtectedSnapshots(protectedSnapshots));
-            const matchPlayers = await GameService.getMatchPlayers(matchId);
-            dispatch(setMatchPlayers(matchPlayers));
+        if (matchId && !isGameOver) {
+            (async () => {
+                const publicSnapshots = await GameService.getPublicMatchSnapshots(matchId);
+                dispatch(setPublicSnapshots(publicSnapshots));
+                const protectedSnapshots = await GameService.getProtectedMatchSnapshots(user.id, matchId);
+                dispatch(setProtectedSnapshots(protectedSnapshots));
+                const matchPlayers = await GameService.getMatchPlayers(matchId);
+                dispatch(setMatchPlayers(matchPlayers));
 
-            unsubscribePublic = GameService.subscribeToPublicMatchSnapshots(matchId, (snapshots) => {
-                dispatch(setPublicSnapshots(snapshots));
-            });
+                unsubscribePublic = GameService.subscribeToPublicMatchSnapshots(matchId, (snapshots) => {
+                    dispatch(setPublicSnapshots(snapshots));
+                });
 
-            unsubscribeProtected = GameService.subscribeToProtectedMatchSnapshots(
-                user.id,
-                matchId,
-                (snapshots) => {
-                    dispatch(setProtectedSnapshots(snapshots));
-                }
-            );
+                unsubscribeProtected = GameService.subscribeToProtectedMatchSnapshots(
+                    user.id,
+                    matchId,
+                    (snapshots) => {
+                        dispatch(setProtectedSnapshots(snapshots));
+                    }
+                );
 
-            unsubscribeIsCurrentPlayerBriked = GameService.subscribeToIsCurrentPlayerBriked(
-                matchId,
-                (isBriked) => {
-                    dispatch(setIsCurrentPlayerBriked(isBriked));
-                }
-            );
+                unsubscribeIsCurrentPlayerBriked = GameService.subscribeToIsCurrentPlayerBriked(
+                    matchId,
+                    (isBriked) => {
+                        dispatch(setIsCurrentPlayerBriked(isBriked));
+                    }
+                );
 
-            unsubscribeCardRequestHistory = GameService.subscribeToCardRequestHistory(
-                matchId,
-                (cardRequestHistory) => {
-                    dispatch(setCardRequestHistory(cardRequestHistory));
-                }
-            );
-
-        })();
+                unsubscribeCardRequestHistory = GameService.subscribeToCardRequestHistory(
+                    matchId,
+                    (cardRequestHistory) => {
+                        dispatch(setCardRequestHistory(cardRequestHistory));
+                    }
+                );
+            })();
+        } else {
+            // MATCH IS OVER
+            console.log('Match is over!!!');
+        }
 
         return () => {
             if (unsubscribePublic) {
@@ -66,5 +78,6 @@ export const useInitMatch = () => {
                 unsubscribeCardRequestHistory();
             }
         };
-    }, [dispatch, matchId, user]);
+
+    }, [dispatch, matchId, user, isGameOver]);
 };

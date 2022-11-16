@@ -1,6 +1,5 @@
 import { CreateRoomRequest } from "../pages/api/rooms/create";
 import { JoinRoomRequest } from "../pages/api/rooms/join";
-import { ReadyToMatchRequest } from "../pages/api/rooms/ready";
 import { ValidationResult } from "../types/ValidationResult";
 import { WeedError } from "../types/MatchErrors";
 import { WeedRoom } from "../types/WeedTypes";
@@ -27,13 +26,6 @@ export interface IGameController {
      * @returns roomId
      */
     joinRoom(request: JoinRoomRequest): Promise<ValidationResult<WeedError, WeedRoom>>;
-
-    /**
-     * Set a player ready for the weed match
-     * @param request 
-     * @returns roomId
-     */
-    readyToMatch(request: ReadyToMatchRequest): Promise<ValidationResult<WeedError, WeedRoom>>;
 
     /**
      * Leave room

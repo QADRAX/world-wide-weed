@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { WeedPlayer } from "../../../types/Player";
-import { CardRequestSnapshot, PlayCardRequest, ProtectedMatchSnapshot, PublicMatchSnapshot } from "../../../types/WeedTypes";
+import { CardRequestSnapshot, DiscardCardRequest, PlayCardRequest, ProtectedMatchSnapshot, PublicMatchSnapshot } from "../../../types/WeedTypes";
 import { GameService } from "../../services/GameService";
 
 export type MatchSliceState = {
@@ -36,6 +36,11 @@ export const initialState: MatchSliceState = {
 export const playCardAction = createAsyncThunk('match/playCard',
     async (request: PlayCardRequest) => {
         await GameService.playCard(request);
+    });
+
+export const discardCardAction = createAsyncThunk('match/discardCard',
+    async (request: DiscardCardRequest) => {
+        await GameService.discardCard(request);
     });
 
 export const matchSlice = createSlice({
@@ -85,6 +90,20 @@ export const matchSlice = createSlice({
             state.targetPlayerId = undefined;
         });
         builder.addCase(playCardAction.rejected, (state) => {
+            state.isLoading = false;
+        });
+
+        builder.addCase(discardCardAction.pending, (state) => {
+            state.isLoading = true;
+        });
+        builder.addCase(discardCardAction.fulfilled, (state) => {
+            state.isLoading = false;
+            state.destinationFieldId = undefined;
+            state.selectedCardId = undefined;
+            state.tagetFieldId = undefined;
+            state.targetPlayerId = undefined;
+        });
+        builder.addCase(discardCardAction.rejected, (state) => {
             state.isLoading = false;
         });
     },

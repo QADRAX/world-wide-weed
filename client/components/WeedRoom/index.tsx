@@ -17,6 +17,7 @@ export const WeedRoom = () => {
     const hasPendingMessages = useAppSelector((state) => state.rooms.hasPendingMessages);
     const currentRoom = useCurrentPlayerRoom();
     const isMatchStarted = currentRoom.matchId != null;
+
     return (
         <MainCard
             title={
