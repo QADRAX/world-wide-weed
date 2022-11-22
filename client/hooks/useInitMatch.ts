@@ -4,6 +4,7 @@ import { GameService } from "../services/GameService";
 import { useAppDispatch } from "./redux";
 import {
     setCardRequestHistory,
+    setGameOver,
     setIsCurrentPlayerBriked,
     setMatchPlayers,
     setProtectedSnapshots,
@@ -61,7 +62,7 @@ export const useInitMatch = () => {
             })();
         } else {
             // MATCH IS OVER
-            console.log('Match is over!!!');
+            dispatch(setGameOver(true));
         }
 
         return () => {

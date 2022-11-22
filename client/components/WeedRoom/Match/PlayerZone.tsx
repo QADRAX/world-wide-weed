@@ -34,13 +34,15 @@ export const PlayerZone: FunctionComponent<PlayerZoneProps> = (props) => {
         0
     ) + props.playerSnap.smokedScore;
 
+    const isCurrentPlayer = user.id == props.playerInfo.id;
+
     return (
         <Stack direction="column" spacing={2} justifyContent="center" alignContent="center">
             <Stack direction="row" spacing={2} justifyContent="center" alignItems="center">
                 <MatchPlayerAvatar state={state} player={props.playerInfo} />
                 <Typography variant="h6"
                     sx={{
-                        textDecoration: user.id == props.playerInfo.id ? 'underline' : 'none',
+                        textDecoration: isCurrentPlayer ? 'underline' : 'none',
                         cursor: 'default',
                     }}>
                     {props.playerInfo.name}
