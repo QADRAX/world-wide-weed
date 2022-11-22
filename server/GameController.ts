@@ -161,7 +161,7 @@ export class GameController implements IGameController {
                 result.result = currentRoom;
 
                 // Auto start match
-                this.autoStartMatch();
+                await this.autoStartMatch();
 
             } else {
                 result.errors.push('PlayerAlreadyReady');
