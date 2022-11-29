@@ -4,6 +4,7 @@ import { Paper, styled } from '@mui/material';
 import { useAuth } from '../../hooks/useAuth';
 import { LoaderContainer } from './LoaderContainer';
 import { UserInfo } from '../../../types/UserInfo';
+import { LastMatchDialog } from './LastMatchDialog/LastMatchDialog';
 
 const RootContainer = styled("div")(({
     display: 'flex',
@@ -37,6 +38,7 @@ export const MainScreen: FunctionComponent<WeedMainScreenProps> = (props) => {
             <MainContainer elevation={5}>
                 {props.children}
             </MainContainer>
+            <LastMatchDialog />
         </RootContainer>
     )
 }

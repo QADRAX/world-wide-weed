@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useCurrentPlayerMatchId } from "./usePlayerRoom";
 import { GameService } from "../services/GameService";
-import { useAppDispatch } from "./redux";
+import { useAppDispatch, useAppSelector } from "./redux";
 import {
     setCardRequestHistory,
     setIsCurrentPlayerBriked,
@@ -11,12 +11,14 @@ import {
 } from "../redux/match/match";
 import { useAuthenticatedUser } from "./useAuth";
 import { useIsGameOver } from "./usePlayerMatch";
+import { LastMatch, setLastMatch } from "../redux/lastMatch/lastMatch";
 
 export const useInitMatch = () => {
     const { user } = useAuthenticatedUser();
     const matchId = useCurrentPlayerMatchId();
     const dispatch = useAppDispatch();
     const isGameOver = useIsGameOver();
+    const match = useAppSelector(state => state.match);
 
     useEffect(() => {
         let unsubscribePublic: (() => void) | undefined = undefined;
@@ -61,7 +63,14 @@ export const useInitMatch = () => {
             })();
         } else {
             // MATCH IS OVER
-            console.log('Match is over!!!');
+
+            const lastMatch: LastMatch = {
+                publicSnapshots: match.publicSnapshots,
+                cardRequestHistory: match.cardRequestHistory,
+                players: match.players,
+            };
+
+            dispatch(setLastMatch(lastMatch));
         }
 
         return () => {
