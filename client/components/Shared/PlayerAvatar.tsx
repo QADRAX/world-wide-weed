@@ -5,6 +5,7 @@ import { WeedPlayer } from '../../../types/Player';
 import { ANIMATION_HORIZONTAL_FADE } from '../../config/animations';
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 import HeartBrokenIcon from '@mui/icons-material/HeartBroken';
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 
 export const AVATAR_COLOR = '#44b700';
 
@@ -55,6 +56,8 @@ const StyledGameIcon = styled(Icon)(() => ({
 export type PlayerAvatarsProps = {
     player?: WeedPlayer;
     isReady?: boolean;
+    isWinner?: boolean;
+    isLoser?: boolean;
     size?: number;
     accent?: boolean;
 }
@@ -86,7 +89,7 @@ export const PlayerAvatar: FunctionComponent<PlayerAvatarsProps> = (props) => {
     }
 }
 
-export type MatchPlayerAvatarState = 'playerTurn' | 'briked' | 'none'
+export type MatchPlayerAvatarState = 'playerTurn' | 'briked' | 'winner' | 'none'
 
 export interface MatchPlayerAvatarsProps extends PlayerAvatarsProps {
     state: MatchPlayerAvatarState,
@@ -98,6 +101,8 @@ export const BadgeContentAvatar = (props: { state: MatchPlayerAvatarState }) => 
             return <StyledGameIcon><SportsEsportsIcon /></StyledGameIcon>;
         case 'briked':
             return <StyledGameIcon><HeartBrokenIcon /></StyledGameIcon>;
+        case 'winner':
+            return <StyledGameIcon><EmojiEventsIcon /></StyledGameIcon>;
         default:
         case 'none':
             return <></>;
