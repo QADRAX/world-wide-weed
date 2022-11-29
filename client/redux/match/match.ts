@@ -12,9 +12,9 @@ export type MatchSliceState = {
 
     players: WeedPlayer[];
     isCurrentPlayerBriked: boolean;
-    publicSnapshots: PublicMatchSnapshot[] | undefined;
-    protectedSnapshots: ProtectedMatchSnapshot[] | undefined;
-    cardRequestHistory: CardRequestSnapshot[] | undefined;
+    publicSnapshots?: PublicMatchSnapshot[];
+    protectedSnapshots?: ProtectedMatchSnapshot[];
+    cardRequestHistory?: CardRequestSnapshot[];
 
     // CURRENT SELECTION
 
@@ -22,6 +22,10 @@ export type MatchSliceState = {
     targetPlayerId?: string;
     tagetFieldId?: string;
     destinationFieldId?: string;
+
+    // LAST MATCH PLAYED
+
+    lastMatchSnapshot?: PublicMatchSnapshot[];
 };
 
 export const initialState: MatchSliceState = {
@@ -77,6 +81,13 @@ export const matchSlice = createSlice({
         setDestinationFieldId: (state, action: PayloadAction<string | undefined>) => {
             state.destinationFieldId = action.payload;
         },
+        setGameOver: (state, action: PayloadAction<boolean>) => {
+            if(action.payload) {
+                state.lastMatchSnapshot = state.publicSnapshots;
+            } else {
+                state.lastMatchSnapshot = undefined;
+            }
+        },
     },
     extraReducers: (builder) => {
         builder.addCase(playCardAction.pending, (state) => {
@@ -120,6 +131,7 @@ export const {
     setTargetFieldId,
     setSelectedCardId,
     setTargetPlayerId,
+    setGameOver,
 } = matchSlice.actions;
 
 export default matchSlice.reducer;
