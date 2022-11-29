@@ -37,6 +37,14 @@ export const RoomCard: FunctionComponent<RoomCardProps> = (props) => {
         dispatch(setIsLoading(false));
     };
 
+    const restartRoom = async () => {
+        dispatch(setIsLoading(true));
+        await GameService.restartRoom({
+            roomId: props.room.id,
+        });
+        dispatch(setIsLoading(false));
+    };
+
     return (
         <Card component={motion.div}
             {...ANIMATION_VERTICAL_FADE}
@@ -59,6 +67,7 @@ export const RoomCard: FunctionComponent<RoomCardProps> = (props) => {
                     Join
                 </Button>
                 {isRoomAdmin && <Button size="small" color="error" onClick={deleteRoom}>Delete</Button>}
+                {isRoomAdmin && <Button size="small" color="warning" onClick={restartRoom}>Restart</Button>}
             </CardActions>
         </Card>
     );

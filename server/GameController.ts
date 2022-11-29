@@ -14,6 +14,7 @@ import { MatchRepository } from "./repository/matchRepository";
 import { RoomRepository } from "./repository/roomRepository";
 import { ChatMessage } from "../types/ChatMessage";
 import { toWeedPlayer } from "../shared/mappers";
+import { RestartRoomRequest } from "../pages/api/rooms/restart";
 
 export class GameController implements IGameController {
     private userInfo: UserInfo;
@@ -51,6 +52,26 @@ export class GameController implements IGameController {
                 await MatchRepository.deleteMatch(room.matchId);
             }
             await RoomRepository.deleteRoom(request.roomId);
+            await RoomRepository.deleteRoomChat(request.roomId);
+            result.result = true;
+        } else {
+            result.errors.push('RoomNotExists');
+        }
+
+        return result;
+    }
+
+    async restartRoom(request: RestartRoomRequest): Promise<ValidationResult<WeedError, boolean>> {
+        const result: ValidationResult<WeedError, boolean> = {
+            result: undefined,
+            errors: [],
+        };
+        const room = await RoomRepository.getWeedRoom(request.roomId);
+        if (room) {
+            if (room.matchId) {
+                await MatchRepository.deleteMatch(room.matchId);
+            }
+            await RoomRepository.deletePlayers(request.roomId);
             await RoomRepository.deleteRoomChat(request.roomId);
             result.result = true;
         } else {

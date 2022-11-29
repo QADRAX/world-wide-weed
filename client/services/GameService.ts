@@ -3,6 +3,7 @@ import { DeleteRoomRequest } from "../../pages/api/rooms/delete";
 import { JoinRoomRequest } from "../../pages/api/rooms/join";
 import { MessageRequest } from "../../pages/api/rooms/message";
 import { ReadyToMatchRequest } from "../../pages/api/rooms/ready";
+import { RestartRoomRequest } from "../../pages/api/rooms/restart";
 import { ChatMessage } from "../../types/ChatMessage";
 import { WeedPlayer } from "../../types/Player";
 import { CardRequestSnapshot, DiscardCardRequest, PlayCardRequest, ProtectedMatchSnapshot, PublicMatchSnapshot, WeedRoom } from "../../types/WeedTypes";
@@ -191,6 +192,16 @@ export namespace GameService {
 
     export async function deleteRoom(request: DeleteRoomRequest) {
         await window.fetch('/api/rooms/delete', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(request)
+        });
+    }
+
+    export async function restartRoom(request: RestartRoomRequest) {
+        await window.fetch('/api/rooms/restart', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
