@@ -13,6 +13,7 @@ export type WeedCardProps = {
     cardType: CardType | EmptyCardType;
     protectedValue?: ProtectableCardType | EmptyCardType;
     disabled?: boolean;
+    hidden?: boolean;
     selected?: 'hand' | 'target' | 'destination';
     width?: number;
     height?: number;
@@ -28,6 +29,12 @@ export const WeedCard: FunctionComponent<WeedCardProps> = (props) => {
     const height = props.height || DEFAULT_HEIGHT;
     const protectedValueWidth = width * DEFUALT_PROTECTED_ASPECT_RATIO;
     const protectedValueHeight = height * DEFUALT_PROTECTED_ASPECT_RATIO;
+
+    const cardOpacity = props.hidden 
+            ? 0
+            : props.disabled
+                ? 0.2
+                : 1;
 
     const widthCss = `${width}px`;
     const heightCss = `${height}px`;
@@ -85,7 +92,7 @@ export const WeedCard: FunctionComponent<WeedCardProps> = (props) => {
             >
                 <AnimatePresence>
                     {
-                        props.disabled && (
+                        (props.disabled || props.hidden) && (
                             <Skeleton
                                 component={motion.div}
                                 {...ANIMATION_SIMPLE_FADE}
@@ -107,7 +114,7 @@ export const WeedCard: FunctionComponent<WeedCardProps> = (props) => {
                     backgroundImage: imageUrl,
                     backgroundSize: 'contain',
                     backgroundPosition: 'center',
-                    opacity: props.disabled ? 0.2 : 1,
+                    opacity: cardOpacity,
                     transition: 'opacity 0.2s',
                 }} />
             </StyledCard >
