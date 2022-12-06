@@ -1,4 +1,4 @@
-import { getFieldValue } from "../../../../server/game/fields";
+import { getPlayerPoints } from "../../../../shared/gameLogic";
 import { WeedPlayer } from "../../../../types/Player";
 import { CardRequestSnapshot } from "../../../../types/WeedTypes";
 import { LastMatch } from "../../../redux/lastMatch/lastMatch";
@@ -32,7 +32,7 @@ export function getMatchInfo(
 
         const lastSnapshotPlayer = lastSnapshotPlayers.find((p) => p.playerId === player.id);
         if (lastSnapshotPlayer) {
-            const points = lastSnapshotPlayer.fields.reduce((acc, field) => acc + getFieldValue(field.value), 0);
+            const points = getPlayerPoints(lastSnapshotPlayer);
             weedInfoPlayer.points = points;
         }
 

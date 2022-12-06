@@ -1,6 +1,6 @@
 import { Stack, Typography } from '@mui/material';
 import React, { FunctionComponent } from 'react';
-import { getFieldValue } from '../../../../server/game/fields';
+import { getFieldValue } from '../../../../shared/gameLogic';
 import { WeedPlayer } from '../../../../types/Player';
 import { PublicMatchPlayer } from '../../../../types/WeedTypes';
 import { useAuthenticatedUser } from '../../../hooks/useAuth';

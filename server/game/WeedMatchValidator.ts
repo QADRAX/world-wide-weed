@@ -1,9 +1,9 @@
 import { ValidationResult } from "../../types/ValidationResult";
 import { CardRequest, DiscardCardRequest, isPlayCardRequest, PlayCardRequest, PrivateMatchPlayer, PrivateMatchSnapshot as MatchSnapshot } from "../../types/WeedTypes";
-import { getFieldValue } from "./fields";
 import { WeedError } from "../../types/MatchErrors";
 import structuredClone from '@ungap/structured-clone';
 import { WeedPlayer } from "../../types/Player";
+import { getFieldValue } from "../../shared/gameLogic";
 
 export class WeedMatchValidator {
     history: MatchSnapshot[];
