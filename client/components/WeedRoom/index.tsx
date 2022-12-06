@@ -10,11 +10,15 @@ import ChatIcon from '@mui/icons-material/Chat';
 import MarkUnreadChatAltIcon from '@mui/icons-material/MarkUnreadChatAlt';
 import { useInitRoom } from '../../hooks/useInitRoom';
 import { Chat } from './Chat/Chat';
+import { useHasPendingMesseges } from '../../hooks/useHasPendingMessages';
 import { useAppSelector } from '../../hooks/redux';
 
 export const WeedRoom = () => {
     useInitRoom();
+    useHasPendingMesseges();
+
     const hasPendingMessages = useAppSelector((state) => state.rooms.hasPendingMessages);
+    
     const currentRoom = useCurrentPlayerRoom();
     const isMatchStarted = currentRoom.matchId != null;
 
