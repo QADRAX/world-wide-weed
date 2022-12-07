@@ -1,5 +1,5 @@
 import { LoadingButton } from '@mui/lab';
-import { Divider } from '@mui/material';
+import { Divider, IconButton } from '@mui/material';
 import { Stack } from '@mui/system';
 import { motion } from 'framer-motion';
 import React from 'react';
@@ -17,8 +17,12 @@ import {
 } from '../../../hooks/usePlayerMatch';
 import { discardCardAction, playCardAction } from '../../../redux/match/match';
 import { HandCard } from './HandCard';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 export const Hand = () => {
+    const [isHidden, setIsHidden] = React.useState<boolean>(false);
+
     const dispatch = useAppDispatch();
     const { user } = useAuthenticatedUser();
     const selectedCard = useSelectedCardType();
@@ -74,9 +78,16 @@ export const Hand = () => {
             }
             <Stack sx={{ ml: 2, mr: 2, mb: 2 }} direction="row" spacing={1} justifyContent="center" alignItems="center">
                 {hand.map((card) => (
-                    <HandCard key={card.id} card={card} />
+                    <HandCard key={card.id} card={card} hidden={isHidden} />
                 ))}
+                <IconButton onClick={() => setIsHidden(!isHidden)}
+                sx={{
+                    ml: 2,
+                }}>
+                    {isHidden ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                </IconButton>
             </Stack>
+
         </Stack>
 
     );

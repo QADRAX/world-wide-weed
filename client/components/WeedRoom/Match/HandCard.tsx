@@ -7,6 +7,7 @@ import { WeedCard as WeedCardComponent } from './WeedCard';
 
 export type HandCardProps = {
     card: WeedCard;
+    hidden?: boolean;
 };
 
 export const HandCard: React.FunctionComponent<HandCardProps> = (props) => {
@@ -32,6 +33,7 @@ export const HandCard: React.FunctionComponent<HandCardProps> = (props) => {
 
     return (
         <WeedCardComponent
+            hidden={props.hidden}
             selected={isSelected ? 'hand' : undefined}
             onClick={onCardClick}
             cardType={props.card.type}
