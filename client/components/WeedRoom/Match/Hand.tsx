@@ -68,11 +68,23 @@ export const Hand = () => {
             {
                 isCurrentPlayerBriked
                     ?
-                    <LoadingButton onClick={onDiscardCard} loading={isLoading} disabled={!selectedCard}>
+                    <LoadingButton
+                        sx={{ m: 1 }}
+                        size="small"
+                        variant="contained"
+                        onClick={onDiscardCard}
+                        loading={isLoading}
+                        disabled={!selectedCard}>
                         Discard
                     </LoadingButton>
                     :
-                    <LoadingButton onClick={onPlayClick} disabled={!isValidSelection} loading={isLoading}>
+                    <LoadingButton
+                        sx={{ m: 1 }}
+                        size="small"
+                        variant="contained"
+                        onClick={onPlayClick}
+                        disabled={!isValidSelection}
+                        loading={isLoading}>
                         Play
                     </LoadingButton>
             }
@@ -81,9 +93,9 @@ export const Hand = () => {
                     <HandCard key={card.id} card={card} hidden={isHidden} />
                 ))}
                 <IconButton onClick={() => setIsHidden(!isHidden)}
-                sx={{
-                    ml: 2,
-                }}>
+                    sx={{
+                        ml: 2,
+                    }}>
                     {isHidden ? <VisibilityOffIcon /> : <VisibilityIcon />}
                 </IconButton>
             </Stack>

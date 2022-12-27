@@ -56,7 +56,7 @@ export const CardRequestInfo: FunctionComponent<CardRequestInfoProps> = (props) 
                 }}>
                 {playerInfoText}
             </Typography>
-            <WeedCard cardType={cardRequest.cardType} width={20} height={30} />
+            <WeedCard cardType={cardRequest.cardType} width={20} />
             <Typography variant="caption"
                 sx={{
                     cursor: 'default',
