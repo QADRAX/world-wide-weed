@@ -88,6 +88,7 @@ export const matchSlice = createSlice({
                 state.lastMatchSnapshot = undefined;
             }
         },
+        resetMatch: () => initialState,
     },
     extraReducers: (builder) => {
         builder.addCase(playCardAction.pending, (state) => {
@@ -132,6 +133,7 @@ export const {
     setSelectedCardId,
     setTargetPlayerId,
     setGameOver,
+    resetMatch,
 } = matchSlice.actions;
 
 export default matchSlice.reducer;
