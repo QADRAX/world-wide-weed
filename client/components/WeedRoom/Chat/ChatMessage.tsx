@@ -2,6 +2,9 @@ import { Avatar, Stack } from "@mui/material";
 import styled from "@emotion/styled";
 import { deepOrange } from "@mui/material/colors";
 import { formatDate } from "../../../../utils/Dates";
+import { CardRequestSnapshot } from "../../../../types/WeedTypes";
+import { CardRequestInfo } from "../../Shared/CardRequestInfo";
+import { useAppSelector } from "../../../hooks/redux";
 
 export const MessageRow = styled("div")({
     display: "flex"
@@ -19,7 +22,6 @@ export const MessageBlue = styled("div")({
       padding: "10px",
       backgroundColor: "#A8DDFD",
       width: "60%",
-      //height: "50px",
       textAlign: "left",
       font: "400 .9em 'Open Sans', sans-serif",
       border: "1px solid #97C6E3",
@@ -55,7 +57,6 @@ export const MessageOrange = styled("div")({
     padding: "10px",
     backgroundColor: "#f8e896",
     width: "60%",
-    //height: "50px",
     textAlign: "left",
     font: "400 .9em 'Open Sans', sans-serif",
     border: "1px solid #dfd087",
@@ -82,6 +83,18 @@ export const MessageOrange = styled("div")({
       top: "-1px",
       right: "-17px"
     }
+});
+
+export const MessageInfo = styled("div")({
+    width: "60%",
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    marginBottom: '10px',
+    padding: '10px',
+    backgroundColor:'#f3f3f3',
+    textAlign: 'center',
+    font: "400 .9em 'Open Sans', sans-serif",
+    border: "1px solid #fde4e4",
 });
 
 export const MessageContent = styled("p")({
@@ -150,5 +163,21 @@ export const MessageRight = (props: MessageProps) => {
           <MessageTimeStampRight>{formatedDate}</MessageTimeStampRight>
         </MessageOrange>
       </MessageRowRight>
+    );
+  };
+
+export const MessageCenter = (props: CardRequestSnapshot) => {
+    const matchPlayers = useAppSelector((state) => state.match.players);
+    const formatedDate = formatDate(props.date);
+
+    return (
+      <MessageRow>
+        <MessageInfo>
+          <MessageContent>
+            <CardRequestInfo cardRequest={props.request} players={matchPlayers} />
+          </MessageContent>
+          <MessageTimeStampRight>{formatedDate}</MessageTimeStampRight>
+        </MessageInfo>
+      </MessageRow>
     );
   };

@@ -16,19 +16,17 @@ export type WeedCardProps = {
     hidden?: boolean;
     selected?: 'hand' | 'target' | 'destination';
     width?: number;
-    height?: number;
     onClick?: () => void;
 }
 
-const DEFAULT_WIDTH = 50;
-const DEFAULT_HEIGHT = 75;
+const DEFAULT_SIZE_RATIO = 1.5;
+const DEFAULT_WIDTH = 45;
 const DEFUALT_PROTECTED_ASPECT_RATIO = 0.4;
 
 export const WeedCard: FunctionComponent<WeedCardProps> = (props) => {
     const width = props.width || DEFAULT_WIDTH;
-    const height = props.height || DEFAULT_HEIGHT;
+    const height = width * DEFAULT_SIZE_RATIO;
     const protectedValueWidth = width * DEFUALT_PROTECTED_ASPECT_RATIO;
-    const protectedValueHeight = height * DEFUALT_PROTECTED_ASPECT_RATIO;
 
     const cardOpacity = props.hidden 
             ? 0
@@ -75,7 +73,7 @@ export const WeedCard: FunctionComponent<WeedCardProps> = (props) => {
                 <>
                     {
                         props.protectedValue != 'empty' && props.protectedValue != undefined &&
-                        <WeedCard cardType={props.protectedValue} width={protectedValueWidth} height={protectedValueHeight} />
+                        <WeedCard cardType={props.protectedValue} width={protectedValueWidth} onClick={props.onClick} />
                     }
                 </>
             }

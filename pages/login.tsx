@@ -6,6 +6,9 @@ import { motion } from "framer-motion";
 import GoogleIcon from '@mui/icons-material/Google';
 import { LoginForm } from '../client/components/LoginForm';
 import { ANIMATION_VERTICAL_FADE } from '../client/config/animations';
+import getConfig from 'next/config';
+
+const { publicRuntimeConfig } = getConfig();
 
 const RootStyle = styled("div")({
   background: "rgb(228 249 239)",
@@ -29,8 +32,12 @@ const ContentStyle = styled("div")({
 });
 
 const Login = () => {
+  const version: string = publicRuntimeConfig?.version ?? '0.0.0';
+  const [isLoading, setIsLoading] = React.useState(false);
+
   const googleSignIn = async () => {
     await firebaseClient.auth().signInWithPopup(googleAuthProvider);
+    setIsLoading(true);
     window.location.href = '/';
   };
 
@@ -40,13 +47,12 @@ const Login = () => {
         <ContentStyle>
           <HeadingStyle component={motion.div} {...ANIMATION_VERTICAL_FADE}>
             <Typography variant="h5" sx={{ color: "text.secondary", mb: 5 }}>
-              Welcome at World Wide Weed!
+              Welcome to World Wide Weed
+              <Typography variant="caption" sx={{ color: "text.secondary", ml: 1 }}>
+                {version}
+              </Typography>
             </Typography>
           </HeadingStyle>
-
-          <Typography variant="h6" sx={{ color: "text.secondary", mb: 5 }}>
-            Login to your account
-          </Typography>
 
           <LoginForm />
 
@@ -63,9 +69,13 @@ const Login = () => {
                   padding: "0.5675rem",
                   flex: 1,
                 }}
+                disabled={isLoading}
                 color="primary"
                 onClick={googleSignIn}>
-                <GoogleIcon />
+                  Login with Google
+                <GoogleIcon sx={{
+                  ml: 1,
+                }}/>
               </IconButton>
             </Stack >
           </Box>

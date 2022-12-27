@@ -5,13 +5,17 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
 import { setLastMatch } from '../../../redux/lastMatch/lastMatch';
 import { LastMatchInfo } from './LastMatchInfo';
+import { resetMatch } from '../../../redux/match/match';
 
 export const LastMatchDialog = () => {
     const dispatch = useAppDispatch();
     const lastMatch = useAppSelector(state => state.lastMatch.lastMatch);
     const isOpen = useMemo(() => lastMatch != null, [lastMatch]);
 
-    const handleClose = () => dispatch(setLastMatch(undefined));
+    const handleClose = () => {
+        dispatch(setLastMatch(undefined));
+        dispatch(resetMatch());
+    }
 
     return (
         <Dialog

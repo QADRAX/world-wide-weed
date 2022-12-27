@@ -63,7 +63,6 @@ export const useInitMatch = () => {
             })();
         } else {
             // MATCH IS OVER
-
             const lastMatch: LastMatch = {
                 publicSnapshots: match.publicSnapshots,
                 cardRequestHistory: match.cardRequestHistory,

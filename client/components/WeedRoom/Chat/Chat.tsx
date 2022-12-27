@@ -1,11 +1,12 @@
 import { Divider, styled } from '@mui/material';
 import React, { useEffect } from 'react';
+import { isCardRequestSnapshot } from '../../../../types/ChatMessage';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
 import { useAuthenticatedUser } from '../../../hooks/useAuth';
 import { useRoomMessages } from '../../../hooks/usePlayerRoom';
 import { setHasPendingMessage, setIsPostingMessage, setTextMessage } from '../../../redux/rooms/rooms';
 import { GameService } from '../../../services/GameService';
-import { MessageLeft, MessageRight } from './ChatMessage';
+import { MessageCenter, MessageLeft, MessageRight } from './ChatMessage';
 import { TextInput } from './TextInput';
 
 const ChatboxRoot = styled('div')({
@@ -60,7 +61,13 @@ export const Chat = () => {
                 {
                     chatMessages?.map((message, index) => {
 
-                        if (message.sender.id != user.id) {
+                        if(isCardRequestSnapshot(message)) {
+                            return (
+                                <MessageCenter key={index}
+                                    {...message}
+                                />
+                            );
+                        } else if (message.sender.id != user.id) {
                             return (
                                 <MessageLeft key={index}
                                     message={message.text}

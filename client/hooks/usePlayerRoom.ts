@@ -1,4 +1,4 @@
-import { ChatMessage } from "../../types/ChatMessage";
+import { RoomMessage } from "../../types/ChatMessage";
 import { WeedRoom } from "../../types/WeedTypes";
 import { toArray } from "../../utils/Dict";
 import { useAppSelector } from "./redux";
@@ -80,14 +80,17 @@ export const useIsCurrentPlayerReady = () => {
     return isPlayerReady;
 }
 
-export const useRoomMessages = (): ChatMessage[] => {
+export const useRoomMessages = (): RoomMessage[] => {
     const chatMessages = useAppSelector((state) => state.rooms.currentChatMessages) ?? [];
-    
+    const cardRequests = useAppSelector((state) => state.match.cardRequestHistory) ?? [];
 
-    const sortedMessages = [...chatMessages].sort((a, b) => {
+    const allMessages: RoomMessage[] = [...chatMessages, ...cardRequests];
+
+    const sortedMessages = allMessages.sort((a, b) => {
         return a.date - b.date;
     });
 
     const splittedMessages = sortedMessages.splice(sortedMessages.length - 100, sortedMessages.length);
+
     return splittedMessages;
 }
