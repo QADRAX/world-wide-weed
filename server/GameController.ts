@@ -70,6 +70,7 @@ export class GameController implements IGameController {
         if (room) {
             if (room.matchId) {
                 await MatchRepository.deleteMatch(room.matchId);
+                await RoomRepository.setMatchId(room.id, '');
             }
             await RoomRepository.deletePlayers(request.roomId);
             await RoomRepository.deleteRoomChat(request.roomId);
