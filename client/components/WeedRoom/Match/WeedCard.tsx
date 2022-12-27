@@ -34,6 +34,12 @@ export const WeedCard: FunctionComponent<WeedCardProps> = (props) => {
                 ? 0.2
                 : 1;
 
+    const cardOpacity = props.hidden 
+            ? 0
+            : props.disabled
+                ? 0.2
+                : 1;
+
     const widthCss = `${width}px`;
     const heightCss = `${height}px`;
 
