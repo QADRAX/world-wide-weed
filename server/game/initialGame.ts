@@ -1,11 +1,15 @@
+import { DeckSchema } from "../../types/DeckSchema";
 import { WeedPlayer } from "../../types/Player";
 import { PrivateMatchPlayer, PrivateMatchSnapshot } from "../../types/WeedTypes";
 import { shuffle } from "../../utils/ArrayShuffle";
-import { getDeck } from "./decks";
+import { getDeckFromSchema } from "./decks";
 import { getInitialFields } from "./fields";
 
-export const getInitialMatchSnapshot = (players: WeedPlayer[]): PrivateMatchSnapshot => {
-    const deck = shuffle(getDeck());
+export const getInitialMatchSnapshot = (
+    players: WeedPlayer[], 
+    deckSchema: DeckSchema
+): PrivateMatchSnapshot => {
+    const deck = shuffle(getDeckFromSchema(deckSchema));
     const matchPlayers: PrivateMatchPlayer[] = players.map((player) => {
         const initialFields = getInitialFields(players.length);
         const matchPlayer: PrivateMatchPlayer = {

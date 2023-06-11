@@ -2,9 +2,11 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { getUserInfoFromRequest } from '../../../server/authentication';
 import { GameController } from '../../../server/GameController';
 import { Log } from '../../../utils/Log';
+import { DeckSchema } from '../../../types/DeckSchema';
 
 export type CreateRoomRequest = {
     roomName: string;
+    deckSchema?: DeckSchema;
 }
 
 interface ExtendedNextApiRequest extends NextApiRequest {

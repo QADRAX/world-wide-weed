@@ -15,6 +15,7 @@ import { RoomRepository } from "./repository/roomRepository";
 import { ChatMessage } from "../types/ChatMessage";
 import { toWeedPlayer } from "../shared/mappers";
 import { RestartRoomRequest } from "../pages/api/rooms/restart";
+import { validateDeckSchema } from "./game/decks";
 
 export class GameController implements IGameController {
     private userInfo: UserInfo;
@@ -34,8 +35,13 @@ export class GameController implements IGameController {
         if (sameNameRoom) {
             result.errors.push('SameRoomName');
         } else {
-            const room = await RoomRepository.createRoom(request.roomName);
-            result.result = room;
+            const isValidDeckSchema = request.deckSchema ? validateDeckSchema(request.deckSchema) : true;
+            if (!isValidDeckSchema) {
+                result.errors.push('InvalidDeckSchema');
+            } else {
+                const room = await RoomRepository.createRoom(request);
+                result.result = room;
+            }
         }
 
         return result;

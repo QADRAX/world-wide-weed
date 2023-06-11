@@ -28,9 +28,10 @@ export namespace MatchRepository {
             publicMatchSnapshots: [],
             privateMatchSnapshots: [],
             protectedMatchSnapshots,
+            deckSchema: room.deckSchema,
         };
 
-        const initialPrivateSnapshot = getInitialMatchSnapshot(players);
+        const initialPrivateSnapshot = getInitialMatchSnapshot(players, room.deckSchema);
 
         newMatch = addPrivateSnapshot(newMatch, initialPrivateSnapshot);
 

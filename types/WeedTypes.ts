@@ -1,4 +1,5 @@
 import { Dict } from "../utils/Dict";
+import { DeckSchema } from "./DeckSchema";
 import { WeedPlayer } from "./Player";
 
 // CARD TYPES
@@ -101,6 +102,8 @@ export type WeedMatch = {
     protectedMatchSnapshots: Dict<ProtectedMatchSnapshot[] | undefined>;
     /** History of requests did by the users (anybody could read) */
     cardRequestHistory?: CardRequestSnapshot[];
+    /** Deck schema of the match (anybody could read) */
+    deckSchema: DeckSchema;
 }
 
 export type WeedRoom = {
@@ -109,6 +112,7 @@ export type WeedRoom = {
     players?: Dict<WeedPlayer>,
     readyPlayersIds?: Dict<string>,
     matchId?: string | null;
+    deckSchema: DeckSchema;
 }
 
 // PLAY CARD REQUEST
