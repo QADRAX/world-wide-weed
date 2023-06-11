@@ -5,20 +5,23 @@ import { toWeedPlayer } from "../../shared/mappers";
 import { UserInfo } from "../../types/UserInfo";
 import { Dict, toArray } from "../../utils/Dict";
 import { ChatMessage } from "../../types/ChatMessage";
+import { CreateRoomRequest } from "../../pages/api/rooms/create";
+import { classicSchema } from "../../types/DeckSchema";
 
 export namespace RoomRepository {
     export async function createRoom(
-        roomName: string,
+        request: CreateRoomRequest,
     ): Promise<WeedRoom> {
         const database = firebaseAdmin.database();
         const roomId = v4();
 
         const room: WeedRoom = {
             id: roomId,
-            name: roomName,
+            name: request.roomName,
             players: {},
             readyPlayersIds: {},
             matchId: null,
+            deckSchema: request.deckSchema ?? classicSchema,
         };
         await database.ref(`rooms/${roomId}`).set(room);
 

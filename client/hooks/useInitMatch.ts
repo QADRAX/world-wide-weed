@@ -4,6 +4,7 @@ import { GameService } from "../services/GameService";
 import { useAppDispatch, useAppSelector } from "./redux";
 import {
     setCardRequestHistory,
+    setDeckSchema,
     setIsCurrentPlayerBriked,
     setMatchPlayers,
     setProtectedSnapshots,
@@ -34,6 +35,8 @@ export const useInitMatch = () => {
                 dispatch(setProtectedSnapshots(protectedSnapshots));
                 const matchPlayers = await GameService.getMatchPlayers(matchId);
                 dispatch(setMatchPlayers(matchPlayers));
+                const deckSchema = await GameService.getDeckSchema(matchId);
+                dispatch(setDeckSchema(deckSchema));
 
                 unsubscribePublic = GameService.subscribeToPublicMatchSnapshots(matchId, (snapshots) => {
                     dispatch(setPublicSnapshots(snapshots));

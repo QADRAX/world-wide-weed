@@ -113,4 +113,8 @@ export type WeedError =
     /**
      * The room Doesn't exists
      */
-    | "RoomNotExists";
+    | "RoomNotExists"
+    /**
+     * Invalid deck schema
+     */
+    | "InvalidDeckSchema";

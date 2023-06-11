@@ -21,6 +21,11 @@ export function useCurrentTurn(){
     return currentTurn;
 }
 
+export function useCurrentDeckSchema(){
+    const deckSchema = useAppSelector((state) => state.match.deckSchema);
+    return deckSchema;
+}
+
 export function useTotalTurns(){
     const currentSnap = useCurrentMatchSnapshot();
     const discardSize = currentSnap?.discards?.length ?? 0;

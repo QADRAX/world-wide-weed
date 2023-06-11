@@ -5,6 +5,7 @@ import { MessageRequest } from "../../pages/api/rooms/message";
 import { ReadyToMatchRequest } from "../../pages/api/rooms/ready";
 import { RestartRoomRequest } from "../../pages/api/rooms/restart";
 import { ChatMessage } from "../../types/ChatMessage";
+import { DeckSchema } from "../../types/DeckSchema";
 import { WeedPlayer } from "../../types/Player";
 import { CardRequestSnapshot, DiscardCardRequest, PlayCardRequest, ProtectedMatchSnapshot, PublicMatchSnapshot, WeedRoom } from "../../types/WeedTypes";
 import { Dict, toArray } from "../../utils/Dict";
@@ -55,6 +56,16 @@ export namespace GameService {
         const snap = await isBrikedRef.once('value');
         const isBriked = snap.val() as boolean;
         return isBriked;
+    }
+
+    export async function getDeckSchema(
+        matchId: string,
+    ): Promise<DeckSchema> {
+        const database = firebaseClient.database();
+        const deckSchemaRef = database.ref(`/matches/${matchId}/deckSchema`);
+        const snap = await deckSchemaRef.once('value');
+        const deckSchema = snap.val() as DeckSchema;
+        return deckSchema;
     }
 
     export function subscribeToIsCurrentPlayerBriked(

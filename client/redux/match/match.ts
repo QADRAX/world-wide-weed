@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { WeedPlayer } from "../../../types/Player";
 import { CardRequestSnapshot, DiscardCardRequest, PlayCardRequest, ProtectedMatchSnapshot, PublicMatchSnapshot } from "../../../types/WeedTypes";
 import { GameService } from "../../services/GameService";
+import { DeckSchema } from "../../../types/DeckSchema";
 
 export type MatchSliceState = {
     // GENERAL LOADER STATE
@@ -15,6 +16,7 @@ export type MatchSliceState = {
     publicSnapshots?: PublicMatchSnapshot[];
     protectedSnapshots?: ProtectedMatchSnapshot[];
     cardRequestHistory?: CardRequestSnapshot[];
+    deckSchema?: DeckSchema;
 
     // CURRENT SELECTION
 
@@ -88,6 +90,9 @@ export const matchSlice = createSlice({
                 state.lastMatchSnapshot = undefined;
             }
         },
+        setDeckSchema: (state, action: PayloadAction<DeckSchema | undefined>) => {
+            state.deckSchema = action.payload;
+        },
         resetMatch: () => initialState,
     },
     extraReducers: (builder) => {
@@ -133,6 +138,7 @@ export const {
     setSelectedCardId,
     setTargetPlayerId,
     setGameOver,
+    setDeckSchema,
     resetMatch,
 } = matchSlice.actions;
 
