@@ -1,4 +1,4 @@
-import { Button, Card, CardActions, CardContent, Typography } from "@mui/material";
+import { Button, Card, CardActions, CardContent, Stack, Typography } from "@mui/material";
 import { motion } from "framer-motion";
 import React, { FunctionComponent } from "react";
 import { getRoomStatusText } from "../../../../shared/weedUtils";
@@ -9,6 +9,7 @@ import { useIsRoomAdmin } from "../../../hooks/useAuth";
 import { setIsLoading } from "../../../redux/rooms/rooms";
 import { GameService } from "../../../services/GameService";
 import { PlayerAvatars } from "./PlayerAvatars/PlayerAvatars";
+import { WeedInfoButton } from "../../WeedRoom/Match/WeedInfoButton";
 
 type RoomCardProps = {
     room: WeedRoom;
@@ -51,12 +52,17 @@ export const RoomCard: FunctionComponent<RoomCardProps> = (props) => {
             sx={{ backgroundColor: '#e9fff4' }}
             elevation={2}>
             <CardContent>
-                <Typography variant="h5" component="div">
-                    {props.room.name}
-                </Typography>
-                <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                    {roomStatusText}
-                </Typography>
+                <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 1.5 }}>
+                
+                    <Typography variant="h5" component="div">
+                        {props.room.name}
+                    </Typography>
+                    <WeedInfoButton deckSchema={props.room.deckSchema} inGame={false} />
+                    <Typography sx={{ mb: 1.5 }} color="text.secondary">
+                        {roomStatusText}
+                    </Typography>
+                    
+                </Stack>
                 <PlayerAvatars room={props.room} />
             </CardContent>
             <CardActions>

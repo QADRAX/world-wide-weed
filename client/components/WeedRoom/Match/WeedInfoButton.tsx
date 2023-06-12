@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import InfoIcon from '@mui/icons-material/Info';
 import { Card, Grid, IconButton, Modal } from '@mui/material';
-import { useCurrentDeckSchema } from '../../../hooks/usePlayerMatch';
 import { CardType } from '../../../../types/WeedTypes';
-import { WeedInfoCard } from './WeedInfoCard';
+import { InGameWeedInfoItem, WeedInfoItem } from './WeedInfoCard';
+import { DeckSchema } from '../../../../types/DeckSchema';
 
 const style = {
     position: 'absolute' as 'absolute',
@@ -14,11 +14,16 @@ const style = {
     p: 4,
 };
 
-export const WeedInfoButton = () => {
+export type WeedInfoButtonProps = {
+    deckSchema?: DeckSchema;
+    inGame: boolean;
+};
+
+export const WeedInfoButton: FunctionComponent<WeedInfoButtonProps> = (props) => {
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
-    const deckSchema = useCurrentDeckSchema();
+    const deckSchema = props.deckSchema;
 
     const items: [CardType, number][] = deckSchema
         ? Object.entries(deckSchema) as [CardType, number][]
@@ -39,7 +44,11 @@ export const WeedInfoButton = () => {
                     <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
                         {items.map(([cardType, count]) => (
                             <Grid item xs={2} sm={4} md={4} key={cardType}>
-                                <WeedInfoCard cardType={cardType} count={count} />
+                                {
+                                    props.inGame
+                                        ? <InGameWeedInfoItem cardType={cardType} count={count} />
+                                        : <WeedInfoItem cardType={cardType} count={count} />
+                                }
                             </Grid>
                         ))}
                     </Grid>

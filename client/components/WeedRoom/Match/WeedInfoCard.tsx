@@ -4,12 +4,18 @@ import { useCurrentMatchSnapshot } from '../../../hooks/usePlayerMatch';
 import { WeedCard } from './WeedCard';
 import { Stack, Typography } from '@mui/material';
 
-export type WeedInfoCardProps = {
+export type WeedInfoItemProps = {
     cardType: CardType;
     count: number;
+    text?: string;
 };
 
-export const WeedInfoCard: FunctionComponent<WeedInfoCardProps> = (props) => {
+export type InGameWeedInfoItemProps = {
+    cardType: CardType;
+    count: number;
+}
+
+export const InGameWeedInfoItem: FunctionComponent<InGameWeedInfoItemProps> = (props) => {
     const currentSnap = useCurrentMatchSnapshot();
     
     if(!currentSnap) return null;
@@ -22,6 +28,14 @@ export const WeedInfoCard: FunctionComponent<WeedInfoCardProps> = (props) => {
         }
     });
 
+    const text = `${discardsCount} /`;
+
+    return (
+        <WeedInfoItem cardType={props.cardType} count={props.count} text={text} />
+    );
+}
+
+export const WeedInfoItem: FunctionComponent<WeedInfoItemProps> = (props) => {
     return (
         <Stack direction="row"
             justifyContent='center'
@@ -34,7 +48,7 @@ export const WeedInfoCard: FunctionComponent<WeedInfoCardProps> = (props) => {
                 sx={{
                     cursor: 'default',
                 }}>
-                <b>{discardsCount} / {props.count}</b>
+                <b>{props.text} {props.count}</b>
             </Typography>
         </Stack>
     );

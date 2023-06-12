@@ -1,6 +1,7 @@
 import { Divider, Stack, Typography } from '@mui/material';
 import React from 'react';
 import {
+    useCurrentDeckSchema,
     useCurrentMatchSnapshot,
     useCurrentPlayer,
     useCurrentTurn,
@@ -17,6 +18,7 @@ export const MatchInfo = () => {
     const isCurrentPlayerTurn = useIsCurrentPlayerTurn();
     const currentSnap = useCurrentMatchSnapshot();
     const isGameOver = useIsGameOver();
+    const deckSchema = useCurrentDeckSchema();
 
     const turnText = `Turn: ${currentTurn + 1}/${totalTurns}`;
     const playerText = isCurrentPlayerTurn ? `It's your turn` : `Turn of: ${currentPlayer?.name}`;
@@ -51,7 +53,7 @@ export const MatchInfo = () => {
                 }
 
             </Stack>
-            <WeedInfoButton />
+            <WeedInfoButton deckSchema={deckSchema} inGame={true} />
         </Stack>
     );
 }
