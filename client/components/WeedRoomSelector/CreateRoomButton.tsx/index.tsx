@@ -2,6 +2,8 @@ import React from 'react';
 import { Box, Button, Container, Modal, TextField } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { GameService } from '../../../services/GameService';
+import { DeckSchema, classicSchema } from '../../../../types/DeckSchema';
+import { DeckSchemaForm } from './DeckSchemaForm';
 
 const style = {
     position: 'absolute' as 'absolute',
@@ -21,6 +23,7 @@ export const CreateRoomButton = () => {
     const [isSubmitting, setIsSubmitting] = React.useState(false);
     const [isModalOpen, setIsModalOpen] = React.useState(false);
     const [roomName, setRoomName] = React.useState('');
+    const [deckSchema, setDeckSchema] = React.useState<DeckSchema>(classicSchema);
 
     const createMatch = async () => {
         setIsSubmitting(true);
@@ -28,12 +31,15 @@ export const CreateRoomButton = () => {
         setRoomName('');
         await GameService.createRoom({
             roomName,
+            deckSchema,
         });
+        setDeckSchema(classicSchema);
         setIsSubmitting(false);
     }
 
     const handleModalClose = () => {
         setIsModalOpen(false);
+        setDeckSchema(classicSchema);
     }
 
     const handleModalOpen = () => {
@@ -53,7 +59,6 @@ export const CreateRoomButton = () => {
                 {isSubmitting ? "loading..." : "Create Room"}
             </LoadingButton>
             <Modal
-                hideBackdrop
                 open={isModalOpen}
                 onClose={handleModalClose}
                 aria-labelledby="child-modal-title"
@@ -65,10 +70,15 @@ export const CreateRoomButton = () => {
                             fullWidth
                             type="text"
                             size='small'
+                            variant="standard"
                             label="Room name"
                             onChange={(e) => setRoomName(e.target.value)}
                             value={roomName}
                         />
+                        <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '16px' }}>
+                            <DeckSchemaForm deckSchema={deckSchema} onDeckSchemaChange={setDeckSchema} />
+                        </Box>
+                        
 
                         <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '16px' }}>
                             <Button onClick={createMatch}
