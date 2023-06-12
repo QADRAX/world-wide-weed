@@ -55,7 +55,6 @@ export type MainCardProps = {
 export const MainCard: FunctionComponent<MainCardProps> = (props) => {
     const [open, setOpen] = React.useState(false);
     const containerRef = useRef<HTMLDivElement | null>(null);
-
     const toggleDrawer = () => setOpen(!open);
 
     return (
